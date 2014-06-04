@@ -1,0 +1,227 @@
+options {
+    STATIC = false;  
+    FORCE_LA_CHECK = true;
+    DEBUG_TOKEN_MANAGER = false;
+    DEBUG_PARSER = false;
+}
+PARSER_BEGIN(ObjParser)
+package com.quew8.geng.objparser;
+
+import com.quew8.geng.geometry.*;
+import com.quew8.gmath.*;
+import java.io.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+
+public class ObjParser {
+    ArrayList<Vector> vertices = new ArrayList<Vector>();
+    ArrayList<Vector> normals = new ArrayList<Vector>();
+    ArrayList<float[]> texCoordss = new ArrayList<float[]>();
+    ArrayList<Vertex[]> facess = new ArrayList<Vertex[]>();
+
+    public void parse() {
+        try {
+            Start();
+        } catch(ParseException ex) {
+            throw new RuntimeException(ex);
+        }
+    }
+
+    public Mesh[] getMesh(TextureArea textureArea) {
+        Mesh[] meshes = new Mesh[facess.size()];
+        for(int i = 0; i < meshes.length; i++) {
+            meshes[i] = new Mesh(facess.get(i), textureArea);
+        }
+        return meshes;
+    }
+}
+
+PARSER_END(ObjParser)
+
+SKIP : { " " }
+SKIP : { "\t" }
+TOKEN : { < COMMENT : "#" | "o" | "g" | "s" | "mtllib" | "usemtl" > : COMMENT_LINE }
+< * > TOKEN : { < EOL : "\n" | "\r" | "\r\n" > : DEFAULT }
+< COMMENT_LINE > SKIP : { < ~[] > }
+TOKEN : { < SLASH : "/" > }
+TOKEN : { < VERTEX : "v" > }
+TOKEN : { < TEX_COORD : "vt" > }
+TOKEN : { < NORMAL : "vn" > }
+TOKEN : { < FACE : "f" > }
+
+TOKEN : { < #LETTER : (["a"-"z","A"-"Z","_"]) > }
+TOKEN : { < #DIGIT : (["0"-"9"]) > }
+TOKEN : { < NUM_FLOAT : (["+","-"])?(<DIGIT>)+ "." (<DIGIT>)+ > }
+TOKEN : { < NUM_INT : (<DIGIT>)+ > }
+TOKEN : { < WORD : (<LETTER> (<DIGIT>|<LETTER>)*) > }
+
+void Start() :
+{
+    
+}
+{
+    Line()
+    (
+        <EOL>
+        [
+            Line()
+        ]
+    )*
+    <EOF>
+}
+
+void Line() :
+{
+    Vector v;
+    float[] fa;
+    Vertex[] va;
+}
+{
+    (
+        <COMMENT>
+    |
+        v = Vertex()
+        { vertices.add(v); }
+    |
+        fa = TexCoord()
+        { texCoordss.add(fa); }
+    |
+        v = Normal()
+        { normals.add(v); }
+    |
+        va = Face()
+        { facess.add(va); }
+    )
+}
+
+Vector Vertex() :
+{
+    Vector v;
+}
+{
+    <VERTEX>
+    v = Vector()
+    (
+        Float() //w
+    )?
+    {
+        return v;
+    }
+}
+
+Vector Normal() :
+{
+    Vector v;
+}
+{
+    <NORMAL>
+    v = Vector()
+    {
+        return v;
+    }
+}
+
+
+float[] TexCoord() :
+{
+    float u, v;
+}
+{
+    <TEX_COORD>
+    u = Float()
+    v = Float()
+    (
+        Float() //w
+    )?
+    {
+        return new float[]{u, v};
+    }
+}
+
+Vertex[] Face() :
+{
+    ArrayList<Vertex> faces = new ArrayList<Vertex>();
+    int vi, vni = 0, vti = 0;
+}
+{
+    <FACE>
+    (
+        vi = Int()
+        [
+            <SLASH>
+            (
+                vti = Int()
+                [
+                    <SLASH>
+                    vni = Int()
+                ]
+            |
+                <SLASH>
+                vni = Int()
+            )
+        ]
+        {
+            Vector position = null;
+            if(vi - 1 < 0 || vi - 1 >= vertices.size()) {
+                throw new ArrayIndexOutOfBoundsException("Position " + vi);
+            } else {
+                position = vertices.get(vi - 1);
+            }
+            Vector normal = null;
+            if(vni == 0) {
+                normal = new Vector(0, 1, 0); 
+            } else if(vni - 1 < 0 || vni - 1 >= normals.size()) {
+                throw new ArrayIndexOutOfBoundsException("Normal " + vni);
+            } else {
+                normal = normals.get(vni - 1);
+            }
+            float[] texCoords = null;
+            if(vti == 0) {
+                texCoords = new float[]{0, 0}; 
+            } else if(vti - 1 < 0 || vti - 1 >= texCoordss.size()) {
+                throw new ArrayIndexOutOfBoundsException("Tex Coords " + vti);
+            } else {
+                texCoords = texCoordss.get(vti - 1);
+            }
+            faces.add(new Vertex(position, normal, texCoords[0], texCoords[1]));
+        }
+    )*
+    {
+        return faces.toArray(new Vertex[faces.size()]);
+    }
+}
+
+Vector Vector() :
+{
+    float x, y, z;
+}
+{
+    x = Float()
+    y = Float()
+    z = Float()
+    {
+        return new Vector(x, y, z);
+    }
+}
+
+float Float() :
+{
+    Token t;
+}
+{
+    t = <NUM_FLOAT>
+    {
+        return Float.parseFloat(t.toString());
+    }
+}
+
+int Int() :
+{
+    Token t;
+}
+{
+    t = <NUM_INT>
+    {
+        return Integer.parseInt(t.toString());
+    }
+}
