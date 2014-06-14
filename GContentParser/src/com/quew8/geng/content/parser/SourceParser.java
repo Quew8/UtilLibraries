@@ -4,6 +4,7 @@ import com.quew8.geng.xmlparser.XMLElementParser;
 import com.quew8.geng.xmlparser.XMLParser;
 import com.quew8.gutils.content.Source;
 import java.util.HashMap;
+import java.util.Map.Entry;
 import org.dom4j.Element;
 
 /**
@@ -13,10 +14,12 @@ import org.dom4j.Element;
 public class SourceParser extends XMLParser {
     private static final String
             INPUT = "input",
-            PARAM = "param";
+            PARAM = "param",
+            PARAM_LIST = "param_list";
     
     private String source;
     private final HashMap<String, String> params = new HashMap<String, String>();
+    private final HashMap<String, Entry<String, String>[]> paramLists = new HashMap<String, Entry<String, String>[]>();
     
     public SourceParser(String dir) {
         this.source = dir;
@@ -46,10 +49,19 @@ public class SourceParser extends XMLParser {
             }
             
         });
+        to.put(PARAM_LIST, new XMLElementParser() {
+            
+            @Override
+            public void parse(Element element) {
+                ParamListParser parser = SourceParser.this.parseWith(element, new ParamListParser());
+                paramLists.put(parser.getKey(), parser.getParams());
+            }
+            
+        });
         return to;
     }
     
     public Source getSource() {
-        return new Source(source, params);
+        return new Source(source, params, paramLists);
     }
 }

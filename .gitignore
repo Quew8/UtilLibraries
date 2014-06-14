@@ -1,2 +1,15 @@
 */nbproject/
 */build.xml
+/BitmapIO/dist/
+/BitmapIO/build/
+/GEngine3D/build/
+/DesktopGUtils/build/
+/GMath3D/build/
+/GFunctions/dist/
+/DesktopGUtils/dist/
+/GEngine2D/build/
+/GEngine2D/dist/
+/GEngine/build/
+/GMath3D/dist/
+/GEngine/dist/
+/GEngine3D/dist/

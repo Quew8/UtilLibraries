@@ -69,7 +69,11 @@ public class SrcFile extends JavaElement {
     protected String getConstructedCode() {
         return JavaCodeGenUtils.getConstruction()
                 .add(inPackage != null, inPackage)
-                .addLineSeparated(imports)
+                .addLineSeparated(
+                        JavaCodeGenUtils.getConstruction()
+                                .addNewline(imports)
+                                .get()
+                )
                 .addLineSeparated(type)
                 .get();
     }

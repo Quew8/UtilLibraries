@@ -28,11 +28,7 @@ public interface ResourceLoader {
         
         @Override
         public InputStream load(String url) {
-            try {
-                return GeneralUtils.readFrom(new File(new URI(url)));
-            } catch (URISyntaxException ex) {
-                throw new RuntimeException(ex);
-            }
+            return GeneralUtils.readFrom(new File(GeneralUtils.toPlatformPath(url)));
         }
         
     }

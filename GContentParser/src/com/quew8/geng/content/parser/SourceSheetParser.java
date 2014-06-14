@@ -66,12 +66,28 @@ public class SourceSheetParser extends XMLParser {
         return new SourceSheet(getIdClass(), getReaderClass(), getSources());
     }
     
-    private Source[] getSources() {
+    public Source[] getSources() {
         return sources.toArray(new Source[sources.size()]);
+    }
+    
+    public Source getSource(int i) {
+        return sources.get(i);
+    }
+    
+    public int getNSources() {
+        return sources.size();
+    }
+    
+    public String getIdClassName() {
+        return idClassName;
     }
     
     private Class<?> getIdClass() throws ClassNotFoundException {
         return getClass().getClassLoader().loadClass(idClassName);
+    }
+    
+    public String getReaderClassName() {
+        return readerClassName;
     }
     
     private Class<?> getReaderClass() throws ClassNotFoundException {

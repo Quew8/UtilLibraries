@@ -33,7 +33,7 @@ public class ShaderProgram extends GObject {
     
     public void use() {
         tempUse();
-        ShaderUtils.setInUseShader(this);
+        //ShaderUtils.setInUseShader(this);
     }
     
     @Override

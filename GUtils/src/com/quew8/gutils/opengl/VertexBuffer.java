@@ -9,27 +9,19 @@ import static com.quew8.gutils.opengl.OpenGL.*;
  * 
  * @author Quew8
  */
-public class VertexBuffer extends GBuffer {
+public class VertexBuffer extends GBuffer implements VertexData {
     
     public VertexBuffer(ByteBuffer data, int target, int usage) {
         super(data, target, usage);
-        System.out.println("Creating VB length = " + data.limit() + " pos = " + data.position());
     }
     
-    public VertexBuffer(float[] data, int target, int usage) {
-        this(BufferUtils.createByteBuffer(data), target, usage);
-    }
-    
-    public VertexBuffer(int[] data, int target, int usage) {
-        this(BufferUtils.createByteBuffer(data), target, usage);
-    }
-    
-    public VertexBuffer(float[] data, int target) {
+    public VertexBuffer(ByteBuffer data, int target) {
         this(data, target, GL_STATIC_DRAW);
     }
-    
-    public VertexBuffer(int[] data, int target) {
-        this(data, target, GL_STATIC_DRAW);
+
+    @Override
+    public void vertexAttribPointer(int index, int size, int type, boolean normalized, int stride, int offset) {
+        glVertexAttribPointer(index, size, type, normalized, stride, offset);
     }
     
     /**

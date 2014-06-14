@@ -20,13 +20,17 @@ public class Content<T> {
         for(Source s: sourceSheet.getSources()) {
             content.put(
                     getId(sourceSheet.getIdClass(), s), 
-                    reader.read(s.getStream(), s.getParams())
+                    reader.read(s)
                     );
         }
     }
     
     public T get(int id) {
         return content.get(id);
+    }
+    
+    public T[] putAll(T[] in) {
+        return content.values().toArray(in);
     }
     
     private static int getId(Class<?> idClass, Source source) {

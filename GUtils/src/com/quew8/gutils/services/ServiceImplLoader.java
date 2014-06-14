@@ -23,16 +23,19 @@ public class ServiceImplLoader<T extends ServiceImpl> {
         DebugLogger.registerLog(SERVICES_LOG, LogLevel.VERBOSE, LogOutput.FILE);
     }
     
+    @SuppressWarnings("unchecked")
     public ServiceImplLoader(Class<T> servClazz, ClassLoader classLoader, T... loadedImpls) {
         this.servClazz = servClazz;
         this.loadedImpls = loadedImpls;
         this.loader = ServiceLoader.load(servClazz, classLoader);
     }
     
+    @SuppressWarnings("unchecked")
     public ServiceImplLoader(Class<T> servClazz, URL[] urls, T... loadedImpls) {
         this(servClazz, new URLClassLoader(urls), loadedImpls);
     }
     
+    @SuppressWarnings("unchecked")
     public ServiceImplLoader(Class<T> servClazz, T... loadedImpls) {
         this(servClazz, (ClassLoader) null, loadedImpls);
     }

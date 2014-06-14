@@ -18,6 +18,13 @@ public class FileUtils {
         
     }
     
+    /**
+     * 
+     * @param from
+     * @param to
+     * @param dirDuplicateBehaviour
+     * @param fileDuplicateBehaviour 
+     */
     public static void copyDirectory(final File from, final File to, final FileDuplicateBehaviour dirDuplicateBehaviour, final FileDuplicateBehaviour fileDuplicateBehaviour) {
         try {
             Files.walkFileTree(from.toPath(), new SimpleFileVisitor<Path>() {
@@ -69,10 +76,19 @@ public class FileUtils {
         }
     }
     
+    /**
+     * 
+     * @param from
+     * @param to 
+     */
     public static void copyDirectory(final File from, final File to) {
         copyDirectory(from, to, FileDuplicateBehaviour.IGNORE, FileDuplicateBehaviour.REPLACE);
     }
     
+    /**
+     * 
+     * @param dir 
+     */
     public static void deleteDirectory(File dir) {
         try {
             Files.walkFileTree(dir.toPath(), new SimpleFileVisitor<Path>() {
@@ -95,10 +111,27 @@ public class FileUtils {
         }
     }
     
+    /**
+     * 
+     * @param dir
+     * @return 
+     */
     public static boolean isEmpty(File dir) {
         return dir.listFiles().length == 0;
     }
     
+    /**
+     * 
+     * @param file
+     * @return 
+     */
+    public static long getFileSize(File file) {
+        return file.length();
+    }
+    
+    /**
+     * 
+     */
     public static enum FileDuplicateBehaviour {
         IGNORE, REPLACE, CANCEL;
     }

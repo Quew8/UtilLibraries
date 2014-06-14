@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Random;
@@ -71,8 +72,16 @@ public abstract class GeneralUtils {
         return readFrom(path, DEFAULT_IO_HANDLER);
     }
     
-    public static long getFileSize(File file) {
-        return file.length();
+    public static void write(OutputStream out, String s, ExceptionHandler<IOException> handler) {
+        try(OutputStreamWriter writer = new OutputStreamWriter(out)) {
+            writer.write(s);
+        } catch(IOException ex) {
+            handler.handle(ex);
+        }
+    }
+    
+    public static void write(OutputStream out, String s) {
+        write(out, s, DEFAULT_IO_HANDLER);
     }
     
     public static OutputStream writeTo(File file, ExceptionHandler<IOException> handler) {
@@ -104,6 +113,45 @@ public abstract class GeneralUtils {
     
     public static String getResourceParent(String resourcePath) {
         return resourcePath.substring(0, resourcePath.lastIndexOf('/')) + "/";
+    }
+    
+    public static String getCommonURLParent(String url1, String url2) {
+        int i = 0;
+        while(i < url1.length() && i < url2.length() && url1.charAt(i) == url2.charAt(i)) {
+            i++;
+        }
+        return url1.substring(0, i);
+    }
+    
+    public static String getRelativeURL(String url, String to) {
+        if(!url.startsWith(to)) {
+            throw new RuntimeException("URL: " + url + ", cannot be relativised from " + to);
+        }
+        return url.substring(to.length() + 1);
+    }
+    
+    public static String toPlatformPath(String url) {
+        return url.replace('/', '\\');
+    }
+    
+    public static String toURL(String platformPath) {
+        return platformPath.replace('\\', '/');
+    }
+    
+    public static String canonNameToURL(String canonName) {
+        return canonName.replace('.', '/') + ".java";
+    }
+    
+    public static String urlToCanonName(String url) {
+        return url.substring(0, url.length() - 5).replace('/', '.');
+    }
+    
+    public static String getClassNameOfCanon(String canon) {
+        return canon.substring(canon.lastIndexOf('.') + 1);
+    }
+    
+    public static String getPackageOfCanon(String canon) {
+        return canon.substring(0, canon.lastIndexOf('.'));
     }
     
     public static URL getURLCodeLocation() {
@@ -180,7 +228,8 @@ public abstract class GeneralUtils {
         return linearInterpolate(
                 linearInterpolate(x1y1, x2y1, tx),
                 linearInterpolate(x1y2, x2y2, tx),
-                ty);
+                ty
+        );
     }
     
     public static float linearInterpolate(float x1, float x2, float t) {
@@ -199,7 +248,8 @@ public abstract class GeneralUtils {
                 cubicInterpolate(x0y1, x1y1, x2y1, x3y1, tx),
                 cubicInterpolate(x0y2, x1y2, x2y2, x3y2, tx),
                 cubicInterpolate(x0y3, x1y3, x2y3, x3y3, tx),
-                ty);
+                ty
+        );
     }
     
     public static float cubicInterpolate(float x0, float x1, float x2, float x3, float t) {

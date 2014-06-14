@@ -1,6 +1,7 @@
 package com.quew8.geng.xmlparser;
 
 import com.quew8.gutils.ResourceLoader;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -103,6 +104,10 @@ public abstract class XMLParser {
 
     public void read(String resource) {
         read(resource, ResourceLoader.INTERNAL);
+    }
+    
+    public void read(File file) {
+        read(file.getAbsolutePath(), ResourceLoader.EXTERNAL);
     }
     
     public String getId() {
