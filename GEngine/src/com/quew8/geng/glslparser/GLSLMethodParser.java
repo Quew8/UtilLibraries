@@ -1,12 +1,12 @@
 package com.quew8.geng.glslparser;
 
-import com.quew8.geng.xmlparser.XMLElementParser;
+import com.quew8.codegen.glsl.Block;
+import com.quew8.codegen.glsl.Method;
+import com.quew8.codegen.glsl.Parameter;
+import com.quew8.codegen.glsl.Type;
+import com.quew8.geng.glslparser.GLSLShaderParser.GLSLElements;
 import com.quew8.geng.xmlparser.XMLAttributeParser;
-import com.quew8.gutils.opengl.shaders.glsl.GLSLCompileTimeConstant;
-import com.quew8.gutils.opengl.shaders.glsl.GLSLExtra;
-import com.quew8.gutils.opengl.shaders.glsl.GLSLMethod;
-import com.quew8.gutils.opengl.shaders.glsl.GLSLType;
-import com.quew8.gutils.opengl.shaders.glsl.GLSLVariable;
+import com.quew8.geng.xmlparser.XMLElementParser;
 import java.util.ArrayList;
 import java.util.HashMap;
 import org.dom4j.Attribute;
@@ -19,22 +19,23 @@ import org.dom4j.Element;
 public class GLSLMethodParser extends GLSLElementStructure<GLSLMethodParser> {
     private String name;
     private String code;
-    private GLSLType returnType = GLSLType.VOID;
-    private final ArrayList<GLSLVariable> params = new ArrayList<GLSLVariable>();
+    private Type returnType = null;
+    private final ArrayList<GLSLVariableParser> params = new ArrayList<GLSLVariableParser>();
 
     public GLSLMethodParser() {
         super(new String[]{CODE}, new String[]{NAME, RETURN_TYPE});
     }
     
-    public GLSLMethod getMethod() {
+    public Method getMethod(GLSLElements elements) {
         finalized();
-        return new GLSLMethod(
-                name, code, returnType, 
-                params.toArray(new GLSLVariable[params.size()]),
-                getGlobalVariables().toArray(new GLSLVariable[getGlobalVariables().size()]),
-                getExtras().toArray(new GLSLExtra[getExtras().size()]),
-                getConstants().toArray(new GLSLCompileTimeConstant[getConstants().size()])
-        );
+        addTo(elements);
+        Parameter[] parameters = new Parameter[params.size()];
+        for(int i = 0; i < params.size(); i++) {
+            parameters[i] = params.get(i).getParameter();
+        }
+        return new Method(name, new Block(code))
+                .setReturnType(returnType)
+                .setParameters(parameters);
     }
     
     @Override
@@ -52,9 +53,9 @@ public class GLSLMethodParser extends GLSLElementStructure<GLSLMethodParser> {
             public void parse(Element element) {
                 GLSLVariableParser varParser = GLSLMethodParser.this.parseWith(element, new GLSLVariableParser());
                 if(varParser.isGlobalVariable()) {
-                    addGlobalVariable(varParser.getVariable());
+                    addGlobalVariable(varParser);
                 } else if(varParser.isInputVariable()) {
-                    params.add(varParser.getVariable());
+                    params.add(varParser);
                 } else {
                     throw new RuntimeException("Invalid method variable semantic: " + varParser.getSemantic());
                 }
@@ -76,7 +77,7 @@ public class GLSLMethodParser extends GLSLElementStructure<GLSLMethodParser> {
         to.put(RETURN_TYPE, new XMLAttributeParser() {
             @Override
             public void parse(Attribute attribute, Element parent) {
-                returnType = new GLSLType(attribute.getText());
+                returnType = new Type(attribute.getText());
             }
         });
         return to;

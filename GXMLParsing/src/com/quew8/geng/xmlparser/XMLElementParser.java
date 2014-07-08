@@ -16,7 +16,7 @@ public abstract class XMLElementParser {
     public static void parseElements(List<Element> elements, HashMap<String, XMLElementParser> parsers, 
             ArrayList<String> requiredElements, boolean matchAll) {
         
-        for(Element element : elements) {
+        for(Element element: elements) {
             XMLElementParser parser = parsers.get(element.getName());
             requiredElements.remove(element.getName());
             if(parser != null) {

@@ -1,9 +1,8 @@
 package com.quew8.geng.glslparser;
 
+import com.quew8.codegen.glsl.GLSLCodeGenUtils;
 import com.quew8.geng.xmlparser.XMLElementParser;
 import com.quew8.gutils.opengl.shaders.ShaderProgram;
-import com.quew8.gutils.opengl.shaders.glsl.ShaderFactory;
-import com.quew8.gutils.opengl.shaders.glsl.formatting.Expansion;
 import java.util.HashMap;
 import org.dom4j.Element;
 
@@ -22,21 +21,6 @@ public class GLSLProgramParser extends GLSLParser<GLSLProgramParser> {
         super(new String[]{V_SHADER, F_SHADER}, new String[]{});
     }
     
-    public ShaderFactory getShaderFactoryForType(String type) {
-        finalized();
-        ShaderFactory factory = new ShaderFactory();
-        shaders.get(type).addPipelines(factory);
-        return factory;
-    }
-    
-    public ShaderFactory getVertexShaderFactory() {
-        return getShaderFactoryForType("vertex");
-    }
-    
-    public ShaderFactory getFragmentShaderFactory() {
-        return getShaderFactoryForType("fragment");
-    }
-    
     @Override
     public HashMap<String, XMLElementParser> addElementParsers(HashMap<String, XMLElementParser> to) {
         to = super.addElementParsers(to);
@@ -51,36 +35,18 @@ public class GLSLProgramParser extends GLSLParser<GLSLProgramParser> {
         return to;
     }
     
-    public ShaderProgram createProgram(String[][] constantNameValuePairs, 
-            Expansion[] expansions, String[] attribs) {
-        
-        return ShaderFactory.createProgram(
-                getVertexShaderFactory(), 
-                getFragmentShaderFactory(), 
-                constantNameValuePairs, 
-                expansions, 
-                attribs);
+    public String getVertexSrc(HashMap<String, String> constants) {
+        return GLSLCodeGenUtils.generateGLSL(shaders.get("vertex").getShader(), constants);
     }
     
-    public ShaderProgram createProgram(Expansion[] expansions, String[] attribs) {
-        return ShaderFactory.createProgram(
-                getVertexShaderFactory(), 
-                getFragmentShaderFactory(),
-                expansions, 
-                attribs);
+    public String getFragmentSrc(HashMap<String, String> constants) {
+        return GLSLCodeGenUtils.generateGLSL(shaders.get("fragment").getShader(), constants);
     }
     
-    public ShaderProgram createProgram(String[] attribs) {
-        return ShaderFactory.createProgram(
-                getVertexShaderFactory(),
-                getFragmentShaderFactory(),
-                attribs);
-    }
-    
-    public ShaderProgram createProgram(ShaderFactory vertex, ShaderFactory fragment) {
-        return ShaderFactory.createProgram(
-                getVertexShaderFactory(),
-                getFragmentShaderFactory());
+    public ShaderProgram getProgram(HashMap<String, String> constants, String[] attribs) {
+        String vertex = GLSLCodeGenUtils.generateGLSL(shaders.get("vertex").getShader(), constants);
+        String fragment = GLSLCodeGenUtils.generateGLSL(shaders.get("fragment").getShader(), constants);
+        return new ShaderProgram(vertex, fragment, attribs);
     }
     
     @Override

@@ -1,9 +1,7 @@
 package com.quew8.geng.glslparser;
 
 import com.quew8.geng.xmlparser.XMLAttributeParser;
-import com.quew8.geng.xmlparser.XMLParseException;
 import com.quew8.geng.xmlparser.XMLParser;
-import com.quew8.gutils.opengl.shaders.glsl.GLSLIllegalOperationException;
 import java.util.HashMap;
 import org.dom4j.Attribute;
 import org.dom4j.Element;
@@ -25,8 +23,7 @@ public abstract class GLSLParser<T extends GLSLParser<T>> extends XMLParser {
             STRUCT = "struct",
             VERSION = "version",
             EXTENSION = "extension",
-            EXTRA = "extra",
-            CONSTANT = "constant";
+            EXTRA = "extra";
     
     public static final String 
             NAME = "name", 
@@ -35,7 +32,6 @@ public abstract class GLSLParser<T extends GLSLParser<T>> extends XMLParser {
             MOD = "mod", 
             SRC = "src",
             PREDEFINED = "predefined",
-            DEFAULT_VALUE = "defaultValue",
             RETURN_TYPE = "returnType";
     
     public GLSLParser(String[] requiredElements, String[] requiredAttributes) {
@@ -48,11 +44,7 @@ public abstract class GLSLParser<T extends GLSLParser<T>> extends XMLParser {
     
     @Override
     public void parse(Element element) {
-        try {
-            super.parse(element);
-        } catch(GLSLIllegalOperationException ex) {
-            throw new XMLParseException(ex);
-        }
+        super.parse(element);
     }
     
     public void loadPredefined(Element element, String predefinedName) {

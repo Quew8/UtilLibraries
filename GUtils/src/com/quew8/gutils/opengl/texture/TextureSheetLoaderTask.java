@@ -4,7 +4,6 @@ import static com.quew8.gutils.opengl.OpenGL.GL_RGB;
 import static com.quew8.gutils.opengl.OpenGL.GL_RGBA;
 
 import com.quew8.gutils.PlatformBackend;
-import com.quew8.gutils.opengl.GLException;
 import com.quew8.gutils.threads.WorkerTask;
 
 /**
@@ -53,7 +52,6 @@ class TextureSheetLoaderTask extends WorkerTask<TextureSheetLoaderTask, TextureL
         for (int x = 0, j = 0; x < nColumns; x++) {
             for (int y = 0; y < nRows; y++, j++) {
                 PlatformBackend.backend.fillSubTexture_P(sx * x, sy * y, images[j]);
-                GLException.checkGLError();
                 images[j].unload();
             }
         }

@@ -10,32 +10,17 @@ import static com.quew8.gutils.opengl.OpenGL.*;
  * @author Quew8
  */
 public class ShaderUtils {
-    //private static int inUseShader = 0;
     
     private ShaderUtils() {
         
     }
     
-    /*protected static void setInUseShader(int shaderId) {
-        inUseShader = shaderId;
-    }*/
-    
-    /*protected static void setInUseShader(ShaderProgram shader) {
-        setInUseShader(shader.getId());
-    }*/
-    
-    /*public static int getInUseShader() {
-        return inUseShader;
-    }*/
-    
     public static void useFixedFunctions() {
         glUseProgram(0);
-        //setInUseShader(0);
     }
     
     public static void useShader(int shaderId) {
         glUseProgram(shaderId);
-        //setInUseShader(shaderId);
     }
     
     public static void setAttribIndicesEnabled(boolean enabled, int... indices) {
@@ -54,10 +39,6 @@ public class ShaderUtils {
         glBindAttribLocation(programId, index, name);
     }
     
-    /*public static void bindAttribIndex(String name, int index) {
-        bindAttribIndex(inUseShader, name, index);
-    }*/
-    
     /**
      * Returns the position of the specified uniform variable.
      * @param programId 
@@ -68,10 +49,6 @@ public class ShaderUtils {
         int i = glGetUniformLocation(programId, var);
         return i;
     }
-    
-    /*public static int getUniformVarPos(String var) {
-        return getUniformVarPos(inUseShader, var);
-    }*/
     
     /**
      * Sets the value of the specified uniform variable to that given.
@@ -95,23 +72,10 @@ public class ShaderUtils {
         }
     }
     
-    /**
-     * 
-     * @param name
-     * @param values 
-     */
-    /*public static void setUniformVarf(String name, float... values) {
-        setUniformVarf(inUseShader, name, values);
-    }*/
-    
     public static void getUniformVarf(int programId, String name, FloatBuffer fb) {
         int loc = glGetUniformLocation(programId, name);
         glGetUniformfv(programId, loc, fb);
     }
-    
-    /*public static void getUniformVarf(String name, FloatBuffer fb) {
-        getUniformVarf(inUseShader, name, fb);
-    }*/
     
     /**
      * 
@@ -123,15 +87,6 @@ public class ShaderUtils {
         int loc = glGetUniformLocation(programId, name);
         glUniformMatrix4fv(loc, false, data);
     }
-    
-    /**
-     * 
-     * @param name
-     * @param data 
-     */
-    /*public static void setUniformMatrix(String name, FloatBuffer data) {
-        setUniformMatrix(inUseShader, name, data);
-    }*/
     
     /**
      * Sets the value of the specified uniform variable to that given.
@@ -155,23 +110,10 @@ public class ShaderUtils {
         }
     }
     
-    /**
-     * 
-     * @param name
-     * @param values 
-     */
-    /*public static void setUniformVari(String name, int... values) {
-        setUniformVari(inUseShader, name, values);
-    }*/
-    
     public static void getUniformVar(int programId, String name, IntBuffer fb) {
         int loc = glGetUniformLocation(programId, name);
         glGetUniformiv(programId, loc, fb);
     }
-    
-    /*public static void getUniformVar(String name, IntBuffer fb) {
-        getUniformVar(inUseShader, name, fb);
-    }*/
     
     /**
      * @return A string representing the maximum possible version of GLSL obtainable in the current OpenGl context.

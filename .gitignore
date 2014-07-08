@@ -13,3 +13,6 @@
 /GMath3D/dist/
 /GEngine/dist/
 /GEngine3D/dist/
+/GLSLCodeGen/build/
+/GServices/dist/
+/GLSLCodeGen/dist/

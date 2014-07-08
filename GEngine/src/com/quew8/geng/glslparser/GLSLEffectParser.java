@@ -1,13 +1,13 @@
 package com.quew8.geng.glslparser;
 
+import com.quew8.codegen.glsl.GLSLCodeGenUtils;
+import com.quew8.codegen.glsl.Type;
+import com.quew8.codegen.glsl.Variable;
+import com.quew8.geng.glslparser.GLSLShaderParser.GLSLElements;
 import com.quew8.geng.xmlparser.XMLElementParser;
-import com.quew8.gutils.opengl.shaders.glsl.GLSLCompileTimeConstant;
-import com.quew8.gutils.opengl.shaders.glsl.GLSLEffect;
-import com.quew8.gutils.opengl.shaders.glsl.GLSLExtra;
-import com.quew8.gutils.opengl.shaders.glsl.GLSLMethod;
-import com.quew8.gutils.opengl.shaders.glsl.GLSLStruct;
-import com.quew8.gutils.opengl.shaders.glsl.GLSLVariable;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.regex.Pattern;
 import org.dom4j.Element;
 
 /**
@@ -20,53 +20,18 @@ public class GLSLEffectParser extends GLSLElementStructure<GLSLEffectParser> {
             OUT_VAR = "OUT_VARIABLE";
     
     private String code;
-    private GLSLVariable inVar;
-    private GLSLVariable outVar;
-
+    private GLSLVariableParser inVar;
+    private GLSLVariableParser outVar;
+    
     public GLSLEffectParser() {
         super(new String[]{CODE, IN_VAR, OUT_VAR}, new String[]{});
     }
     
-    @Override
-    public void loadPredefined(Element element, String predefinedName) {
-        GLSLEffect predefinedEffect = GLSLEffect.getPredefinedEffect(predefinedName);
-        code = predefinedEffect.getCode();
-        hasRequiredElement(CODE);
-        inVar = predefinedEffect.getInputVar();
-        hasRequiredElement(IN_VAR);
-        outVar = predefinedEffect.getOutputVar();
-        hasRequiredElement(OUT_VAR);
-        add(predefinedEffect.getGlobalVariables());
-        add(predefinedEffect.getConstants());
-        add(predefinedEffect.getExtras());
-    }
-    
-    private void code(Element codeElement) {
-        code = codeElement.getText();
-    }
-    
-    private void variable(Element variableElement) {
-        GLSLVariableParser variableParser = parseWith(variableElement, new GLSLVariableParser());
-        if(variableParser.isInputVariable()) {
-            inVar = variableParser.getVariable();
-            hasRequiredElement(IN_VAR);
-        } else if(variableParser.isOutputVariable()) {
-            outVar = variableParser.getVariable();
-            hasRequiredElement(OUT_VAR);
-        } else if(variableParser.isGlobalVariable()) {
-            addGlobalVariable(variableParser.getVariable());
-        }
-    }
-    
-    public GLSLEffect getEffect() {
+    private GLSLEffect getEffect(GLSLElements elements) {
         finalized();
+        addTo(elements);
         return new GLSLEffect(
-                code, inVar, outVar, 
-                getStructs().toArray(new GLSLStruct[getStructs().size()]),
-                getMethods().toArray(new GLSLMethod[getMethods().size()]),
-                getGlobalVariables().toArray(new GLSLVariable[getGlobalVariables().size()]),
-                getExtras().toArray(new GLSLExtra[getExtras().size()]),
-                getConstants().toArray(new GLSLCompileTimeConstant[getConstants().size()])
+                code, inVar.getVariable(), outVar.getVariable()
         );
     }
     
@@ -76,14 +41,23 @@ public class GLSLEffectParser extends GLSLElementStructure<GLSLEffectParser> {
         to.put(CODE, new XMLElementParser() {
             @Override
             public void parse(Element element) {
-                GLSLEffectParser.this.code(element);
+                code = element.getText().trim();
             }
         }
         );
         to.put(VARIABLE, new XMLElementParser() {
             @Override
             public void parse(Element element) {
-                GLSLEffectParser.this.variable(element);
+                GLSLVariableParser variableParser = parseWith(element, new GLSLVariableParser());
+                if(variableParser.isInputVariable()) {
+                    inVar = variableParser;
+                    hasRequiredElement(IN_VAR);
+                } else if(variableParser.isOutputVariable()) {
+                    outVar = variableParser;
+                    hasRequiredElement(OUT_VAR);
+                } else if(variableParser.isGlobalVariable()) {
+                    addGlobalVariable(variableParser);
+                }
             }
         }
         );
@@ -103,8 +77,47 @@ public class GLSLEffectParser extends GLSLElementStructure<GLSLEffectParser> {
         return new GLSLEffectParser();
     }
     
-    @Override
-    public String toString() {
-        return "GLSLEffectParser{" + "inVar=" + inVar + ", outVar=" + outVar + '}';
+    public static GLSLEffect getEffect(GLSLElements elements, ArrayList<GLSLEffectParser> effects) {
+        GLSLEffect effect = effects.get(0).getEffect(elements);
+        for(int i = 1; i < effects.size(); i++) {
+            effect = combine(effect, effects.get(i).getEffect(elements));
+        }
+        return effect;
+    }
+    
+    private static GLSLEffect combine(GLSLEffect a, GLSLEffect b) {
+        String code = GLSLCodeGenUtils.getConstruction()
+                .add(a.outVar)
+                .addNewline(a.code, b.code.replaceAll(Pattern.quote(b.inVar.getName()), a.outVar.getName()))
+                .get();
+        return new GLSLEffect(code, a.inVar, b.outVar);
+    }
+    
+    public static GLSLEffect getNoEffect(Type in, Type out) {
+        return new GLSLEffect("noEffectOutVar = noEffectInVar;", new Variable(in, "noEffectInVar"), new Variable(out, "noEffectOutVar"));
+    }
+    
+    public static class GLSLEffect {
+        private final String code;
+        private final Variable inVar;
+        private final Variable outVar;
+
+        public GLSLEffect(String code, Variable inVar, Variable outVar) {
+            this.code = code;
+            this.inVar = inVar;
+            this.outVar = outVar;
+        }
+        
+        public String getCode() {
+            return code;
+        }
+        
+        public Variable getInVar() {
+            return inVar;
+        }
+        
+        public Variable getOutVar() {
+            return outVar;
+        }
     }
 }

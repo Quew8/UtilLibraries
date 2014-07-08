@@ -1,7 +1,6 @@
 package com.quew8.gutils.opengl.texture;
 
 import com.quew8.gutils.PlatformBackend;
-import com.quew8.gutils.opengl.GLException;
 import com.quew8.gutils.threads.WorkerTask;
 
 import static com.quew8.gutils.opengl.OpenGL.*;
@@ -23,14 +22,10 @@ class TextureLoaderTask extends WorkerTask<TextureLoaderTask, TextureLoadVariabl
 
     @Override
     public void onPostWork(TextureLoadVariables input) {
-        GLException.checkGLError();
         input.texture.bind();
-        GLException.checkGLError();
         for(int i = 0; i < input.texParams.getNParams(); i++) {
             glTexParameteri(GL_TEXTURE_2D, input.texParams.getPName(i), input.texParams.getParam(i));
-            GLException.checkGLError();
         }
-        GLException.checkGLError();
         int destFormat = 
         		input.destFormat < 0 ? 
         		loadedImage.hasAlpha() ? 
@@ -39,7 +34,6 @@ class TextureLoaderTask extends WorkerTask<TextureLoaderTask, TextureLoadVariabl
         		input.destFormat;
     	PlatformBackend.backend.fillTexture_P(loadedImage, destFormat, input.texWidth, input.texHeight);
         input.texParams.run();
-        GLException.checkGLError();
         loadedImage.unload();
     }
 }

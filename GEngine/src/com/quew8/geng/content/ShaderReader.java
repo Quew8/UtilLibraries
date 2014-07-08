@@ -5,7 +5,7 @@ import com.quew8.gutils.content.ContentReader;
 import com.quew8.gutils.content.Source;
 import com.quew8.gutils.opengl.shaders.ShaderProgram;
 import com.quew8.gutils.opengl.shaders.ShaderUtils;
-import com.quew8.gutils.opengl.shaders.glsl.ShaderFactory;
+import java.util.HashMap;
 import java.util.Map.Entry;
 
 /**
@@ -21,29 +21,22 @@ public class ShaderReader implements ContentReader<ShaderProgram> {
     @Override
     public ShaderProgram read(Source in) {
         String[] attribs = in.getParams().get(ATRIBS).split("[\\s]+");
-        String[][] replacements;
+        HashMap<String, String> constants = new HashMap<String, String>();
         if(in.getParamLists().containsKey(REPLACEMENTS)) {
             Entry<String, String>[] entries = in.getParamLists().get(REPLACEMENTS);
-            replacements = new String[entries.length][];
-            for(int i = 0; i < replacements.length; i++) {
-                replacements[i] = new String[]{entries[i].getKey(), entries[i].getValue()};
+            for(Entry<String, String> entrie: entries) {
+                constants.put(entrie.getKey(), entrie.getValue());
             }
-        } else {
-            replacements = new String[0][];
         }
         
         GLSLProgramParser parser = new GLSLProgramParser();
         parser.read(in.getSource());
-        ShaderProgram program = parser.createProgram(
-                replacements,
-                ShaderFactory.DEFAULT_EXPANSIONS, 
-                attribs
-        );
+        ShaderProgram program = parser.getProgram(constants, attribs);
         if(in.getParamLists().containsKey(UNIFORMS)) {
             program.use();
             Entry<String, String>[] entries = in.getParamLists().get(UNIFORMS);
-            for(int i = 0; i < replacements.length; i++) {
-                ShaderUtils.setUniformVari(program.getId(), entries[i].getKey(), Integer.parseInt(entries[i].getValue()));
+            for(Entry<String, String> entrie: entries) {
+                ShaderUtils.setUniformVari(program.getId(), entrie.getKey(), Integer.parseInt(entrie.getValue()));
             }
         }
         return program;

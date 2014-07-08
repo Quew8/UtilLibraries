@@ -1,6 +1,5 @@
 package com.quew8.gutils.opengl.shaders;
 
-import com.quew8.gutils.opengl.GLException;
 import com.quew8.gutils.opengl.GObject;
 import static com.quew8.gutils.opengl.OpenGL.*;
 
@@ -18,7 +17,6 @@ public class Shader extends GObject {
         if (idBuff.get(0) != GL_TRUE) {
             throw new ShaderCompileException(glGetShaderInfoLog(getId()), source);
         }
-        GLException.checkGLError();
     }
     
     @Override

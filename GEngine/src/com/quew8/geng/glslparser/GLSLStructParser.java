@@ -1,9 +1,9 @@
 package com.quew8.geng.glslparser;
 
+import com.quew8.codegen.glsl.Struct;
+import com.quew8.codegen.glsl.Variable;
 import com.quew8.geng.xmlparser.XMLAttributeParser;
 import com.quew8.geng.xmlparser.XMLElementParser;
-import com.quew8.gutils.opengl.shaders.glsl.GLSLStruct;
-import com.quew8.gutils.opengl.shaders.glsl.GLSLVariable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import org.dom4j.Attribute;
@@ -15,7 +15,7 @@ import org.dom4j.Element;
  */
 public class GLSLStructParser extends GLSLParser<GLSLStructParser> {
     private String name;
-    private final ArrayList<GLSLVariable> variables = new ArrayList<GLSLVariable>();
+    private final ArrayList<GLSLVariableParser> variables = new ArrayList<GLSLVariableParser>();
     
     public GLSLStructParser() {
         super(new String[]{}, new String[]{NAME});
@@ -41,7 +41,7 @@ public class GLSLStructParser extends GLSLParser<GLSLStructParser> {
             public void parse(Element element) {
                 GLSLVariableParser parser = GLSLStructParser.this.parseWith(element, new GLSLVariableParser());
                 if(parser.isMemberVariable()) {
-                    variables.add(parser.getVariable());
+                    variables.add(parser);
                 } else {
                     throw new RuntimeException("Invalid struct variable semantic: " + parser.getSemantic());
                 }
@@ -61,8 +61,12 @@ public class GLSLStructParser extends GLSLParser<GLSLStructParser> {
         this.variables.addAll(source.variables);
     }
     
-    public GLSLStruct getStruct() {
+    public Struct getStruct() {
         finalized();
-        return new GLSLStruct(name, variables.toArray(new GLSLVariable[]{}));
+        Variable[] vars = new Variable[variables.size()];
+        for(int i = 0; i < vars.length; i++) {
+            vars[i] = variables.get(i).getVariable();
+        }
+        return new Struct(name, vars);
     }
 }

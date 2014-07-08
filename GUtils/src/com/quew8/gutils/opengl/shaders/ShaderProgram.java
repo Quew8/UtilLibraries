@@ -21,6 +21,10 @@ public class ShaderProgram extends GObject {
         	glBindAttribLocation(getId(), attribIndices[i], attribs[i]);
         }
         glLinkProgram(getId());
+        glGetProgramiv(getId(), GL_LINK_STATUS, idBuff);
+        if (idBuff.get(0) != GL_TRUE) {
+            throw new ProgramLinkException(glGetShaderInfoLog(getId()));
+        }
     }
     
     public ShaderProgram(String vertexSource, String fragmentSource, String... attribs) {

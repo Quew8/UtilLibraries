@@ -1,9 +1,10 @@
 package com.quew8.geng.glslparser;
 
+import com.quew8.codegen.glsl.Modifier;
+import com.quew8.codegen.glsl.Parameter;
+import com.quew8.codegen.glsl.Type;
+import com.quew8.codegen.glsl.Variable;
 import com.quew8.geng.xmlparser.XMLAttributeParser;
-import com.quew8.gutils.opengl.shaders.glsl.GLSLModifier;
-import com.quew8.gutils.opengl.shaders.glsl.GLSLType;
-import com.quew8.gutils.opengl.shaders.glsl.GLSLVariable;
 import java.util.HashMap;
 import org.dom4j.Attribute;
 import org.dom4j.Element;
@@ -14,10 +15,10 @@ import org.dom4j.Element;
  */
 public class GLSLVariableParser extends GLSLParser<GLSLVariableParser> {
     private String name;
-    private GLSLModifier mod = GLSLModifier.NONE;
-    private GLSLType type;
+    private Modifier mod = Modifier.NONE;
+    private Type type;
     private String semantic;
-    private GLSLVariable predefinedVariable = null;
+    private Variable predefinedVariable = null;
 
     public GLSLVariableParser() {
         super(new String[]{}, new String[]{TYPE, NAME, SEMANTIC});
@@ -25,20 +26,30 @@ public class GLSLVariableParser extends GLSLParser<GLSLVariableParser> {
     
     @Override
     public void loadPredefined(Element element, String predefinedName) {
-        predefinedVariable = GLSLVariable.getPredefinedVariable(predefinedName);
-        mod = predefinedVariable.getMod();
+        predefinedVariable = Variable.getBuiltInVariable(predefinedName);
+        mod = predefinedVariable.getModifier();
         type = predefinedVariable.getType();
         hasRequiredAttribute(TYPE);
         name = predefinedVariable.getName();
         hasRequiredAttribute(NAME);
     }
     
-    public GLSLVariable getVariable() {
+    public Parameter getParameter() {
         finalized();
-        return 
-                predefinedVariable == null ? 
-                new GLSLVariable(mod, type, name) : 
-                predefinedVariable;
+        if(predefinedVariable == null) {
+            return new Parameter(type, name);
+        } else {
+            throw new RuntimeException("Cannot Have Predefined Parameters");
+        }
+    }
+    
+    public Variable getVariable() {
+        finalized();
+        if(predefinedVariable == null) {
+            return new Variable(mod, type, name);
+        } else {
+            return predefinedVariable;
+        }
     }
     
     private void ensureEditable() {
@@ -79,14 +90,14 @@ public class GLSLVariableParser extends GLSLParser<GLSLVariableParser> {
             @Override
             public void parse(Attribute attribute, Element parent) {
                 ensureEditable();
-                mod = GLSLModifier.getModifier(attribute.getValue());
+                mod = Modifier.getModifier(attribute.getValue());
             }
         });
         to.put(TYPE, new XMLAttributeParser() {
             @Override
             public void parse(Attribute attribute, Element parent) {
                 ensureEditable();
-                type = new GLSLType(attribute.getValue());
+                type = new Type(attribute.getValue());
             }
         });
         to.put(NAME, new XMLAttributeParser() {

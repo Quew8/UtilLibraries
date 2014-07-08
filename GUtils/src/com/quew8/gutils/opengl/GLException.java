@@ -9,12 +9,16 @@ public class GLException extends RuntimeException {
     public static void checkGLError(String from) {
         int error = OpenGL.glGetError();
         if(error != OpenGL.GL_NO_ERROR) {
-            throw new GLException(from, error);
+            if(from != null) {
+                throw new GLException(from, error);
+            } else {
+                throw new GLException(error);
+            }
         }
     }
     
     public static void checkGLError() {
-        checkGLError("Unknown");
+        checkGLError(null);
     }
     
     public GLException(String error) {
@@ -23,5 +27,9 @@ public class GLException extends RuntimeException {
     
     public GLException(String from, int code) {
         this("GL Error from " + from + ": " + OpenGLUtils.toOpenGLString(code));
+    }
+    
+    public GLException(int code) {
+        this("GL Error: " + OpenGLUtils.toOpenGLString(code));
     }
 }

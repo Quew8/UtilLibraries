@@ -1,11 +1,9 @@
 package com.quew8.geng.glslparser;
 
+import com.quew8.codegen.CodeGenUtils;
+import com.quew8.codegen.glsl.Directive;
+import com.quew8.geng.glslparser.GLSLShaderParser.GLSLElements;
 import com.quew8.geng.xmlparser.XMLElementParser;
-import com.quew8.gutils.opengl.shaders.glsl.GLSLCompileTimeConstant;
-import com.quew8.gutils.opengl.shaders.glsl.GLSLExtra;
-import com.quew8.gutils.opengl.shaders.glsl.GLSLMethod;
-import com.quew8.gutils.opengl.shaders.glsl.GLSLStruct;
-import com.quew8.gutils.opengl.shaders.glsl.GLSLVariable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -16,11 +14,10 @@ import org.dom4j.Element;
  * @author Quew8
  */
 abstract class GLSLElementStructure<T extends GLSLElementStructure<T>> extends GLSLParser<T> {
-    private final ArrayList<GLSLStruct> structs = new ArrayList<GLSLStruct>();
-    private final ArrayList<GLSLMethod> methods = new ArrayList<GLSLMethod>();
-    private final ArrayList<GLSLVariable> globalVariables = new ArrayList<GLSLVariable>();
-    private final ArrayList<GLSLCompileTimeConstant> constants = new ArrayList<GLSLCompileTimeConstant>();
-    private final ArrayList<GLSLExtra> extras = new ArrayList<GLSLExtra>();
+    private final ArrayList<GLSLStructParser> structs = new ArrayList<GLSLStructParser>();
+    private final ArrayList<GLSLMethodParser> methods = new ArrayList<GLSLMethodParser>();
+    private final ArrayList<GLSLVariableParser> globalVariables = new ArrayList<GLSLVariableParser>();
+    private final ArrayList<Directive> directives = new ArrayList<Directive>();
     
     public GLSLElementStructure(String[] requiredElements, String[] requiredAttributes) {
         super(requiredElements, requiredAttributes);
@@ -30,40 +27,50 @@ abstract class GLSLElementStructure<T extends GLSLElementStructure<T>> extends G
         
     }
     
-    public void addGlobalVariable(GLSLVariable variable) {
+    public void addGlobalVariable(GLSLVariableParser variable) {
         globalVariables.add(variable);
     }
     
-    public void add(GLSLVariable[] variables) {
-        this.globalVariables.addAll(Arrays.asList(variables));
+    public void add(Directive[] directives) {
+        this.directives.addAll(Arrays.asList(directives));
     }
     
-    public void add(GLSLCompileTimeConstant[] constants) {
-        this.constants.addAll(Arrays.asList(constants));
-    }
-    
-    public void add(GLSLExtra[] extras) {
-        this.extras.addAll(Arrays.asList(extras));
-    }
-    
-    public ArrayList<GLSLStruct> getStructs() {
+    public ArrayList<GLSLStructParser> getStructs() {
         return structs;
     }
     
-    public ArrayList<GLSLMethod> getMethods() {
+    public ArrayList<GLSLMethodParser> getMethods() {
         return methods;
     }
     
-    public ArrayList<GLSLVariable> getGlobalVariables() {
+    public ArrayList<GLSLVariableParser> getGlobalVariables() {
         return globalVariables;
     }
     
-    public ArrayList<GLSLCompileTimeConstant> getConstants() {
-        return constants;
+    public ArrayList<Directive> getDirectives() {
+        return directives;
     }
     
-    public ArrayList<GLSLExtra> getExtras() {
-        return extras;
+    public void add(GLSLElementStructure<?> other) {
+        structs.addAll(other.structs);
+        methods.addAll(other.methods);
+        globalVariables.addAll(other.globalVariables);
+        directives.addAll(other.directives);
+    }
+    
+    public void addTo(GLSLElements elements) {
+        for(Directive directive: directives) {
+            elements.directives.add(directive);
+        }
+        for(GLSLVariableParser globalVariable: globalVariables) {
+            elements.globals.add(globalVariable.getVariable());
+        }
+        for(GLSLMethodParser method: methods) {
+            elements.methods.add(method.getMethod(elements));
+        }
+        for(GLSLStructParser struct: structs) {
+            elements.structures.add(struct.getStruct());
+        }
     }
     
     @Override
@@ -72,46 +79,36 @@ abstract class GLSLElementStructure<T extends GLSLElementStructure<T>> extends G
         to.put(STRUCT, new XMLElementParser() {
             @Override
             public void parse(Element element) {
-                GLSLStructParser parser = GLSLElementStructure.this.parseWith(element, new GLSLStructParser());
-                structs.add(parser.getStruct());
+                structs.add(GLSLElementStructure.this.parseWith(element, new GLSLStructParser()));
             }
         });
         to.put(METHOD, new XMLElementParser() {
             @Override
             public void parse(Element element) {
-                GLSLMethodParser parser = GLSLElementStructure.this.parseWith(element, new GLSLMethodParser());
-                methods.add(parser.getMethod());
+                methods.add(GLSLElementStructure.this.parseWith(element, new GLSLMethodParser()));
             }
         });
         to.put(VERSION, new XMLElementParser() {
             @Override
             public void parse(Element element) {
-                extras.add(GLSLExtra.getVersion(element.getText()));
+                directives.add(Directive.getVersion(element.getText()));
             }
         }
         );
         to.put(EXTENSION, new XMLElementParser() {
             @Override
             public void parse(Element element) {
-                extras.add(GLSLExtra.getExtension(
+                directives.add(Directive.getExtension(
                         element.getText(),
                         Boolean.parseBoolean(element.attributeValue("enable", "true"))
                 ));
             }
         }
         );
-        to.put(CONSTANT, new XMLElementParser() {
-            @Override
-            public void parse(Element element) {
-                GLSLCompileTimeConstantParser parser = GLSLElementStructure.this.parseWith(element, new GLSLCompileTimeConstantParser());
-                constants.add(parser.getConstant());
-            }
-        }
-        );
         to.put(EXTRA, new XMLElementParser() {
             @Override
             public void parse(Element element) {
-                extras.add(new GLSLExtra(element.getText()));
+                directives.add(CodeGenUtils.getElement(Directive.class, element.getText()));
             }
         }
         );
@@ -123,7 +120,6 @@ abstract class GLSLElementStructure<T extends GLSLElementStructure<T>> extends G
         this.structs.addAll(source.getStructs());
         this.methods.addAll(source.getMethods());
         this.globalVariables.addAll(source.getGlobalVariables());
-        this.constants.addAll(source.getConstants());
-        this.extras.addAll(source.getExtras());
+        this.directives.addAll(source.getDirectives());
     }
 }

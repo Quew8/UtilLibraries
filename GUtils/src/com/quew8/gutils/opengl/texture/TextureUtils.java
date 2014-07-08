@@ -5,7 +5,6 @@ import com.quew8.gutils.Colour;
 import com.quew8.gutils.debug.DebugLogger;
 import com.quew8.gutils.debug.LogLevel;
 import com.quew8.gutils.debug.LogOutput;
-import com.quew8.gutils.opengl.GLException;
 import com.quew8.gutils.threads.ThreadUtils;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
@@ -331,7 +330,6 @@ public class TextureUtils {
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, COLOUR_TEXTURE_LENGTH, COLOUR_TEXTURE_LENGTH, 0, GL_RGBA, GL_UNSIGNED_BYTE, bb);
-        GLException.checkGLError();
     }
     
     /**
@@ -362,12 +360,10 @@ public class TextureUtils {
         texture.bind();
         for(int i = 0; i < texParams.getNParams(); i++) {
             glTexParameteri(GL_TEXTURE_2D, texParams.getPName(i), texParams.getParam(i));
-            GLException.checkGLError();
         }
         
         ByteBuffer bb = BufferUtils.createByteBuffer(width * height * 16);
 
-        GLException.checkGLError();
         glTexImage2D(
                 GL_TEXTURE_2D, 
                 0, 
@@ -379,7 +375,6 @@ public class TextureUtils {
                 GL_UNSIGNED_BYTE,
                 bb);
         DebugLogger.log(TEXTURE_UTILS_LOG, "DestFormat: " + destFormat + " : " + com.quew8.gutils.opengl.OpenGLUtils.toOpenGLString(destFormat));
-        GLException.checkGLError();
     }
     
     /**
@@ -420,8 +415,6 @@ public class TextureUtils {
                       GL_DEPTH_COMPONENT,
                       GL_FLOAT,
                       fb);
-        
-        GLException.checkGLError();
         return tex;
     }
     

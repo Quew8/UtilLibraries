@@ -43,6 +43,9 @@ public class VertexArray implements VertexData {
             glVertexAttribPointer(index, size, true, normalized, stride, buffer);
             break;
         }
+        default: {
+            throw new IllegalArgumentException("type is not a recognized enum: " + type);
+        }
         }
         buffer.position(oldPos);
     }
