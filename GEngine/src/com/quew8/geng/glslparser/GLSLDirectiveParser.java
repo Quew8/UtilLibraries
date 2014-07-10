@@ -18,7 +18,6 @@ public class GLSLDirectiveParser extends GLSLParser<GLSLDirectiveParser> {
     }
     
     public Directive getDirective() {
-        finalized();
         return CodeGenUtils.getElement(Directive.class, "#" + directive);
     }
     

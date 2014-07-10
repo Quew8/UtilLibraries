@@ -7,6 +7,7 @@ import com.quew8.geng.rendering.modes.StaticRenderMode;
 import com.quew8.geng2d.rendering.modes.GeneralSpriteDataFactory;
 import com.quew8.geng2d.rendering.modes.SpriteDataFactory;
 import com.quew8.gutils.BufferUtils;
+import com.quew8.gutils.opengl.OpenGL;
 import static com.quew8.gutils.opengl.OpenGL.*;
 import com.quew8.gutils.opengl.VertexArray;
 import com.quew8.gutils.opengl.VertexBuffer;
@@ -16,6 +17,7 @@ import com.quew8.gutils.opengl.VertexBuffer;
  * @author Quew8
  */
 public class SpriteBatcher {
+    private final int mode;
     private final Image image;
     private final StaticRenderMode renderMode;
     private final SpriteDataFactory dataFactory;
@@ -23,7 +25,8 @@ public class SpriteBatcher {
     private final VertexBuffer ibo;
     private int n = 0;
     
-    public SpriteBatcher(Image image, StaticRenderMode renderMode, SpriteDataFactory dataFactory, int size) {
+    public SpriteBatcher(int mode, Image image, StaticRenderMode renderMode, SpriteDataFactory dataFactory, int size) {
+        this.mode = mode;
         this.image = image;
         this.renderMode = renderMode;
         this.dataFactory = dataFactory;
@@ -42,6 +45,10 @@ public class SpriteBatcher {
                 GL_ELEMENT_ARRAY_BUFFER, 
                 GL_STATIC_DRAW
         );
+    }
+    
+    public SpriteBatcher(Image image, StaticRenderMode renderMode, SpriteDataFactory dataFactory, int size) {
+        this(OpenGL.GL_TRIANGLES, image, renderMode, dataFactory, size);
     }
     
     public SpriteBatcher(Image image, StaticRenderMode renderMode, int size) {
@@ -65,7 +72,7 @@ public class SpriteBatcher {
     public void flush() {
         vertexArray.getBuffer().flip();
         renderMode.onPreRendering(vertexArray);
-        glDrawElements(GL_TRIANGLES, n * 6, GL_UNSIGNED_INT, 0);
+        glDrawElements(mode, n * 6, GL_UNSIGNED_INT, 0);
         renderMode.onPostRendering();
         n = 0;
     }

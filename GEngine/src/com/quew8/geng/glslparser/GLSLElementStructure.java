@@ -19,14 +19,6 @@ abstract class GLSLElementStructure<T extends GLSLElementStructure<T>> extends G
     private final ArrayList<GLSLVariableParser> globalVariables = new ArrayList<GLSLVariableParser>();
     private final ArrayList<Directive> directives = new ArrayList<Directive>();
     
-    public GLSLElementStructure(String[] requiredElements, String[] requiredAttributes) {
-        super(requiredElements, requiredAttributes);
-    }
-    
-    public GLSLElementStructure() {
-        
-    }
-    
     public void addGlobalVariable(GLSLVariableParser variable) {
         globalVariables.add(variable);
     }

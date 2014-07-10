@@ -15,23 +15,14 @@ import org.dom4j.Element;
  * @author Quew8
  */
 public class GLSLEffectParser extends GLSLElementStructure<GLSLEffectParser> {
-    private static final String 
-            IN_VAR = "IN_VARIABLE", 
-            OUT_VAR = "OUT_VARIABLE";
-    
     private String code;
     private GLSLVariableParser inVar;
     private GLSLVariableParser outVar;
     
-    public GLSLEffectParser() {
-        super(new String[]{CODE, IN_VAR, OUT_VAR}, new String[]{});
-    }
-    
     private GLSLEffect getEffect(GLSLElements elements) {
-        finalized();
         addTo(elements);
         return new GLSLEffect(
-                code, inVar.getVariable(), outVar.getVariable()
+                code, inVar.getVariable(), outVar != null ? outVar.getVariable() : null
         );
     }
     
@@ -51,10 +42,8 @@ public class GLSLEffectParser extends GLSLElementStructure<GLSLEffectParser> {
                 GLSLVariableParser variableParser = parseWith(element, new GLSLVariableParser());
                 if(variableParser.isInputVariable()) {
                     inVar = variableParser;
-                    hasRequiredElement(IN_VAR);
                 } else if(variableParser.isOutputVariable()) {
                     outVar = variableParser;
-                    hasRequiredElement(OUT_VAR);
                 } else if(variableParser.isGlobalVariable()) {
                     addGlobalVariable(variableParser);
                 }
@@ -77,7 +66,19 @@ public class GLSLEffectParser extends GLSLElementStructure<GLSLEffectParser> {
         return new GLSLEffectParser();
     }
     
-    public static GLSLEffect getEffect(GLSLElements elements, ArrayList<GLSLEffectParser> effects) {
+    protected GLSLVariableParser getInVar() {
+        return inVar;
+    }
+    
+    protected GLSLVariableParser getOutVar() {
+        return outVar;
+    }
+    
+    protected boolean isDeadEnd() {
+        return outVar == null;
+    }
+    
+    protected static GLSLEffect getEffect(GLSLElements elements, ArrayList<GLSLEffectParser> effects) {
         GLSLEffect effect = effects.get(0).getEffect(elements);
         for(int i = 1; i < effects.size(); i++) {
             effect = combine(effect, effects.get(i).getEffect(elements));
@@ -86,6 +87,9 @@ public class GLSLEffectParser extends GLSLElementStructure<GLSLEffectParser> {
     }
     
     private static GLSLEffect combine(GLSLEffect a, GLSLEffect b) {
+        if(a.outVar == null) {
+            throw new RuntimeException("Effect has no ouput variable.");
+        }
         String code = GLSLCodeGenUtils.getConstruction()
                 .add(a.outVar)
                 .addNewline(a.code, b.code.replaceAll(Pattern.quote(b.inVar.getName()), a.outVar.getName()))

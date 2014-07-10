@@ -17,10 +17,6 @@ public class GLSLStructParser extends GLSLParser<GLSLStructParser> {
     private String name;
     private final ArrayList<GLSLVariableParser> variables = new ArrayList<GLSLVariableParser>();
     
-    public GLSLStructParser() {
-        super(new String[]{}, new String[]{NAME});
-    }
-    
     @Override
     public HashMap<String, XMLAttributeParser> addAttributeParsers(HashMap<String, XMLAttributeParser> to) {
         to = super.addAttributeParsers(to);
@@ -62,7 +58,6 @@ public class GLSLStructParser extends GLSLParser<GLSLStructParser> {
     }
     
     public Struct getStruct() {
-        finalized();
         Variable[] vars = new Variable[variables.size()];
         for(int i = 0; i < vars.length; i++) {
             vars[i] = variables.get(i).getVariable();

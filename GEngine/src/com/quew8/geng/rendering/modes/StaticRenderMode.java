@@ -9,9 +9,13 @@ import java.nio.FloatBuffer;
  */
 public abstract class StaticRenderMode {
 
-    public void onPreRendering(VertexData vd) {};
+    public void onMadeCurrent() {}
+    
+    public void onMadeNonCurrent() {}
+    
+    public void onPreRendering(VertexData vd) {}
 
-    public void onPostRendering() {};
+    public void onPostRendering() {}
 
     public abstract void updateProjectionMatrix(FloatBuffer matrix);
 }

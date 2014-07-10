@@ -64,7 +64,7 @@ public class Generator<T extends Element, S extends Evaluator<T, S>> {
                 return obj;
             }
         }
-        return statement;
+        throw new RuntimeException("Generator statement \"" + statement + "\" not recognized as a replacable key or method invocation.");
     }
     
     public S getEvaluator() {

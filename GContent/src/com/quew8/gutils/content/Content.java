@@ -18,9 +18,13 @@ public class Content<T> {
     public void loadSources(SourceSheet sourceSheet) {
         ContentReader<T> reader = sourceSheet.getReader(clazz);
         for(Source s: sourceSheet.getSources()) {
+            T t = reader.read(s);
+            if(t == null) {
+                throw new RuntimeException("Loading Null Resource: " + s.getSource());
+            }
             content.put(
                     getId(sourceSheet.getIdClass(), s), 
-                    reader.read(s)
+                    t
                     );
         }
     }

@@ -5,6 +5,7 @@ import com.quew8.codegen.glsl.Parameter;
 import com.quew8.codegen.glsl.Type;
 import com.quew8.codegen.glsl.Variable;
 import com.quew8.geng.xmlparser.XMLAttributeParser;
+import com.quew8.geng.xmlparser.XMLParseException;
 import java.util.HashMap;
 import org.dom4j.Attribute;
 import org.dom4j.Element;
@@ -19,23 +20,16 @@ public class GLSLVariableParser extends GLSLParser<GLSLVariableParser> {
     private Type type;
     private String semantic;
     private Variable predefinedVariable = null;
-
-    public GLSLVariableParser() {
-        super(new String[]{}, new String[]{TYPE, NAME, SEMANTIC});
-    }
     
     @Override
     public void loadPredefined(Element element, String predefinedName) {
         predefinedVariable = Variable.getBuiltInVariable(predefinedName);
         mod = predefinedVariable.getModifier();
         type = predefinedVariable.getType();
-        hasRequiredAttribute(TYPE);
         name = predefinedVariable.getName();
-        hasRequiredAttribute(NAME);
     }
     
     public Parameter getParameter() {
-        finalized();
         if(predefinedVariable == null) {
             return new Parameter(type, name);
         } else {
@@ -44,7 +38,6 @@ public class GLSLVariableParser extends GLSLParser<GLSLVariableParser> {
     }
     
     public Variable getVariable() {
-        finalized();
         if(predefinedVariable == null) {
             return new Variable(mod, type, name);
         } else {
@@ -54,32 +47,31 @@ public class GLSLVariableParser extends GLSLParser<GLSLVariableParser> {
     
     private void ensureEditable() {
         if(predefinedVariable != null) {
-            throw new RuntimeException("Predefined variables cannot be edited");
+            throw new XMLParseException("Predefined variables cannot be modified");
         }
     }
     
     public String getSemantic() {
-        finalized();
         return semantic;
     }
     
+    public boolean compatible(GLSLVariableParser other) {
+        return type.getName().matches(other.type.getName());
+    }
+    
     public boolean isInputVariable() {
-        finalized();
         return semantic.equals("in_var");
     }
     
     public boolean isOutputVariable() {
-        finalized();
         return semantic.equals("out_var");
     }
     
     public boolean isGlobalVariable() {
-        finalized();
         return semantic.equals("global");
     }
 
     public boolean isMemberVariable() {
-        finalized();
         return semantic.equals("member");
     }
     

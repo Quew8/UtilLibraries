@@ -539,6 +539,7 @@ public class DebugBackend<T extends LoadedImage> extends PlatformBackend<T> {
 
 	@Override
 	public int glGetUniformLocation_P(int program, String name) {
+		DebugLogger.d("Backend Debug", "glGetUniformLocation_P() {program = " + program + ", name = " + name + "}");
 		int i = impl.glGetUniformLocation_P(program, name);
         GLException.checkGLError();
         return i;
@@ -789,72 +790,84 @@ public class DebugBackend<T extends LoadedImage> extends PlatformBackend<T> {
 
 	@Override
 	public void glUniform1f_P(int location, float v1) {
+		DebugLogger.d("Backend Debug", "glUniform1f_P() {location = " + location + ", v1 = " + v1 + "}");
 		impl.glUniform1f_P(location, v1);
         GLException.checkGLError();
 	}
 
 	@Override
 	public void glUniform1fv_P(int location, FloatBuffer value) {
+		DebugLogger.d("Backend Debug", "glUniform1fv_P() {location = " + location + ", value = " + toString(value) + "}");
 		impl.glUniform1fv_P(location, value);
         GLException.checkGLError();
 	}
 
 	@Override
 	public void glUniform1i_P(int location, int v1) {
+		DebugLogger.d("Backend Debug", "glUniform1i_P() {location = " + location + ", v1 = " + v1 + "}");
 		impl.glUniform1i_P(location, v1);
         GLException.checkGLError();
 	}
 
 	@Override
 	public void glUniform1iv_P(int location, IntBuffer value) {
+		DebugLogger.d("Backend Debug", "glUniform1iv_P() {location = " + location + ", value = " + toString(value) + "}");
 		impl.glUniform1iv_P(location, value);
         GLException.checkGLError();
 	}
 
 	@Override
 	public void glUniform2f_P(int location, float v1, float v2) {
+		DebugLogger.d("Backend Debug", "glUniform2f_P() {location = " + location + ", v1 = " + v1 +  ", v2 = " + v2 + "}");
 		impl.glUniform2f_P(location, v1, v2);
         GLException.checkGLError();
 	}
 
 	@Override
 	public void glUniform2fv_P(int location, FloatBuffer value) {
+		DebugLogger.d("Backend Debug", "glUniform2fv_P() {location = " + location + ", value = " + toString(value) + "}");
 		impl.glUniform2fv_P(location, value);
         GLException.checkGLError();
 	}
 
 	@Override
 	public void glUniform2i_P(int location, int v1, int v2) {
+		DebugLogger.d("Backend Debug", "glUniform2i_P() {location = " + location + ", v1 = " + v1 +  ", v2 = " + v2 + "}");
 		impl.glUniform2i_P(location, v1, v2);
         GLException.checkGLError();
 	}
 
 	@Override
 	public void glUniform2iv_P(int location, IntBuffer value) {
+		DebugLogger.d("Backend Debug", "glUniform2iv_P() {location = " + location + ", value = " + toString(value) + "}");
 		impl.glUniform2iv_P(location, value);
         GLException.checkGLError();
 	}
 
 	@Override
 	public void glUniform3f_P(int location, float v1, float v2, float v3) {
+		DebugLogger.d("Backend Debug", "glUniform3f_P() {location = " + location + ", v1 = " + v1 +  ", v2 = " + v2 + ", v3 = " + v3 + "}");
 		impl.glUniform3f_P(location, v1, v2, v3);
         GLException.checkGLError();
 	}
 
 	@Override
 	public void glUniform3fv_P(int location, FloatBuffer value) {
+		DebugLogger.d("Backend Debug", "glUniform3fv_P() {location = " + location + ", value = " + toString(value) + "}");
 		impl.glUniform3fv_P(location, value);
         GLException.checkGLError();
 	}
 
 	@Override
 	public void glUniform3i_P(int location, int v1, int v2, int v3) {
+		DebugLogger.d("Backend Debug", "glUniform3i_P() {location = " + location + ", v1 = " + v1 +  ", v2 = " + v2 + ", v3 = " + v3 + "}");
 		impl.glUniform3i_P(location, v1, v2, v3);
         GLException.checkGLError();
 	}
 
 	@Override
 	public void glUniform3iv_P(int location, IntBuffer value) {
+		DebugLogger.d("Backend Debug", "glUniform3iv_P() {location = " + location + ", value = " + toString(value) + "}");
 		impl.glUniform3iv_P(location, value);
         GLException.checkGLError();
 	}
@@ -863,24 +876,28 @@ public class DebugBackend<T extends LoadedImage> extends PlatformBackend<T> {
 	public void glUniform4f_P(int location, float v1, float v2, float v3,
 			float v4) {
         
+		DebugLogger.d("Backend Debug", "glUniform4f_P() {location = " + location + ", v1 = " + v1 +  ", v2 = " + v2 + ", v3 = " + v3 + ", v4 = " + v4 + "}");
 		impl.glUniform4f_P(location, v1, v2, v3, v4);
         GLException.checkGLError();
 	}
 
 	@Override
 	public void glUniform4fv_P(int location, FloatBuffer value) {
+		DebugLogger.d("Backend Debug", "glUniform4fv_P() {location = " + location + ", value = " + toString(value) + "}");
 		impl.glUniform4fv_P(location, value);
         GLException.checkGLError();
 	}
 
 	@Override
 	public void glUniform4i_P(int location, int v1, int v2, int v3, int v4) {
+		DebugLogger.d("Backend Debug", "glUniform4i_P() {location = " + location + ", v1 = " + v1 +  ", v2 = " + v2 + ", v3 = " + v3 + ", v4 = " + v4 + "}");
 		impl.glUniform4i_P(location, v1, v2, v3, v4);
         GLException.checkGLError();
 	}
 
 	@Override
 	public void glUniform4iv_P(int location, IntBuffer value) {
+		DebugLogger.d("Backend Debug", "glUniform4iv_P() {location = " + location + ", value = " + toString(value) + "}");
 		impl.glUniform4iv_P(location, value);
         GLException.checkGLError();
 	}
@@ -889,6 +906,7 @@ public class DebugBackend<T extends LoadedImage> extends PlatformBackend<T> {
 	public void glUniformMatrix2fv_P(int location, boolean transpose,
 			FloatBuffer value) {
         
+		DebugLogger.d("Backend Debug", "glUniformMatrix2fv_P() {location = " + location + ", transpose = " + transpose + ", value = " + toString(value) + "}");
 		impl.glUniformMatrix2fv_P(location, transpose, value);
         GLException.checkGLError();
 	}
@@ -897,6 +915,7 @@ public class DebugBackend<T extends LoadedImage> extends PlatformBackend<T> {
 	public void glUniformMatrix3fv_P(int location, boolean transpose,
 			FloatBuffer value) {
         
+		DebugLogger.d("Backend Debug", "glUniformMatrix3fv_P() {location = " + location + ", transpose = " + transpose + ", value = " + toString(value) + "}");
 		impl.glUniformMatrix3fv_P(location, transpose, value);
         GLException.checkGLError();
 	}
@@ -905,6 +924,7 @@ public class DebugBackend<T extends LoadedImage> extends PlatformBackend<T> {
 	public void glUniformMatrix4fv_P(int location, boolean transpose,
 			FloatBuffer value) {
         
+		DebugLogger.d("Backend Debug", "glUniformMatrix4fv_P() {location = " + location + ", transpose = " + transpose + ", value = " + toString(value) + "}");
 		impl.glUniformMatrix4fv_P(location, transpose, value);
         GLException.checkGLError();
 	}

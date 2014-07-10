@@ -21,10 +21,6 @@ public class GLSLShaderParser extends GLSLParser<GLSLShaderParser> {
     private String shaderType;
     private final ArrayList<GLSLPipelineParser> pipelines = new ArrayList<GLSLPipelineParser>();
     
-    public GLSLShaderParser() {
-        super(new String[]{}, new String[]{TYPE});
-    }
-    
     @Override
     public HashMap<String, XMLElementParser> addElementParsers(HashMap<String, XMLElementParser> to) {
         to = super.addElementParsers(to);
@@ -50,7 +46,6 @@ public class GLSLShaderParser extends GLSLParser<GLSLShaderParser> {
     }
     
     public String getShaderType() {
-        finalized();
         return shaderType;
     }
     

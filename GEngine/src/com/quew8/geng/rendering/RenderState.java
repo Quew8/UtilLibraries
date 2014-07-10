@@ -32,13 +32,12 @@ public class RenderState {
     }
     
     public static void setRenderMode(StaticRenderMode renderMode) {
-        RenderState.currentRenderMode = renderMode;
+        setCurrentStaticRenderMode(renderMode);
         currentRenderMode.updateProjectionMatrix(projectionMatrixFB);
     }
 
     public static void setRenderMode(DynamicRenderMode<?> renderMode) {
-        RenderState.currentDynamicRenderMode = renderMode;
-        RenderState.currentRenderMode = renderMode;
+        setCurrentDynamicRenderMode(renderMode);
         currentRenderMode.updateProjectionMatrix(projectionMatrixFB);
     }
     
@@ -66,6 +65,19 @@ public class RenderState {
     public static void setProjectionMatrix(Matrix matrix) {
         setNextProjectionMatrix(matrix);
         currentRenderMode.updateProjectionMatrix(projectionMatrixFB);
+    }
+    
+    private static void setCurrentStaticRenderMode(StaticRenderMode renderMode) {
+        RenderState.currentRenderMode.onMadeNonCurrent();
+        RenderState.currentRenderMode = renderMode;
+        RenderState.currentRenderMode.onMadeCurrent();
+    }
+    
+    private static void setCurrentDynamicRenderMode(DynamicRenderMode<?> renderMode) {
+        RenderState.currentRenderMode.onMadeNonCurrent();
+        RenderState.currentRenderMode = renderMode;
+        RenderState.currentDynamicRenderMode = renderMode;
+        RenderState.currentRenderMode.onMadeCurrent();
     }
     
     private static class StaticDoNothingRenderMode extends StaticRenderMode {

@@ -1,6 +1,5 @@
 package com.quew8.geng.xmlparser;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import org.dom4j.Attribute;
@@ -15,12 +14,10 @@ public abstract class XMLAttributeParser {
     public abstract void parse(Attribute attribute, Element parent);
     
     public static void parseAttributes(List<Attribute> attributes, Element parent, 
-            HashMap<String, XMLAttributeParser> parsers, 
-            ArrayList<String> requiredAttributes, boolean matchAll) {
+            HashMap<String, XMLAttributeParser> parsers, boolean matchAll) {
         
         for(Attribute attribute : attributes) {
             XMLAttributeParser parser = parsers.get(attribute.getName());
-            requiredAttributes.remove(attribute.getName());
             if(parser != null) {
                 parser.parse(attribute, parent);
             } else if(matchAll) {

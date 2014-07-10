@@ -34,14 +34,6 @@ public abstract class GLSLParser<T extends GLSLParser<T>> extends XMLParser {
             PREDEFINED = "predefined",
             RETURN_TYPE = "returnType";
     
-    public GLSLParser(String[] requiredElements, String[] requiredAttributes) {
-        super(requiredElements, requiredAttributes, true, true);
-    }
-    
-    public GLSLParser() {
-        
-    }
-    
     @Override
     public void parse(Element element) {
         super.parse(element);
@@ -58,8 +50,6 @@ public abstract class GLSLParser<T extends GLSLParser<T>> extends XMLParser {
             @Override
             public void parse(Attribute attribute, Element parent) {
                 T srcParser = GLSLParser.this.parseWith(attribute.getValue(), getInstance());
-                GLSLParser.this.setRequiredElements(srcParser.getMissingElements());
-                GLSLParser.this.setRequiredAttributes(srcParser.getMissingAttributes());
                 GLSLParser.this.setSource(srcParser);
             }
         });

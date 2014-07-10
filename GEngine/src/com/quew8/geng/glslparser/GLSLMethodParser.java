@@ -21,13 +21,8 @@ public class GLSLMethodParser extends GLSLElementStructure<GLSLMethodParser> {
     private String code;
     private Type returnType = null;
     private final ArrayList<GLSLVariableParser> params = new ArrayList<GLSLVariableParser>();
-
-    public GLSLMethodParser() {
-        super(new String[]{CODE}, new String[]{NAME, RETURN_TYPE});
-    }
     
     public Method getMethod(GLSLElements elements) {
-        finalized();
         addTo(elements);
         Parameter[] parameters = new Parameter[params.size()];
         for(int i = 0; i < params.size(); i++) {

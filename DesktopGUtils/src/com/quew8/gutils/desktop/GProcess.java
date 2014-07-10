@@ -39,19 +39,19 @@ public abstract class GProcess {
     protected abstract void render();
     protected abstract void deinit();
 
-    protected void toggleFullscreen() {
+    public void toggleFullscreen() {
         window.toggleFullscreen();
     }
 
-    protected boolean isFullscreen() {
+    public boolean isFullscreen() {
         return window.isFullscreen();
     }
     
-    protected Viewport getViewport() {
+    public Viewport getViewport() {
         return window.getViewport();
     }
     
-    protected void requestClose() {
+    public void requestClose() {
         window.requestClose();
     }
 }
