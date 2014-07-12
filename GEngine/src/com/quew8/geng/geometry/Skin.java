@@ -7,7 +7,7 @@ package com.quew8.geng.geometry;
 public class Skin extends GeometricObject<Skin, WeightedVertex> {
     private final Skeleton skeleton;
     
-    public Skin(WeightedVertex[] vertices, int[] indices, Skeleton skeleton, TextureArea texture) {
+    public Skin(WeightedVertex[] vertices, int[] indices, Skeleton skeleton, Image texture) {
         super(vertices, indices, texture);
         this.skeleton = skeleton;
     }

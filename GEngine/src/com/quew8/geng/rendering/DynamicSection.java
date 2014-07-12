@@ -1,7 +1,7 @@
 package com.quew8.geng.rendering;
 
 import com.quew8.geng.rendering.modes.DynamicRenderMode;
-import com.quew8.geng.geometry.Image;
+import com.quew8.geng.geometry.Texture;
 import com.quew8.gutils.opengl.VertexData;
 
 /**
@@ -10,7 +10,7 @@ import com.quew8.gutils.opengl.VertexData;
  */
 class DynamicSection<T> extends AbstractSection<DynamicHandleList<T>.DynamicHandle, DynamicRenderMode<T>> {
     
-    public DynamicSection(DynamicRenderMode<T> instanceRenderMode, Image image, DynamicHandleList<T>.DynamicHandle[] handles) {
+    public DynamicSection(DynamicRenderMode<T> instanceRenderMode, Texture image, DynamicHandleList<T>.DynamicHandle[] handles) {
         super(instanceRenderMode, image, handles);
     }
 
@@ -18,7 +18,7 @@ class DynamicSection<T> extends AbstractSection<DynamicHandleList<T>.DynamicHand
     public void sectionDraw(VertexData vd) {
         instanceRenderMode.onPreRendering(vd);
         RenderState.setRenderMode(instanceRenderMode);
-        instanceRenderMode.bindGeneralTexture(image);
+        instanceRenderMode.bindGeneralTexture(tex);
         for(int i = 0; i < handles.length; i++) {
             while(handles[i].hasNext()) {
                 if(handles[i].shouldDrawNext()) {

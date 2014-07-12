@@ -2,7 +2,7 @@ package com.quew8.geng3d.collada.parser;
 
 import com.quew8.geng3d.collada.DataFactory;
 import com.quew8.geng3d.collada.Node;
-import com.quew8.geng.geometry.TextureArea;
+import com.quew8.geng.geometry.Image;
 import com.quew8.geng.xmlparser.XMLAttributeParser;
 import com.quew8.geng.xmlparser.XMLElementParser;
 import com.quew8.geng.xmlparser.XMLParser;
@@ -55,7 +55,7 @@ class ControllerParser extends XMLParser {
         return name;
     }
     
-    public <T> T getSkin(Node<Void, Void>[] joints, DataFactory<?, ?, ?, T> factory, TextureArea texture) {
+    public <T> T getSkin(Node<Void, Void>[] joints, DataFactory<?, ?, ?, T> factory, Image texture) {
         return skin.getSkin(joints, factory, texture);
     } 
 }

@@ -12,7 +12,7 @@ import com.quew8.gutils.opengl.Viewport;
  * 
  * @author Quew8
  */
-public class DynamicTexture extends BasicImage {
+public class DynamicTexture extends BasicTexture {
     private final Framebuffer frameBuffer;
     
     public DynamicTexture(int width, int height) {

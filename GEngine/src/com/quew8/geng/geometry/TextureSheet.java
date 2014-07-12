@@ -9,25 +9,25 @@ import java.io.InputStream;
  * 
  * @author Quew8
  */
-public class ImageSheet implements Image {
+public class TextureSheet implements Texture {
     private final TextureSheetDetails textureDetails;
 	
-    public ImageSheet(TextureSheetDetails textureDetails) {
+    public TextureSheet(TextureSheetDetails textureDetails) {
         this.textureDetails = textureDetails;
     }
 	
-    public ImageSheet(InputStream[] imgIns, int imgWidth, 
+    public TextureSheet(InputStream[] imgIns, int imgWidth, 
             int imgHeight, int borderSize, TextureParams params, 
             boolean hasAlpha) {
         
         this(TextureUtils.createTextureSheet(TextureUtils.getImageLoaders(imgIns, true), -1, params, imgWidth, imgHeight, borderSize));
     }
 
-    public ImageSheet(InputStream[] imgIns, int borderSize, TextureParams params) {
+    public TextureSheet(InputStream[] imgIns, int borderSize, TextureParams params) {
         this(TextureUtils.createTextureSheet(TextureUtils.getImageLoaders(imgIns, true), -1, params, borderSize));
     }
 	
-    public ImageSheet(InputStream imgIn, int texWidth, int texHeight,
+    public TextureSheet(InputStream imgIn, int texWidth, int texHeight,
             int imgWidth, int imgHeight, int gridWidth, int gridHeight, 
             int borderSize, TextureParams params) {
 		
@@ -37,7 +37,7 @@ public class ImageSheet implements Image {
                 ));
     }
 	
-    public ImageSheet(InputStream imgIn, int imgWidth, int imgHeight, 
+    public TextureSheet(InputStream imgIn, int imgWidth, int imgHeight, 
             int gridWidth, int gridHeight, int borderSize, TextureParams params) {
         
         this(TextureUtils.createTextureSheet(
@@ -52,18 +52,18 @@ public class ImageSheet implements Image {
     }
 
     @Override
-    public Image getImage() {
+    public Texture getTexture() {
         return this;
     }
     
-    public TextureArea getArea(int xPos, int yPos, int nw, int nh) {
+    public Image getArea(int xPos, int yPos, int nw, int nh) {
         int sx = textureDetails.imgWidth + textureDetails.borderSize;
         int sy = textureDetails.imgHeight + textureDetails.borderSize;
         int xPosP = xPos * sx;
         int yPosP = yPos * sy;
         int widthP = ( nw * sx ) - textureDetails.borderSize;
         int heightP = ( nh * sy ) - textureDetails.borderSize;
-        return new TextureArea(
+        return new Image(
                 (float)xPosP / textureDetails.texWidth,
                 (float)yPosP / textureDetails.texHeight,
                 ( (float)xPosP + widthP ) / textureDetails.texWidth,
@@ -71,18 +71,18 @@ public class ImageSheet implements Image {
                 );
     }
 
-    public TextureArea getArea(int xPos, int yPos) {
+    public Image getArea(int xPos, int yPos) {
         return getArea(xPos, yPos, 1, 1);
     }
 
-    public TextureArea getArea(int index) {
+    public Image getArea(int index) {
         int[] pos = TextureUtils.getPositionInSheet(index, textureDetails.gridWidth, textureDetails.gridHeight);
         return getArea(pos[0], pos[1]);
     }
 
     @Override
-    public TextureArea getWholeArea() {
-        return new TextureArea(0, 0, 
+    public Image getWholeArea() {
+        return new Image(0, 0, 
                 textureDetails.usedWidth/textureDetails.texWidth,
                 textureDetails.usedHeight/textureDetails.texHeight);
     }

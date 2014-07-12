@@ -1,6 +1,6 @@
 package com.quew8.geng3d.collada;
 
-import com.quew8.geng.geometry.TextureArea;
+import com.quew8.geng.geometry.Image;
 import com.quew8.gmath.Matrix;
 import com.quew8.gutils.ArrayUtils;
 import java.util.ArrayList;
@@ -38,7 +38,7 @@ public abstract class DataFactory<T, K, S, U> {
         };
     }
     
-    public final S constructMesh(DataInput dataIn, TextureArea textureArea) {
+    public final S constructMesh(DataInput dataIn, Image textureArea) {
         int[] vCount = dataIn.getVCount();
         int nVertices = ArrayUtils.sumArray(vCount);
         ArrayList<T> data = constructVertexData(nVertices, dataIn);
@@ -50,7 +50,7 @@ public abstract class DataFactory<T, K, S, U> {
         return constructMesh(data, vCount, indices, textureArea);
     }
     
-    public final U constructSkin(DataInput vertexIn, DataInput weightIn, ColladaSkeleton colladaSkeleton, TextureArea textureArea) {
+    public final U constructSkin(DataInput vertexIn, DataInput weightIn, ColladaSkeleton colladaSkeleton, Image textureArea) {
         int[] vCount = vertexIn.getVCount();
         int[] wVCount = weightIn.getVCount();
         int nVertices = ArrayUtils.sumArray(vCount);
@@ -95,12 +95,12 @@ public abstract class DataFactory<T, K, S, U> {
             int nWeights, DataInput weightIn, int[] wVCount, ColladaSkeleton skeleton);
     
     protected abstract S constructMesh(ArrayList<T> data, int[] vCount, int[] indices, 
-            TextureArea textureArea);
+            Image textureArea);
     
     protected abstract S transformMesh(S old, Matrix transform);
     
     protected abstract U constructSkin(ArrayList<K> data, int[] vCount, int[] indices, 
-            TextureArea textureArea, ColladaSkeleton skeleton);
+            Image textureArea, ColladaSkeleton skeleton);
     
     protected abstract U transformSkin(U old, Matrix transform);
 }

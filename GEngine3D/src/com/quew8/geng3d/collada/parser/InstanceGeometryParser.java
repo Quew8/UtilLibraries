@@ -2,7 +2,7 @@ package com.quew8.geng3d.collada.parser;
 
 import com.quew8.geng3d.collada.DataFactory;
 import com.quew8.geng3d.collada.InstanceGeometry;
-import com.quew8.geng.geometry.TextureArea;
+import com.quew8.geng.geometry.Image;
 import com.quew8.geng.xmlparser.XMLAttributeParser;
 import com.quew8.geng.xmlparser.XMLElementParser;
 import com.quew8.geng.xmlparser.XMLParser;
@@ -51,7 +51,7 @@ class InstanceGeometryParser extends XMLParser {
         return to;
     }
     
-    public <T> InstanceGeometry<T> getGeometry(DataFactory<?, ?, T, ?> factory, TextureArea texture) {
+    public <T> InstanceGeometry<T> getGeometry(DataFactory<?, ?, T, ?> factory, Image texture) {
         return new InstanceGeometry<T>(geometry.getName(), geometry.getGeometry(factory, texture));
     }
 }

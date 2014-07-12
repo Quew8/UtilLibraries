@@ -1,6 +1,6 @@
 package com.quew8.geng.rendering.modes;
 
-import com.quew8.geng.geometry.Image;
+import com.quew8.geng.geometry.Texture;
 import java.nio.FloatBuffer;
 
 /**
@@ -14,7 +14,7 @@ public abstract class DynamicRenderMode<T> extends StaticRenderMode {
 
     public void onPostDraw(T data) {};
     
-    public void bindGeneralTexture(Image image) {
+    public void bindGeneralTexture(Texture image) {
         image.bind();
     }
     

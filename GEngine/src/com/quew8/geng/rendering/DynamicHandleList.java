@@ -1,6 +1,6 @@
 package com.quew8.geng.rendering;
 
-import com.quew8.geng.geometry.Image;
+import com.quew8.geng.geometry.Texture;
 import com.quew8.gmath.Matrix;
 import java.util.ArrayList;
 
@@ -40,7 +40,7 @@ public class DynamicHandleList<T> {
         return getCurrent().getDataForDraw();
     }
     
-    public Image getNextImage(Image defaultImage) {
+    public Texture getNextImage(Texture defaultImage) {
         return getCurrent().getImageForDraw(defaultImage);
     }
 

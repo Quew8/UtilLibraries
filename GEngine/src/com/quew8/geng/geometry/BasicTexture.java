@@ -10,18 +10,18 @@ import java.io.InputStream;
  * 
  * @author Quew8
  */
-public class BasicImage implements Image {
+public class BasicTexture implements Texture {
     protected final TextureDetails textureDetails;
 
-    public BasicImage(TextureDetails details) {
+    public BasicTexture(TextureDetails details) {
         this.textureDetails = details;
     }
 
-    public BasicImage(InputStream imgIn, int imgWidth, int imgHeight, TextureParams params) {
+    public BasicTexture(InputStream imgIn, int imgWidth, int imgHeight, TextureParams params) {
         this(TextureUtils.createTexture(TextureUtils.getImageLoader(imgIn, true), -1, params, imgWidth, imgHeight));
     }
 
-    public BasicImage(InputStream imgIn, TextureParams params) {
+    public BasicTexture(InputStream imgIn, TextureParams params) {
         this(TextureUtils.createTexture(TextureUtils.getImageLoader(imgIn, true), -1, params));
     }
 
@@ -31,13 +31,13 @@ public class BasicImage implements Image {
     }
 
     @Override
-    public Image getImage() {
+    public Texture getTexture() {
         return this;
     }
     
     @Override
-    public TextureArea getWholeArea() {
-        return new TextureArea(0, 0, 
+    public Image getWholeArea() {
+        return new Image(0, 0, 
                 textureDetails.usedWidth/textureDetails.texWidth, 
                 textureDetails.usedHeight/textureDetails.texHeight);
     }

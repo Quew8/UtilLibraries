@@ -1,6 +1,6 @@
 package com.quew8.geng.rendering;
 
-import com.quew8.geng.geometry.Image;
+import com.quew8.geng.geometry.Texture;
 import com.quew8.gutils.opengl.VertexData;
 
 /**
@@ -9,28 +9,28 @@ import com.quew8.gutils.opengl.VertexData;
  */
 abstract class AbstractSection<T, S> {
     protected final S instanceRenderMode;
-    protected Image image;
+    protected Texture tex;
     protected final T[] handles;
     protected MeshGroup<?> outer;
 
-    public AbstractSection(S instanceRenderMode, Image image, T[] handles) {
+    public AbstractSection(S instanceRenderMode, Texture tex, T[] handles) {
         this.instanceRenderMode = instanceRenderMode;
-        this.image = image;
+        this.tex = tex;
         this.handles = handles;
     }
 
     protected void sectionBind() {
-        image.bind();
+        tex.bind();
     }
 
     protected abstract void sectionDraw(VertexData vd);
 
     protected void sectionDispose() {
-        image.dispose();
+        tex.dispose();
     }
 
-    public void setImage(Image image) {
-        this.image = image;
+    public void setTexture(Texture tex) {
+        this.tex = tex;
     }
     
     protected final void setOuter(MeshGroup<?> outer) {

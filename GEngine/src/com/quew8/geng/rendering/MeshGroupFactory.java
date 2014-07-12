@@ -2,10 +2,10 @@ package com.quew8.geng.rendering;
 
 import com.quew8.geng.rendering.modes.DynamicRenderMode;
 import com.quew8.geng.rendering.modes.GeometricDataInterpreter;
-import com.quew8.geng.rendering.modes.DynamicImageRenderMode;
+import com.quew8.geng.rendering.modes.DynamicTextureRenderMode;
 import com.quew8.geng.rendering.modes.StaticRenderMode;
-import com.quew8.geng.rendering.modes.ImageFetchable;
-import com.quew8.geng.geometry.Image;
+import com.quew8.geng.rendering.modes.TextureFetchable;
+import com.quew8.geng.geometry.Texture;
 import com.quew8.gmath.Vector;
 import com.quew8.gutils.ArrayUtils;
 import java.lang.reflect.Array;
@@ -51,27 +51,27 @@ public class MeshGroupFactory<T> {
         return new MeshGroup<T>(ArrayUtils.concatVariableLengthArrays(ta), interpreter, sections);
     }
     
-    public SectionFactory<Void> createStaticSection(StaticRenderMode instanceMode, Image image) {
+    public SectionFactory<Void> createStaticSection(StaticRenderMode instanceMode, Texture image) {
         StaticSectionFactory sf = new StaticSectionFactory(image, instanceMode);
         sectionFactories.add(sf);
         return sf;
     }
     
-    public <S> MeshGroupFactory<T>.SectionFactory<S> createDynamicSection(DynamicRenderMode<S> instanceMode, Image image) {
+    public <S> MeshGroupFactory<T>.SectionFactory<S> createDynamicSection(DynamicRenderMode<S> instanceMode, Texture image) {
         SectionFactory<S> sf = new DynamicSectionFactory<S>(image, instanceMode);
         sectionFactories.add(sf);
         return sf;
     }
     
-    public <S extends ImageFetchable> MeshGroupFactory<T>.SectionFactory<S> createDynamicImageSection(DynamicRenderMode<S> instanceMode) {
-        return createDynamicSection(new DynamicImageRenderMode<S>(instanceMode), null);
+    public <S extends TextureFetchable> MeshGroupFactory<T>.SectionFactory<S> createDynamicImageSection(DynamicRenderMode<S> instanceMode) {
+        return createDynamicSection(new DynamicTextureRenderMode<S>(instanceMode), null);
     }
 
     public abstract class SectionFactory<S> {
-        protected final Image image;
+        protected final Texture tex;
         
-        public SectionFactory(Image image) {
-            this.image = image;
+        public SectionFactory(Texture tex) {
+            this.tex = tex;
         }
         
         /**
@@ -80,6 +80,7 @@ public class MeshGroupFactory<T> {
          * @param ms
          * @return 
          */
+        @SuppressWarnings("unchecked")
         public Vector[] add(StaticHandleList shl, T... ms) {
             throw new IllegalStateException("Adding Static Handles to Non Static Section");
         }
@@ -90,14 +91,15 @@ public class MeshGroupFactory<T> {
          * @param ms
          * @return 
          */
+        @SuppressWarnings("unchecked")
         public Vector[] addDynamic(DynamicHandleList<? extends S> dhl, T... ms) {
             throw new IllegalStateException("Adding Dynamic Handles to Non Dynamic Section");
         }
         
         abstract AbstractSection<?, ?> contructSection();
         
-        public Image getImage() {
-            return image;
+        public Texture getTexture() {
+            return tex;
         }
     }
     
@@ -105,12 +107,13 @@ public class MeshGroupFactory<T> {
         private final StaticRenderMode staticInstanceMode;
         private final ArrayList<StaticHandleList.StaticHandle> staticHandles = new ArrayList<StaticHandleList.StaticHandle>();
 
-        public StaticSectionFactory(Image image, StaticRenderMode staticInstanceMode) {
+        public StaticSectionFactory(Texture image, StaticRenderMode staticInstanceMode) {
             super(image);
             this.staticInstanceMode = staticInstanceMode;
         }
         
         @Override
+        @SuppressWarnings("unchecked")
         public Vector[] add(StaticHandleList shl, T... ms) {
             if (canAddStatics) {
                 int start = staticMeshes.size();
@@ -125,7 +128,7 @@ public class MeshGroupFactory<T> {
         
         @Override
         AbstractSection<?, ?> contructSection() {
-            return new StaticSection(staticInstanceMode, image, staticHandles.toArray(new StaticHandleList.StaticHandle[staticHandles.size()]));
+            return new StaticSection(staticInstanceMode, tex, staticHandles.toArray(new StaticHandleList.StaticHandle[staticHandles.size()]));
         }
     }
     
@@ -133,12 +136,13 @@ public class MeshGroupFactory<T> {
         private final DynamicRenderMode<S> instanceMode;
         private final ArrayList<DynamicHandleList<? extends S>.DynamicHandle> dynamicHandles = new ArrayList<DynamicHandleList<? extends S>.DynamicHandle>();
 
-        public DynamicSectionFactory(Image image, DynamicRenderMode<S> instanceMode) {
+        public DynamicSectionFactory(Texture image, DynamicRenderMode<S> instanceMode) {
             super(image);
             this.instanceMode = instanceMode;
         }
         
         @Override
+        @SuppressWarnings("unchecked")
         public Vector[] addDynamic(DynamicHandleList<? extends S> dhl, T... ms) {
             canAddStatics = false;
             int start = dynamicMeshes.size() + staticMeshes.size();
@@ -149,9 +153,9 @@ public class MeshGroupFactory<T> {
         }
         
         @Override
-        @SuppressWarnings (value="unchecked")
+        @SuppressWarnings("unchecked")
         AbstractSection<?, ?> contructSection() {
-            return new DynamicSection<S>(instanceMode, image, 
+            return new DynamicSection<S>(instanceMode, tex, 
                     dynamicHandles.toArray(
                     (DynamicHandleList<S>.DynamicHandle[])
                     Array.newInstance(DynamicHandleList.DynamicHandle.class, dynamicHandles.size())));

@@ -1,4 +1,4 @@
-*/nbproject/
-*/build.xml
-/*/dist/
-/*/build/
+**/nbproject/
+**/build.xml
+**/dist/**
+**/build/**

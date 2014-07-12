@@ -1,6 +1,6 @@
 package com.quew8.geng.rendering;
 
-import com.quew8.geng.geometry.Image;
+import com.quew8.geng.geometry.Texture;
 import com.quew8.gmath.Matrix;
 
 /**
@@ -37,7 +37,7 @@ public class DynamicHandleInstance<T> implements IDynamicHandle<T> {
     }
     
     @Override
-    public Image getImageForDraw(Image img) {
+    public Texture getImageForDraw(Texture img) {
         return img;
     }
     

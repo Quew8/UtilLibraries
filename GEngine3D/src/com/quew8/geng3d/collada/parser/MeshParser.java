@@ -2,7 +2,7 @@ package com.quew8.geng3d.collada.parser;
 
 import com.quew8.geng3d.collada.DataFactory;
 import com.quew8.geng3d.collada.DataInput;
-import com.quew8.geng.geometry.TextureArea;
+import com.quew8.geng.geometry.Image;
 import com.quew8.geng.xmlparser.XMLElementParser;
 import com.quew8.geng.xmlparser.XMLParser;
 import java.util.HashMap;
@@ -40,7 +40,7 @@ class MeshParser extends XMLParser{
         return polylistParser;
     }
     
-    public <T> T getGeometry(DataFactory<?, ?, T, ?> factory, TextureArea texture) {
+    public <T> T getGeometry(DataFactory<?, ?, T, ?> factory, Image texture) {
         return polylistParser.getGeometry(factory, texture);
     }
 }

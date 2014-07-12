@@ -21,7 +21,7 @@ public class ObjParser implements ObjParserConstants {
         }
     }
 
-    public Mesh[] getMesh(TextureArea textureArea) {
+    public Mesh[] getMesh(Image textureArea) {
         Mesh[] meshes = new Mesh[facess.size()];
         for(int i = 0; i < meshes.length; i++) {
             meshes[i] = new Mesh(facess.get(i), textureArea);

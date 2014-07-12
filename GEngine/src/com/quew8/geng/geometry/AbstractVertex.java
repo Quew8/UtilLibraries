@@ -34,7 +34,7 @@ public abstract class AbstractVertex<T extends AbstractVertex<T>> {
         return new float[]{data[6], data[7]};
     }
 
-    public void transformTextureCoords(TextureArea texture) {
+    public void transformTextureCoords(Image texture) {
         texture.transformCoords(data, 6);
     }
 

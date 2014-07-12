@@ -3,7 +3,7 @@ package com.quew8.geng3d.collada.parser;
 import com.quew8.geng3d.collada.DataFactory;
 import com.quew8.geng3d.collada.InstanceVisualScene;
 import com.quew8.geng3d.collada.Node;
-import com.quew8.geng.geometry.TextureArea;
+import com.quew8.geng.geometry.Image;
 import com.quew8.geng.xmlparser.XMLAttributeParser;
 import com.quew8.geng.xmlparser.XMLElementParser;
 import com.quew8.geng.xmlparser.XMLParser;
@@ -54,7 +54,7 @@ class VisualSceneParser extends XMLParser {
         return to;
     }
     
-    public <T, S> InstanceVisualScene<T, S> getVisualScene(DataFactory<?, ?, T, S> factory, TextureArea texture) {
+    public <T, S> InstanceVisualScene<T, S> getVisualScene(DataFactory<?, ?, T, S> factory, Image texture) {
         @SuppressWarnings("unchecked")
         Node<T, S>[] children = getNodeArray(nodes.size());
         for(int i = 0; i < children.length; i++) {

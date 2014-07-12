@@ -13,7 +13,7 @@ public abstract class GeometricObject<T extends GeometricObject<T, S>, S extends
     private final S[] vertices;
     private final int[] indices;
     
-    public GeometricObject(S[] vertices, int[] indices, TextureArea texture) {
+    public GeometricObject(S[] vertices, int[] indices, Image texture) {
         for(int i = 0; i < vertices.length; i++) {
             vertices[i].transformTextureCoords(texture);
         }
@@ -22,7 +22,7 @@ public abstract class GeometricObject<T extends GeometricObject<T, S>, S extends
     }
     
     protected GeometricObject(S[] vertices, int[] indices) {
-        this(vertices, indices, new TextureArea(0, 0, 1, 1));
+        this(vertices, indices, new Image(0, 0, 1, 1));
     }
 
     public S[] getVertices() {

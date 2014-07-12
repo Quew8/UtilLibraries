@@ -1,6 +1,6 @@
 package com.quew8.geng2d.rendering.modes;
 
-import com.quew8.geng.geometry.TextureArea;
+import com.quew8.geng.geometry.Image;
 import java.nio.ByteBuffer;
 
 /**
@@ -20,7 +20,7 @@ public class GeneralSpriteDataFactory implements SpriteDataFactory {
     }
     
     @Override
-    public void addData(ByteBuffer to, TextureArea texture, float x, float y, float width, float height) {
+    public void addData(ByteBuffer to, Image texture, float x, float y, float width, float height) {
         float[] uv1 = texture.transformCoords(0, 0);
         float[] uv2 = texture.transformCoords(1, 1);
         to.putFloat(x);

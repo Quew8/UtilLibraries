@@ -1,7 +1,7 @@
 package com.quew8.geng2d.rendering;
 
+import com.quew8.geng.geometry.Texture;
 import com.quew8.geng.geometry.Image;
-import com.quew8.geng.geometry.TextureArea;
 import com.quew8.geng.rendering.RenderState;
 import com.quew8.geng.rendering.modes.StaticRenderMode;
 import com.quew8.geng2d.rendering.modes.GeneralSpriteDataFactory;
@@ -18,16 +18,16 @@ import com.quew8.gutils.opengl.VertexBuffer;
  */
 public class SpriteBatcher {
     private final int mode;
-    private final Image image;
+    private final Texture tex;
     private final StaticRenderMode renderMode;
     private final SpriteDataFactory dataFactory;
     private final VertexArray vertexArray;
     private final VertexBuffer ibo;
     private int n = 0;
     
-    public SpriteBatcher(int mode, Image image, StaticRenderMode renderMode, SpriteDataFactory dataFactory, int size) {
+    public SpriteBatcher(int mode, Texture tex, StaticRenderMode renderMode, SpriteDataFactory dataFactory, int size) {
         this.mode = mode;
-        this.image = image;
+        this.tex = tex;
         this.renderMode = renderMode;
         this.dataFactory = dataFactory;
         this.vertexArray = new VertexArray(BufferUtils.createByteBuffer(size));
@@ -47,21 +47,21 @@ public class SpriteBatcher {
         );
     }
     
-    public SpriteBatcher(Image image, StaticRenderMode renderMode, SpriteDataFactory dataFactory, int size) {
+    public SpriteBatcher(Texture image, StaticRenderMode renderMode, SpriteDataFactory dataFactory, int size) {
         this(OpenGL.GL_TRIANGLES, image, renderMode, dataFactory, size);
     }
     
-    public SpriteBatcher(Image image, StaticRenderMode renderMode, int size) {
+    public SpriteBatcher(Texture image, StaticRenderMode renderMode, int size) {
         this(image, renderMode, GeneralSpriteDataFactory.INSTANCE, size);
     }
     
     public void begin() {
-        image.bind();
+        tex.bind();
         ibo.bind();
         RenderState.setRenderMode(renderMode);
     }
     
-    public void draw(TextureArea texture, float x, float y, float width, float height) {
+    public void draw(Image texture, float x, float y, float width, float height) {
         if(vertexArray.getBuffer().limit() - dataFactory.getBytesPerSprite() < vertexArray.getBuffer().position()) {
             flush();
         }
@@ -84,7 +84,7 @@ public class SpriteBatcher {
     }
     
     public void dispose() {
-        image.dispose();
+        tex.dispose();
         vertexArray.delete();
         ibo.delete();
     }

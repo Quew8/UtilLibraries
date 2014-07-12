@@ -4,7 +4,7 @@ import com.quew8.geng3d.collada.DataFactory;
 import com.quew8.geng3d.collada.InstanceController;
 import com.quew8.geng3d.collada.InstanceGeometry;
 import com.quew8.geng3d.collada.Node;
-import com.quew8.geng.geometry.TextureArea;
+import com.quew8.geng.geometry.Image;
 import com.quew8.geng.xmlparser.XMLAttributeParser;
 import com.quew8.geng.xmlparser.XMLElementParser;
 import com.quew8.geng.xmlparser.XMLParser;
@@ -178,7 +178,7 @@ class NodeParser extends XMLParser {
     }
     
     @SuppressWarnings("unchecked")
-    public <T, S> Node<T, S> getNode(DataFactory<?, ?, T, S> factory, TextureArea texture) {
+    public <T, S> Node<T, S> getNode(DataFactory<?, ?, T, S> factory, Image texture) {
         Node<T, S>[] children = getArray(nodes.size());
         for(int i = 0; i < children.length; i++) {
             children[i] = nodes.get(i).getNode(factory, texture);

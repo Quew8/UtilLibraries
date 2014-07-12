@@ -12,7 +12,7 @@ import com.quew8.gmath.Vector;
  */
 public class Mesh extends GeometricObject<Mesh, Vertex> {
     
-    public Mesh(Vertex[] vertices, int[] indices, TextureArea texture) {
+    public Mesh(Vertex[] vertices, int[] indices, Image texture) {
         super(vertices, indices, texture);
     }
     
@@ -20,7 +20,7 @@ public class Mesh extends GeometricObject<Mesh, Vertex> {
         super(vertices, indices);
     }
 
-    public Mesh(Vertex[] vertices, TextureArea texture) {
+    public Mesh(Vertex[] vertices, Image texture) {
         this(vertices, createPolygonIndices(vertices.length), texture);
     }
 
@@ -41,9 +41,9 @@ public class Mesh extends GeometricObject<Mesh, Vertex> {
     
     public static Mesh[] createCuboid(float cx, float cy, float cz, 
             float sx, float sy, float sz, 
-            TextureArea front, TextureArea back, 
-            TextureArea top, TextureArea bottom, 
-            TextureArea left, TextureArea right) {
+            Image front, Image back, 
+            Image top, Image bottom, 
+            Image left, Image right) {
         
         float hsx = sx / 2, hsy = sy / 2, hsz = sz / 2;
         return new Mesh[] {
@@ -56,19 +56,19 @@ public class Mesh extends GeometricObject<Mesh, Vertex> {
         };
     }
     
-    public static Mesh[] createCuboid(float cx, float cy, float cz, float sx, float sy, float sz, TextureArea texture) {
+    public static Mesh[] createCuboid(float cx, float cy, float cz, float sx, float sy, float sz, Image texture) {
         return createCuboid(cx, cy, cz, sx, sy, sz, texture, texture, texture, texture, texture, texture);
     }
     
-    public static Mesh[] createCube(float cx, float cy, float cz, float size, TextureArea texture) {
+    public static Mesh[] createCube(float cx, float cy, float cz, float size, Image texture) {
         return createCuboid(cx, cy, cz, size, size, size, texture);
     }
     
-    public static Mesh createPolygon(Vertex[] vertices, TextureArea texture) {
+    public static Mesh createPolygon(Vertex[] vertices, Image texture) {
         return new Mesh(vertices, texture);
     }
 
-    public static Mesh createQuad(VectorMapper mapper, float s1, float s2, TextureArea texture) {
+    public static Mesh createQuad(VectorMapper mapper, float s1, float s2, Image texture) {
         float hs1 = s1 / 2;
         float hs2 = s2 / 2;
         Vector normal = mapper.getMatrix().getFowardDirection();
@@ -87,15 +87,15 @@ public class Mesh extends GeometricObject<Mesh, Vertex> {
                 );
     }
     
-    public static Mesh createQuad(float cx, float cy, float cz, float s1, float s2, Matrix matrix, TextureArea texture) {
+    public static Mesh createQuad(float cx, float cy, float cz, float s1, float s2, Matrix matrix, Image texture) {
         return createQuad(new VectorMapper(matrix, new Vector(cx, cy, cz)), s1, s2, texture);
     }
     
-    public static Mesh createQuad(float cx, float cy, float cz, float s1, float s2, Axis axis, TextureArea texture) {
+    public static Mesh createQuad(float cx, float cy, float cz, float s1, float s2, Axis axis, Image texture) {
         return createQuad(new VectorMapper(axis, new Vector(cx, cy, cz)), s1, s2, texture);
     }
 
-    public static Mesh createCircle(VectorMapper mapper, float r, int lod, boolean normalsOut, TextureArea texture) {
+    public static Mesh createCircle(VectorMapper mapper, float r, int lod, boolean normalsOut, Image texture) {
         float[][] data = GMath.makeCircleData(lod);
         Vertex[] vertices = new Vertex[lod];
         Vector normal = mapper.getMatrix().getFowardDirection();
@@ -111,7 +111,7 @@ public class Mesh extends GeometricObject<Mesh, Vertex> {
         return new Mesh(vertices, texture);
     }
 
-    public static Mesh createCircle(float cx, float cy, float cz, float r, Axis axis, int lod, boolean normalsOut, TextureArea texture) {
+    public static Mesh createCircle(float cx, float cy, float cz, float r, Axis axis, int lod, boolean normalsOut, Image texture) {
         return createCircle(new VectorMapper(axis, new Vector(cx, cy, cz)), r, lod, normalsOut, texture);
         
     }

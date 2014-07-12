@@ -1,7 +1,7 @@
 package com.quew8.geng.rendering;
 
 import com.quew8.geng.rendering.modes.StaticRenderMode;
-import com.quew8.geng.geometry.Image;
+import com.quew8.geng.geometry.Texture;
 import com.quew8.gutils.opengl.VertexData;
 
 /**
@@ -10,7 +10,7 @@ import com.quew8.gutils.opengl.VertexData;
  */
 class StaticSection extends AbstractSection<StaticHandleList.StaticHandle, StaticRenderMode> {
 
-    public StaticSection(StaticRenderMode instanceRenderMode, Image image, StaticHandleList.StaticHandle[] handles) {
+    public StaticSection(StaticRenderMode instanceRenderMode, Texture image, StaticHandleList.StaticHandle[] handles) {
         super(instanceRenderMode, image, handles);
     }
 

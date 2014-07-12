@@ -4,7 +4,7 @@ import com.quew8.geng.geometry.Joint;
 import com.quew8.geng.geometry.Mesh;
 import com.quew8.geng.geometry.Skeleton;
 import com.quew8.geng.geometry.Skin;
-import com.quew8.geng.geometry.TextureArea;
+import com.quew8.geng.geometry.Image;
 import com.quew8.geng.geometry.Vertex;
 import com.quew8.geng.geometry.WeightedVertex;
 import com.quew8.gmath.Matrix;
@@ -74,7 +74,7 @@ public class MeshSkinDataFactory extends DataFactory<Vertex, WeightedVertex, Mes
     }
     
     @Override
-    protected Mesh constructMesh(ArrayList<Vertex> data, int[] vCount, int[] indices, TextureArea textureArea) {
+    protected Mesh constructMesh(ArrayList<Vertex> data, int[] vCount, int[] indices, Image textureArea) {
         for(int i: vCount) {
             if(i != 3) {
                 throw new RuntimeException("Only Triangle Based Meshes are Supported");
@@ -92,7 +92,7 @@ public class MeshSkinDataFactory extends DataFactory<Vertex, WeightedVertex, Mes
     }
     
     @Override
-    protected Skin constructSkin(ArrayList<WeightedVertex> data, int[] vCount, int[] indices, TextureArea textureArea, ColladaSkeleton colladaSkeleton) {
+    protected Skin constructSkin(ArrayList<WeightedVertex> data, int[] vCount, int[] indices, Image textureArea, ColladaSkeleton colladaSkeleton) {
         for(int i: vCount) {
             if(i != 3) {
                 throw new RuntimeException("Only Triangle Based Meshes are Supported");

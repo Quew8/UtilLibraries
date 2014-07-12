@@ -1,6 +1,6 @@
 package com.quew8.geng.rendering;
 
-import com.quew8.geng.geometry.Image;
+import com.quew8.geng.geometry.Texture;
 import com.quew8.gmath.Matrix;
 
 /**
@@ -14,7 +14,7 @@ public interface IDynamicHandle<T> extends IHandle {
     
     T getDataForDraw();
     
-    Image getImageForDraw(Image img);
+    Texture getImageForDraw(Texture img);
     
     boolean shouldDraw();
 }
