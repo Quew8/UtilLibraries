@@ -3,6 +3,7 @@ package com.quew8.geng.content.parser;
 import com.quew8.geng.xmlparser.XMLAttributeParser;
 import com.quew8.geng.xmlparser.XMLElementParser;
 import com.quew8.geng.xmlparser.XMLParser;
+import com.quew8.gutils.ResourceLoader;
 import com.quew8.gutils.content.Source;
 import com.quew8.gutils.content.SourceSheet;
 import java.util.ArrayList;
@@ -18,9 +19,11 @@ public class SourceSheetParser extends XMLParser {
     private static final String 
             GROUP = "group";
     private static final String
+            EXTERNAL = "external",
             ID_CLASS = "id_class",
             READER_CLASS = "reader_class";
     
+    private boolean external = false;
     private final ArrayList<Source> sources = new ArrayList<Source>();
     private String idClassName;
     private String readerClassName;
@@ -43,6 +46,14 @@ public class SourceSheetParser extends XMLParser {
     @Override
     public HashMap<String, XMLAttributeParser> addAttributeParsers(HashMap<String, XMLAttributeParser> to) {
         to = super.addAttributeParsers(to);
+        to.put(EXTERNAL, new XMLAttributeParser() {
+
+            @Override
+            public void parse(Attribute attribute, Element parent) {
+                external = Boolean.parseBoolean(attribute.getValue());
+            }
+            
+        });
         to.put(ID_CLASS, new XMLAttributeParser() {
 
             @Override
@@ -63,14 +74,21 @@ public class SourceSheetParser extends XMLParser {
     }
     
     public SourceSheet getSourceSheet() throws ClassNotFoundException {
-        return new SourceSheet(getIdClass(), getReaderClass(), getSources());
+        return new SourceSheet(
+                external ? 
+                        ResourceLoader.EXTERNAL : 
+                        ResourceLoader.INTERNAL, 
+                getIdClass(), 
+                getReaderClass(), 
+                getSources()
+        );
     }
     
-    public Source[] getSources() {
-        return sources.toArray(new Source[sources.size()]);
+    public com.quew8.gutils.content.Source[] getSources() {
+        return sources.toArray(new com.quew8.gutils.content.Source[sources.size()]);
     }
     
-    public Source getSource(int i) {
+    public com.quew8.gutils.content.Source getSource(int i) {
         return sources.get(i);
     }
     

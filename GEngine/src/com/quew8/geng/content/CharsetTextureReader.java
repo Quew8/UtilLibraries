@@ -3,6 +3,7 @@ package com.quew8.geng.content;
 import com.quew8.geng.geometry.CharsetTexture;
 import com.quew8.gutils.content.ContentReader;
 import com.quew8.gutils.content.Source;
+import com.quew8.gutils.content.SourceSheet;
 import static com.quew8.gutils.opengl.OpenGL.GL_LINEAR;
 import static com.quew8.gutils.opengl.OpenGL.GL_NEAREST;
 import static com.quew8.gutils.opengl.OpenGL.GL_RGB;
@@ -24,7 +25,7 @@ public class CharsetTextureReader implements ContentReader<CharsetTexture> {
     public CharsetTexture read(Source in) {
         TextureDetails details = TextureUtils.createAlphaMaskTexture(TextureUtils.getImageLoader(in.getStream(), true), TextureParams.create(GL_LINEAR, GL_NEAREST));
         return new CharsetTexture(
-                TextureUtils.createTexture(TextureUtils.getImageLoader(in.getStream(), true), GL_RGB, TextureParams.create(GL_LINEAR, GL_NEAREST)),
+                details,
                 CharsetTexture.getMapping(
                         in.getParams().get(CHARS),
                         Integer.parseInt(in.getParams().get(CHAR_WIDTH)),

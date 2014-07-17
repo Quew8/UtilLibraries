@@ -3,7 +3,6 @@ package com.quew8.geng.content.parser;
 import com.quew8.geng.xmlparser.XMLAttributeParser;
 import com.quew8.geng.xmlparser.XMLElementParser;
 import com.quew8.geng.xmlparser.XMLParser;
-import com.quew8.gutils.content.Source;
 import java.util.ArrayList;
 import java.util.HashMap;
 import org.dom4j.Attribute;
@@ -20,7 +19,7 @@ public class GroupParser extends XMLParser {
             DIR = "dir";
     
     private String dir = "";
-    private final ArrayList<Source> sources = new ArrayList<Source>();
+    private final ArrayList<com.quew8.gutils.content.Source> sources = new ArrayList<com.quew8.gutils.content.Source>();
     
     @Override
     public HashMap<String, XMLElementParser> addElementParsers(HashMap<String, XMLElementParser> to) {
@@ -51,7 +50,7 @@ public class GroupParser extends XMLParser {
         return to;
     }
     
-    public ArrayList<Source> getSources() {
+    public ArrayList<com.quew8.gutils.content.Source> getSources() {
         return sources;
     }
 }

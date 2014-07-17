@@ -6,5 +6,5 @@ package com.quew8.gutils.content;
  * @param <T>
  */
 public interface ContentReader<T> {
-    public T read(Source in);
+    public T read(com.quew8.gutils.content.Source in);
 }

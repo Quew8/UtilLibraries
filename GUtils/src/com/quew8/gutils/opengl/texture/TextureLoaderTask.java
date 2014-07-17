@@ -26,13 +26,7 @@ class TextureLoaderTask extends WorkerTask<TextureLoaderTask, TextureLoadVariabl
         for(int i = 0; i < input.texParams.getNParams(); i++) {
             glTexParameteri(GL_TEXTURE_2D, input.texParams.getPName(i), input.texParams.getParam(i));
         }
-        int destFormat = 
-        		input.destFormat < 0 ? 
-        		loadedImage.hasAlpha() ? 
-        			GL_RGBA : 
-        			GL_RGB : 
-        		input.destFormat;
-    	PlatformBackend.backend.fillTexture_P(loadedImage, destFormat, input.texWidth, input.texHeight);
+    	PlatformBackend.backend.fillTexture_P(loadedImage, input.destFormat, input.texWidth, input.texHeight);
         input.texParams.run();
         loadedImage.unload();
     }

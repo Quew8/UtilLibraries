@@ -1,5 +1,7 @@
 package com.quew8.gutils.content;
 
+import com.quew8.gutils.ResourceLoader;
+
 /**
  *
  * @author Quew8
@@ -9,14 +11,13 @@ public class SourceSheet {
     private final Class<?> readerClass;
     private final Source[] sources;
 
-    public SourceSheet(Class<?> idClass, Class<?> readerClass, Source[] sources) {
+    public SourceSheet(ResourceLoader loader, Class<?> idClass, Class<?> readerClass, Source[] sources) {
         this.idClass = idClass;
         this.readerClass = readerClass;
         this.sources = sources;
-    }
-
-    public SourceSheet(Source[] sources) {
-        this(null, null, sources);
+        for(int i = 0; i < sources.length; i++) {
+            sources[i].setLoader(loader);
+        }
     }
     
     public Class<?> getIdClass() {
@@ -43,4 +44,5 @@ public class SourceSheet {
     public Source[] getSources() {
         return sources;
     }
+
 }

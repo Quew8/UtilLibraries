@@ -3,6 +3,7 @@ package com.quew8.geng.content;
 import com.quew8.geng.geometry.TextureSheet;
 import com.quew8.gutils.content.ContentReader;
 import com.quew8.gutils.content.Source;
+import com.quew8.gutils.content.SourceSheet;
 import com.quew8.gutils.opengl.texture.TextureParams;
 
 /**

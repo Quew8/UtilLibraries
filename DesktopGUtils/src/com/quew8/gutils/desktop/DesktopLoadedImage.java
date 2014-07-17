@@ -59,9 +59,9 @@ public class DesktopLoadedImage implements LoadedImage {
         return GLTexFormat.getFormat(hasAlpha()).getGLEnum();
     }
     
-    protected ByteBuffer getAlphaData(int texWidth, int texHeight) {
+    /*protected ByteBuffer getAlphaData(int texWidth, int texHeight) {
         return convertAlphaMaskImageData(this, texWidth, texHeight, flip);
-    }
+    }*/
     
     protected ByteBuffer getData(int texWidth, int texHeight) {
         return convertImageData(this, texWidth, texHeight, flip);
@@ -71,7 +71,7 @@ public class DesktopLoadedImage implements LoadedImage {
         return getData(getWidth(), getHeight());
     }
     
-    protected static ByteBuffer convertAlphaMaskImageData(DesktopLoadedImage img, 
+    /*protected static ByteBuffer convertAlphaMaskImageData(DesktopLoadedImage img, 
             int texWidth, int texHeight, boolean flipped) {
         
         return convertImageData(
@@ -82,7 +82,7 @@ public class DesktopLoadedImage implements LoadedImage {
                 GLTexFormat.ALPHA.getNComponents(), 
                 GLTexFormat.ALPHA.getColorModel()
                 );
-    }
+    }*/
     
     protected static ByteBuffer convertImageData(DesktopLoadedImage img, 
             int texWidth, int texHeight, boolean flipped) {

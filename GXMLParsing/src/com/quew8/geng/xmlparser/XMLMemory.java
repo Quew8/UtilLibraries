@@ -2,7 +2,6 @@ package com.quew8.geng.xmlparser;
 
 import com.quew8.gutils.GeneralUtils;
 import com.quew8.gutils.ResourceLoader;
-import com.quew8.gutils.ResourceLocator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.regex.Pattern;
@@ -18,7 +17,6 @@ import org.dom4j.io.SAXReader;
 class XMLMemory {
     private static final HashMap<String, XMLElementMemory> roots = new HashMap<String, XMLElementMemory>();
     private final ResourceLoader resourceLoader;
-    protected ResourceLocator<String, Element> locator;
 
     public XMLMemory(ResourceLoader resourceLoader) {
         this.resourceLoader = resourceLoader;

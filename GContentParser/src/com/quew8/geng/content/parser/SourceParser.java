@@ -1,10 +1,12 @@
 package com.quew8.geng.content.parser;
 
+import com.quew8.geng.xmlparser.XMLAttributeParser;
 import com.quew8.geng.xmlparser.XMLElementParser;
 import com.quew8.geng.xmlparser.XMLParser;
 import com.quew8.gutils.content.Source;
 import java.util.HashMap;
 import java.util.Map.Entry;
+import org.dom4j.Attribute;
 import org.dom4j.Element;
 
 /**
@@ -29,6 +31,20 @@ public class SourceParser extends XMLParser {
         this("");
     }
 
+    @Override
+    public HashMap<String, XMLAttributeParser> addAttributeParsers(HashMap<String, XMLAttributeParser> to) {
+        to = super.addAttributeParsers(to);
+        to.put(INPUT, new XMLAttributeParser() {
+            
+            @Override
+            public void parse(Attribute attribute, Element parent) {
+                source += attribute.getValue();
+            }
+            
+        });
+        return to;
+    }
+    
     @Override
     public HashMap<String, XMLElementParser> addElementParsers(HashMap<String, XMLElementParser> to) {
         to = super.addElementParsers(to);
@@ -60,6 +76,8 @@ public class SourceParser extends XMLParser {
         });
         return to;
     }
+    
+    
     
     public Source getSource() {
         return new Source(source, params, paramLists);
