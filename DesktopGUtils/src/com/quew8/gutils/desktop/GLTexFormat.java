@@ -11,35 +11,36 @@ import java.awt.image.DataBuffer;
  * @author Quew8
  */
 class GLTexFormat {
-	public static final ColorModel glAlphaColorModel = new ComponentColorModel(ColorSpace.getInstance(ColorSpace.CS_sRGB),
+	public static final ColorModel glAlphaColourModel = new ComponentColorModel(ColorSpace.getInstance(ColorSpace.CS_sRGB),
 			new int[] {8,8,8,8},
 			true,
 			false,
 			ComponentColorModel.TRANSLUCENT,
 			DataBuffer.TYPE_BYTE);
-	public static final ColorModel glColorModel = new ComponentColorModel(ColorSpace.getInstance(ColorSpace.CS_sRGB),
+	public static final ColorModel glColourModel = new ComponentColorModel(ColorSpace.getInstance(ColorSpace.CS_sRGB),
 			new int[] {8,8,8,0},
 			false,
 			false,
 			ComponentColorModel.OPAQUE,
 			DataBuffer.TYPE_BYTE);
-	public static final ColorModel glDepthColorModel = new ComponentColorModel(ColorSpace.getInstance(ColorSpace.CS_GRAY),
+	public static final ColorModel glDepthColourModel = new ComponentColorModel(ColorSpace.getInstance(ColorSpace.CS_GRAY),
 			new int[] {8,0,0,0},
 			false,
 			false,
 			ComponentColorModel.OPAQUE,
 			DataBuffer.TYPE_BYTE);
-	/*public static final ColorModel glAlphaMaskColorModel = new ComponentColorModel(ColorSpace.getInstance(ColorSpace.CS_sRGB),
+	public static final ColorModel glAlphaMaskColourModel = new ComponentColorModel(ColorSpace.getInstance(ColorSpace.CS_sRGB),
 			new int[] {0,0,0,8},
 			true,
 			false,
 			ComponentColorModel.TRANSLUCENT,
-			DataBuffer.TYPE_BYTE);*/
+			DataBuffer.TYPE_BYTE);
 	
-	public static final GLTexFormat 
-		RGBA = new GLTexFormat(GL_RGBA, 4, glAlphaColorModel), 
-		RGB = new GLTexFormat(GL_RGB, 3, glColorModel),
-		DEPTH = new GLTexFormat(GL_DEPTH_COMPONENT, 1, glDepthColorModel);
+	public static final GLTexFormat
+            RGBA = new GLTexFormat(GL_RGBA, 4, glAlphaColourModel), 
+            RGB = new GLTexFormat(GL_RGB, 3, glColourModel),
+            DEPTH = new GLTexFormat(GL_DEPTH_COMPONENT, 1, glDepthColourModel),
+            ALPHA = new GLTexFormat(GL_ALPHA, 1, glAlphaMaskColourModel);
 
     private final int glEnum;
     private final int nComponents;

@@ -1,5 +1,6 @@
 package com.quew8.gutils;
 
+import com.quew8.gutils.debug.DebugLogger;
 import java.io.File;
 import java.io.InputStream;
 import java.nio.FloatBuffer;
@@ -37,6 +38,7 @@ public abstract class PlatformBackend<T extends LoadedImage> {
     
     public static void setBackend(PlatformBackend<?> backend) {
         PlatformBackend.backend = backend;
+        DebugLogger.onInit();
     }
     
     public abstract void glActiveTexture_P(int texture);
@@ -330,6 +332,13 @@ public abstract class PlatformBackend<T extends LoadedImage> {
     public abstract long getTimeMillis_P();
     
     public abstract T loadImage_P(InputStream is, boolean flip);
+    
+    /*@SuppressWarnings("unchecked")
+	public void fillAlphaMaskTexture_P(LoadedImage img, int destFormat, int texWidth, int texHeight) {
+    	fillAlphaMaskTypeTexture_P((T) img, destFormat, texWidth, texHeight);
+    }
+    
+    public abstract void fillAlphaMaskTypeTexture_P(T img, int destFormat, int texWidth, int texHeight);*/
     
     @SuppressWarnings("unchecked")
 	public void fillTexture_P(LoadedImage img, int destFormat, int texWidth, int texHeight) {

@@ -47,12 +47,12 @@ public class SpriteBatcher {
         );
     }
     
-    public SpriteBatcher(Texture image, StaticRenderMode renderMode, SpriteDataFactory dataFactory, int size) {
-        this(OpenGL.GL_TRIANGLES, image, renderMode, dataFactory, size);
+    public SpriteBatcher(Texture tex, StaticRenderMode renderMode, SpriteDataFactory dataFactory, int size) {
+        this(OpenGL.GL_TRIANGLES, tex, renderMode, dataFactory, size);
     }
     
-    public SpriteBatcher(Texture image, StaticRenderMode renderMode, int size) {
-        this(image, renderMode, GeneralSpriteDataFactory.INSTANCE, size);
+    public SpriteBatcher(Texture tex, StaticRenderMode renderMode, int size) {
+        this(tex, renderMode, GeneralSpriteDataFactory.INSTANCE, size);
     }
     
     public void begin() {
@@ -61,12 +61,12 @@ public class SpriteBatcher {
         RenderState.setRenderMode(renderMode);
     }
     
-    public void draw(Image texture, float x, float y, float width, float height) {
+    public void draw(Image img, float x, float y, float width, float height) {
         if(vertexArray.getBuffer().limit() - dataFactory.getBytesPerSprite() < vertexArray.getBuffer().position()) {
             flush();
         }
         n++;
-        dataFactory.addData(vertexArray.getBuffer(), texture, x, y, width, height);
+        dataFactory.addData(vertexArray.getBuffer(), img, x, y, width, height);
     }
     
     public void flush() {

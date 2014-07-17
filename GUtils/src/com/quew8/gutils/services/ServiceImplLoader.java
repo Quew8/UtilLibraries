@@ -1,8 +1,6 @@
 package com.quew8.gutils.services;
 
 import com.quew8.gutils.debug.DebugLogger;
-import com.quew8.gutils.debug.LogLevel;
-import com.quew8.gutils.debug.LogOutput;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
@@ -19,9 +17,6 @@ public class ServiceImplLoader<T extends ServiceImpl> {
     private final Class<T> servClazz;
     
     public static final String SERVICES_LOG = "SERVICES";
-    static {
-        DebugLogger.registerLog(SERVICES_LOG, LogLevel.VERBOSE, LogOutput.FILE);
-    }
     
     @SuppressWarnings("unchecked")
     public ServiceImplLoader(Class<T> servClazz, ClassLoader classLoader, T... loadedImpls) {
@@ -33,6 +28,13 @@ public class ServiceImplLoader<T extends ServiceImpl> {
     @SuppressWarnings("unchecked")
     public ServiceImplLoader(Class<T> servClazz, URL[] urls, T... loadedImpls) {
         this(servClazz, new URLClassLoader(urls), loadedImpls);
+        if(urls.length == 0) {
+            DebugLogger.v(SERVICES_LOG, "No URLs passed to URLClassLoader");
+        } else {
+            for(int i = 0; i < urls.length; i++) {
+                DebugLogger.v(SERVICES_LOG, "URL passed to URLClassLoader[" + i + "] = " + urls[i]);
+            }
+        }
     }
     
     @SuppressWarnings("unchecked")
@@ -44,7 +46,9 @@ public class ServiceImplLoader<T extends ServiceImpl> {
         T topImpl = null;
         ArrayList<T> allImpls = getAllImplementations();
         for(T t: allImpls) {
-            DebugLogger.log(SERVICES_LOG, "Looking At: " + t.getClass());
+            DebugLogger.v(SERVICES_LOG, "Looking At: " + t.getClass());
+            DebugLogger.v(SERVICES_LOG, "    Is Applicable: " + t.isApplicable());
+            DebugLogger.v(SERVICES_LOG, "    Precedence: " + t.getPrecedence());
             if(
                     t.isApplicable() && 
                     (
@@ -53,6 +57,7 @@ public class ServiceImplLoader<T extends ServiceImpl> {
                     )
                     ) {
                 topImpl = t;
+                DebugLogger.v(SERVICES_LOG, "    Setting As Top Implementation");
             }
         }
         if(topImpl != null) {
@@ -75,8 +80,9 @@ public class ServiceImplLoader<T extends ServiceImpl> {
     
     public ArrayList<T> getAllImplementations() {
         ArrayList<T> impls = new ArrayList<T>();
+        DebugLogger.v(SERVICES_LOG, "Loader: " + loader.toString());
         for(T t: loader) {
-            DebugLogger.log(SERVICES_LOG, "Loader Found: " + t.getClass());
+            DebugLogger.v(SERVICES_LOG, "Loader Found: " + t.getClass());
             if(t.isApplicable()) {
                 impls.add(t);
             }

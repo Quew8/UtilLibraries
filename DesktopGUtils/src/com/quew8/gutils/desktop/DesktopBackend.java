@@ -790,6 +790,20 @@ public class DesktopBackend extends PlatformBackend<DesktopLoadedImage> {
         return new File(filename);
     }
     
+    /*@Override
+    public void fillAlphaMaskTypeTexture_P(DesktopLoadedImage img, int destFormat, int texWidth, int texHeight) {
+        GL11.glTexImage2D(
+                GL11.GL_TEXTURE_2D, 
+                0, 
+                destFormat, 
+                texWidth, texHeight, 
+                0, 
+                img.getFormat(), 
+                GL11.GL_UNSIGNED_BYTE, 
+                img.getData(texWidth, texHeight)
+        );
+    }*/
+    
     @Override
     public void fillTypeTexture_P(DesktopLoadedImage img, int destFormat, int texWidth, int texHeight) {
         GL11.glTexImage2D(

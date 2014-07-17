@@ -1,6 +1,7 @@
 package com.quew8.gutils.collections;
 
 import com.quew8.gutils.ArrayUtils;
+import java.util.Arrays;
 
 /**
  *
@@ -9,7 +10,6 @@ import com.quew8.gutils.ArrayUtils;
  * @param <T>
  */
 public class Bag<T> extends AbstractCollection {
-	private final Class<T> clazz;
     private T[] data;
     private int size = 0;
     
@@ -17,17 +17,8 @@ public class Bag<T> extends AbstractCollection {
      * 
      * @param data 
      */
-    public Bag(Class<T> clazz, T[] data) {
-    	this.clazz = clazz;
-        this.data = data;
-    }
-    
-    /**
-     * 
-     * @param data 
-     */
     public Bag(T[] data) {
-    	this(ArrayUtils.getClass(data[0]), data);
+        this.data = data;
     }
     
     /**
@@ -36,7 +27,7 @@ public class Bag<T> extends AbstractCollection {
      * @param capacity 
      */
     public Bag(Class<T> clazz, int capacity) {
-    	this(clazz, ArrayUtils.createArray(clazz, capacity));
+    	this(ArrayUtils.createArray(clazz, capacity));
     }
     
     /**
@@ -177,10 +168,8 @@ public class Bag<T> extends AbstractCollection {
         expand((( data.length * 3 ) / 2 ) + 1);
     }
     
-    private void expand( int newCapacity) {
-        T[] oldData = data;
-        data = ArrayUtils.createArray(clazz, newCapacity);
-        System.arraycopy(oldData, 0, data, 0, oldData.length);
+    private void expand(int newCapacity) {
+        this.data = Arrays.copyOf(data, newCapacity);
     }
     
     public void clear() {

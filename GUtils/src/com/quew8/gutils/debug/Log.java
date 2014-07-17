@@ -1,17 +1,17 @@
 package com.quew8.gutils.debug;
 
+import com.quew8.gutils.Clock;
+import com.quew8.gutils.PlatformBackend;
+import com.quew8.gutils.collections.ExpandingStack;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-
-import com.quew8.gutils.Clock;
-import com.quew8.gutils.PlatformBackend;
-import java.util.ArrayList;
+import java.nio.file.Files;
 
 public class Log {
     private final String name;
-    private final ArrayList<String> queuedLines = new ArrayList<String>();
-    private final ArrayList<LogLevel> queuedLvls = new ArrayList<LogLevel>();
+    private ExpandingStack<String> queuedLines = new ExpandingStack<String>(String.class, 10);
+    private ExpandingStack<LogLevel> queuedLvls = new ExpandingStack<LogLevel>(LogLevel.class, 10);
     private LogOutput output;
     private final LogLevel defaultLevel;
     
@@ -32,13 +32,10 @@ public class Log {
     public void println(LogLevel level, String s) {
         String l = level.getIdChar() + " | " + getTimeString() + " | " + s;
         if(PlatformBackend.isInitialized()) {
-            if(!queuedLines.isEmpty()) {
-                flush();
-            }
             handleLine(level, l);
         } else {
-            queuedLines.add(l);
-            queuedLvls.add(level);
+            queuedLines.push(l);
+            queuedLvls.push(level);
         }
     }
     
@@ -47,11 +44,22 @@ public class Log {
     }
     
     public void flush() {
-        for(int i = 0; i < queuedLines.size(); i++) {
-            handleLine(queuedLvls.get(i), queuedLines.get(i));
+        queuedLines.reverse();
+        queuedLvls.reverse();
+        while(!queuedLines.isEmpty()) {
+            handleLine(queuedLvls.pop(), queuedLines.pop());
         }
-        queuedLines.clear();
-        queuedLvls.clear();
+        queuedLines = null;
+        queuedLvls = null;
+    }
+    
+    public void clearFile() {
+        File f = getLogFile();
+        if(f.exists()) {
+            if(!f.delete()) {
+                println("Could Not Clear Previous Log File");
+            }
+        }
     }
     
     private void handleLine(LogLevel level, String line) {
@@ -76,7 +84,11 @@ public class Log {
     }
     
     public void appendToFile(String s) {
-    	appendToFile(PlatformBackend.backend.getLogFile_P(name + "_LOG.txt"), s);
+    	appendToFile(getLogFile(), s);
+    }
+    
+    private File getLogFile() {
+        return PlatformBackend.backend.getLogFile_P(name + "_LOG.txt");
     }
     
     private static String getTimeString() {

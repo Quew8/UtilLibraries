@@ -11,7 +11,7 @@ public class Zone {
     private final Bag<Collidable> collidables;
 
     public Zone(Collidable... collidables) {
-        this.collidables = new Bag<Collidable>(Collidable.class, collidables);
+        this.collidables = new Bag<Collidable>(collidables);
     }
     
     public Bag<Collidable> getCollidables() {

@@ -11,7 +11,7 @@ public class DebugLogger {
     private static LogLevel streamFilter = LogLevel.VERBOSE;
     private static LogLevel fileFilter = LogLevel.VERBOSE;
     static {
-        registerLog("VERBOSE", LogLevel.INFO);
+        registerLog("VERBOSE", LogLevel.VERBOSE);
         registerLog("INFO", LogLevel.INFO);
         registerLog("DEBUG", LogLevel.DEBUG);
         registerLog("WARN", LogLevel.WARN);
@@ -149,6 +149,13 @@ public class DebugLogger {
     
     public static void setLogLevel(LogOutput output) {
         setLogLevel("DEFAULT", output);
+    }
+    
+    public static void onInit() {
+        for(Log log: logs.values()) {
+            log.clearFile();
+            log.flush();
+        }
     }
     
     private static Log getLog(LogLevel level, String log) {

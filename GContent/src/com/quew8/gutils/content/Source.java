@@ -31,7 +31,7 @@ public class Source {
     }
     
     public URL getURL() {
-        return getClass().getClassLoader().getResource(source);
+        return getClass().getResource("/" + source);
     }
     
     public HashMap<String, String> getParams() {
