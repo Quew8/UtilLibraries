@@ -216,10 +216,6 @@ public abstract class GeneralUtils {
         return intEnumCount++;
     }
     
-    public static int getPlatformConstant() {
-        return PlatformBackend.backend.getPlatformConstant();
-    }
-    
     public static float biLinearInterpolate(
             float x1y1, float x2y1,
             float x1y2, float x2y2,

@@ -3,8 +3,8 @@ package com.quew8.geng.rendering;
 import com.quew8.gmath.Vector;
 import com.quew8.gutils.BufferUtils;
 import com.quew8.gutils.Colour;
-import com.quew8.gutils.GeneralUtils;
 import com.quew8.gutils.PlatformBackend;
+import com.quew8.gutils.PlatformUtils;
 import com.quew8.gutils.desktop.opengl.DesktopOpenGL;
 import java.lang.reflect.Array;
 import static com.quew8.gutils.opengl.OpenGL.*;
@@ -24,7 +24,7 @@ public abstract class ParticleEmitter<T, S, E extends Particle<T, S>> {
     
     static {
         vertexBuffer = BufferUtils.createByteBuffer(28);
-        if(GeneralUtils.getPlatformConstant() == PlatformBackend.DESKTOP_CONSTANT) {
+        if(PlatformUtils.getPlatformConstant() == PlatformBackend.DESKTOP_CONSTANT) {
             DesktopOpenGL.glEnable(DesktopOpenGL.GL_VERTEX_PROGRAM_POINT_SIZE);
         }
     }

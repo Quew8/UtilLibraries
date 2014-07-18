@@ -3,7 +3,7 @@ package com.quew8.gutils.opengl.texture;
 import static com.quew8.gutils.opengl.OpenGL.GL_RGB;
 import static com.quew8.gutils.opengl.OpenGL.GL_RGBA;
 
-import com.quew8.gutils.PlatformBackend;
+import com.quew8.gutils.PlatformUtils;
 import com.quew8.gutils.threads.WorkerTask;
 
 /**
@@ -51,7 +51,7 @@ class TextureSheetLoaderTask extends WorkerTask<TextureSheetLoaderTask, TextureL
         int sy = cellHeight + borderSize;
         for (int x = 0, j = 0; x < nColumns; x++) {
             for (int y = 0; y < nRows; y++, j++) {
-                PlatformBackend.backend.fillSubTexture_P(sx * x, sy * y, images[j]);
+                PlatformUtils.fillSubTexture(sx * x, sy * y, images[j]);
                 images[j].unload();
             }
         }

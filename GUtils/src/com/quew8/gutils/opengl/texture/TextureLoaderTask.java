@@ -1,6 +1,6 @@
 package com.quew8.gutils.opengl.texture;
 
-import com.quew8.gutils.PlatformBackend;
+import com.quew8.gutils.PlatformUtils;
 import com.quew8.gutils.threads.WorkerTask;
 
 import static com.quew8.gutils.opengl.OpenGL.*;
@@ -26,7 +26,10 @@ class TextureLoaderTask extends WorkerTask<TextureLoaderTask, TextureLoadVariabl
         for(int i = 0; i < input.texParams.getNParams(); i++) {
             glTexParameteri(GL_TEXTURE_2D, input.texParams.getPName(i), input.texParams.getParam(i));
         }
-    	PlatformBackend.backend.fillTexture_P(loadedImage, input.destFormat, input.texWidth, input.texHeight);
+        int destFormat = input.destFormat < 0 ?
+                loadedImage.hasAlpha() ? GL_RGBA : GL_RGB :
+                input.destFormat;
+    	PlatformUtils.fillTexture(loadedImage, destFormat, input.texWidth, input.texHeight);
         input.texParams.run();
         loadedImage.unload();
     }

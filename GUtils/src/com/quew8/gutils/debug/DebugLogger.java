@@ -111,8 +111,28 @@ public class DebugLogger {
         throw new RuntimeException(ex);
     }
     
+    public static void broadcast(LogLevel level, String message) {
+        for(Log log: logs.values()) {
+            log(log, level, message);
+        }
+    }
+    
+    public static void broadcast(String message) {
+        for(Log log: logs.values()) {
+            log(log, message);
+        }
+    }
+    
+    private static void log(Log log, LogLevel level, String s) {
+        log.println(level, s);
+    }
+    
+    private static void log(Log log, String s) {
+        log.println(s);
+    }
+    
     public static void log(LogLevel level, String log, String s) {
-        getLog(level, log).println(level, s);
+        log(getLog(level, log), level, s);
     }
     
     public static void log(LogLevel level, String log, Object o) {
@@ -120,7 +140,7 @@ public class DebugLogger {
     }
     
     public static void log(String log, String s) {
-        getLog(null, log).println(s);
+        log(getLog(null, log), s);
     }
     
     public static void log(String log, Object o) {

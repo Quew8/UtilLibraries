@@ -1,14 +1,14 @@
 package com.quew8.gutils.debug;
 
 import com.quew8.gutils.Clock;
-import com.quew8.gutils.PlatformBackend;
+import com.quew8.gutils.PlatformUtils;
 import com.quew8.gutils.collections.ExpandingStack;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.nio.file.Files;
 
 public class Log {
+    private File logFile = null;
     private final String name;
     private ExpandingStack<String> queuedLines = new ExpandingStack<String>(String.class, 10);
     private ExpandingStack<LogLevel> queuedLvls = new ExpandingStack<LogLevel>(LogLevel.class, 10);
@@ -31,7 +31,7 @@ public class Log {
     
     public void println(LogLevel level, String s) {
         String l = level.getIdChar() + " | " + getTimeString() + " | " + s;
-        if(PlatformBackend.isInitialized()) {
+        if(PlatformUtils.isInitialized()) {
             handleLine(level, l);
         } else {
             queuedLines.push(l);
@@ -63,10 +63,10 @@ public class Log {
     }
     
     private void handleLine(LogLevel level, String line) {
-        if(DebugLogger.filterStream(defaultLevel) && output.stream()) {
+        if(DebugLogger.filterStream(level) && output.stream()) {
             LogLevel.getStream(level).log(name, line);
         }
-        if(DebugLogger.filterFile(defaultLevel) && output.file()) {
+        if(DebugLogger.filterFile(level) && output.file()) {
             appendToFile(line + System.lineSeparator());
         }
     }
@@ -88,10 +88,14 @@ public class Log {
     }
     
     private File getLogFile() {
-        return PlatformBackend.backend.getLogFile_P(name + "_LOG.txt");
+        if(logFile == null) {
+            logFile = PlatformUtils.getLogFile(name + "_LOG.txt");
+            logFile.getParentFile().mkdirs();
+        }
+        return logFile;
     }
     
     private static String getTimeString() {
-        return PlatformBackend.isInitialized() ? Long.toString(Clock.getTime()) : "PRE_INIT";
+        return PlatformUtils.isInitialized() ? Long.toString(Clock.getTime()) : "PRE_INIT";
     }
 }

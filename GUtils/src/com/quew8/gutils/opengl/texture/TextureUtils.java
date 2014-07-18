@@ -5,11 +5,11 @@ import com.quew8.gutils.Colour;
 import com.quew8.gutils.debug.DebugLogger;
 import com.quew8.gutils.debug.LogLevel;
 import com.quew8.gutils.debug.LogOutput;
+import static com.quew8.gutils.opengl.OpenGL.*;
 import com.quew8.gutils.threads.ThreadUtils;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
-import static com.quew8.gutils.opengl.OpenGL.*;
 
 /**
  * 
@@ -185,28 +185,6 @@ public class TextureUtils {
     
     /**
      * 
-     * @param texture
-     * @param destFormat
-     * @param params
-     * @param imgLoader
-     * @param imgWidth 
-     * @param imgHeight
-     * @return
-     */
-    /*protected static int[] fillAlphaMaskTexture(TextureObj texture, int destFormat, TextureParams params, ImageLoader imgLoader, 
-    		int imgWidth, int imgHeight) {
-        
-        int texWidth = get2Fold(imgWidth);
-        int texHeight = get2Fold(imgHeight);
-        ThreadUtils.executeTask(
-        		new TextureLoaderTask(),
-                new TextureLoadVariables(new ImageLoader[]{imgLoader}, texWidth, texHeight, texture, destFormat, params)
-                );
-        return new int[]{texWidth, texHeight};
-    }*/
-    
-    /**
-     * 
      * @param imgLoader
      * @param params
      * @param imgWidth
@@ -216,10 +194,7 @@ public class TextureUtils {
     public static TextureDetails createAlphaMaskTexture(ImageLoader imgLoader, TextureParams params, 
     		int imgWidth, int imgHeight) {
         
-        return createTexture(imgLoader, GL_ALPHA, params, imgWidth, imgHeight);
-        /*TextureObj texture = new TextureObj(GL_TEXTURE_2D);
-        int[] texDims = fillTexture(texture, destFormat, params, imgLoader, imgWidth, imgHeight);
-        return new TextureDetails(texture, imgWidth, imgHeight, texDims[0], texDims[1]);*/
+        return createTexture(imgLoader, GL_RED, params, imgWidth, imgHeight);
     }
     
     /**
@@ -230,41 +205,8 @@ public class TextureUtils {
      */
     public static TextureDetails createAlphaMaskTexture(ImageLoader imgLoader, TextureParams params) {
         
-        return createTexture(imgLoader, GL_ALPHA, params);
-        /*TextureObj texture = new TextureObj(GL_TEXTURE_2D);
-        int[] texDims = fillTexture(texture, destFormat, params, imgLoader, imgWidth, imgHeight);
-        return new TextureDetails(texture, imgWidth, imgHeight, texDims[0], texDims[1]);*/
+        return createTexture(imgLoader, GL_RED, params);
     }
-    
-    /**
-     * 
-     * @param image
-     * @param flipped
-     * @param resolution
-     * @return
-     * @throws IOException 
-     */
-    /*public static TextureDetails createAlphaMaskTexture(BufferedImage image, 
-            boolean flipped, int resolution) throws IOException {
-        
-        return createAlphaMaskTexture(null, image, image.getWidth(), image.getHeight(), flipped, resolution);
-    }*/
-    
-    /**
-     * 
-     * @param imgIn
-     * @param imgWidth
-     * @param imgHeight
-     * @param flipped
-     * @param resolution
-     * @return
-     * @throws IOException 
-     */
-    /*public static TextureDetails createAlphaMaskTexture(InputStream imgIn,
-            int imgWidth, int imgHeight, boolean flipped, int resolution) throws IOException {
-        
-        return createAlphaMaskTexture(imgIn, null, imgWidth, imgHeight, flipped, resolution);
-    }*/
     
     /**
      * 

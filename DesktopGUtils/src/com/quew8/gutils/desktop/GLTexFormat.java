@@ -1,6 +1,6 @@
 package com.quew8.gutils.desktop;
 
-import static org.lwjgl.opengl.GL11.*;
+import static com.quew8.gutils.opengl.OpenGL.*;
 import java.awt.color.ColorSpace;
 import java.awt.image.ColorModel;
 import java.awt.image.ComponentColorModel;
@@ -29,18 +29,11 @@ class GLTexFormat {
 			false,
 			ComponentColorModel.OPAQUE,
 			DataBuffer.TYPE_BYTE);
-	public static final ColorModel glAlphaMaskColourModel = new ComponentColorModel(ColorSpace.getInstance(ColorSpace.CS_sRGB),
-			new int[] {0,0,0,8},
-			true,
-			false,
-			ComponentColorModel.TRANSLUCENT,
-			DataBuffer.TYPE_BYTE);
 	
 	public static final GLTexFormat
             RGBA = new GLTexFormat(GL_RGBA, 4, glAlphaColourModel), 
             RGB = new GLTexFormat(GL_RGB, 3, glColourModel),
-            DEPTH = new GLTexFormat(GL_DEPTH_COMPONENT, 1, glDepthColourModel),
-            ALPHA = new GLTexFormat(GL_ALPHA, 1, glAlphaMaskColourModel);
+            DEPTH = new GLTexFormat(GL_DEPTH_COMPONENT, 1, glDepthColourModel);
 
     private final int glEnum;
     private final int nComponents;

@@ -1,6 +1,6 @@
 package com.quew8.gutils.debug;
 
-import com.quew8.gutils.PlatformBackend;
+import com.quew8.gutils.PlatformUtils;
 
 public enum LogLevel {
 	ERROR('e'), WARN('w'), INFO('i'), DEBUG('d'), VERBOSE('v');
@@ -28,11 +28,11 @@ public enum LogLevel {
 	
 	public static LogStream getStream(LogLevel level) {
 		if(errorStream == null) {
-			errorStream = PlatformBackend.backend.getLogStream_P(ERROR);
-			warnStream = PlatformBackend.backend.getLogStream_P(WARN);
-			infoStream = PlatformBackend.backend.getLogStream_P(INFO);
-			debugStream = PlatformBackend.backend.getLogStream_P(DEBUG);
-			verboseStream = PlatformBackend.backend.getLogStream_P(VERBOSE);
+			errorStream = PlatformUtils.getLogStream(ERROR);
+			warnStream = PlatformUtils.getLogStream(WARN);
+			infoStream = PlatformUtils.getLogStream(INFO);
+			debugStream = PlatformUtils.getLogStream(DEBUG);
+			verboseStream = PlatformUtils.getLogStream(VERBOSE);
 		}
 		switch(level) {
 		case ERROR: return errorStream;

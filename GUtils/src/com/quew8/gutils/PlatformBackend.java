@@ -18,26 +18,29 @@ import java.nio.IntBuffer;
  * @param <T>
  */
 public abstract class PlatformBackend<T extends LoadedImage> {
-    public static final int 
+    public static final int
             DESKTOP_CONSTANT = 0,
             ANDROID_CONSTANT = 1;
-    
+    public static boolean debug = false;
+    protected static boolean initialized = false;
     public static PlatformBackend<?> backend;
     
-    public static boolean isInitialized() {
-        return backend != null;
-    }
-    
     public static void setDebug(boolean debug) {
+        PlatformBackend.debug = debug;
     	if(debug && !(backend instanceof DebugBackend)) {
-    		backend = DebugBackend.getDebugBackend(backend);
+            backend = DebugBackend.getDebugBackend(backend);
     	} else if(!debug && (backend instanceof DebugBackend)) {
-    		backend = ((DebugBackend<?>) backend).getImpl();
+            backend = ((DebugBackend<?>) backend).getImpl();
     	}
     }
     
     public static void setBackend(PlatformBackend<?> backend) {
         PlatformBackend.backend = backend;
+        if(debug) {
+            setDebug(true);
+        }
+        DebugLogger.broadcast(LogLevel.VERBOSE, "New Backend: " + backend.toString());
+        initialized = true;
         DebugLogger.onInit();
     }
     
@@ -333,22 +336,15 @@ public abstract class PlatformBackend<T extends LoadedImage> {
     
     public abstract T loadImage_P(InputStream is, boolean flip);
     
-    /*@SuppressWarnings("unchecked")
-	public void fillAlphaMaskTexture_P(LoadedImage img, int destFormat, int texWidth, int texHeight) {
-    	fillAlphaMaskTypeTexture_P((T) img, destFormat, texWidth, texHeight);
-    }
-    
-    public abstract void fillAlphaMaskTypeTexture_P(T img, int destFormat, int texWidth, int texHeight);*/
-    
     @SuppressWarnings("unchecked")
-	public void fillTexture_P(LoadedImage img, int destFormat, int texWidth, int texHeight) {
+    public void fillTexture_P(LoadedImage img, int destFormat, int texWidth, int texHeight) {
     	fillTypeTexture_P((T) img, destFormat, texWidth, texHeight);
     }
     
     public abstract void fillTypeTexture_P(T img, int destFormat, int texWidth, int texHeight);
     
     @SuppressWarnings("unchecked")
-	public void fillSubTexture_P(int xPos, int yPos, LoadedImage img) {
+    public void fillSubTexture_P(int xPos, int yPos, LoadedImage img) {
     	fillTypeSubTexture_P(xPos, yPos, (T) img);
     }
     

@@ -130,6 +130,9 @@ public abstract class OpenGL {
     public static final int GL_UNSIGNED_INT = 0x1405;
     public static final int GL_FLOAT = 0x1406;
     public static final int GL_DEPTH_COMPONENT = 0x1902;
+    public static final int GL_RED = 0x1903;
+    public static final int GL_GREEN = 0x1904;
+    public static final int GL_BLUE = 0x1905;
     public static final int GL_ALPHA = 0x1906;
     public static final int GL_RGB = 0x1907;
     public static final int GL_RGBA = 0x1908;

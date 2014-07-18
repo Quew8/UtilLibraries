@@ -3,10 +3,11 @@ package com.quew8.gutils.desktop;
 import com.quew8.gutils.PlatformBackend;
 import com.quew8.gutils.debug.LogLevel;
 import com.quew8.gutils.debug.LogStream;
-import com.quew8.gutils.desktop.opengl.services.ShaderServiceImpl;
 import com.quew8.gutils.desktop.opengl.services.FramebufferServiceImpl;
 import com.quew8.gutils.desktop.opengl.services.NoFramebufferServiceImpl;
 import com.quew8.gutils.desktop.opengl.services.NoShaderServiceImpl;
+import com.quew8.gutils.desktop.opengl.services.ShaderServiceImpl;
+import com.quew8.gutils.opengl.OpenGL;
 import com.quew8.gutils.services.ServiceImplLoader;
 import java.io.File;
 import java.io.InputStream;
@@ -787,46 +788,32 @@ public class DesktopBackend extends PlatformBackend<DesktopLoadedImage> {
 
     @Override
     public File getLogFile_P(String filename) {
-        return new File(filename);
+        return new File("LOGS" + File.separator + filename);
     }
-    
-    /*@Override
-    public void fillAlphaMaskTypeTexture_P(DesktopLoadedImage img, int destFormat, int texWidth, int texHeight) {
-        GL11.glTexImage2D(
-                GL11.GL_TEXTURE_2D, 
-                0, 
-                destFormat, 
-                texWidth, texHeight, 
-                0, 
-                img.getFormat(), 
-                GL11.GL_UNSIGNED_BYTE, 
-                img.getData(texWidth, texHeight)
-        );
-    }*/
     
     @Override
     public void fillTypeTexture_P(DesktopLoadedImage img, int destFormat, int texWidth, int texHeight) {
-        GL11.glTexImage2D(
-                GL11.GL_TEXTURE_2D, 
+        OpenGL.glTexImage2D(
+                OpenGL.GL_TEXTURE_2D, 
                 0, 
                 destFormat, 
                 texWidth, texHeight, 
                 0, 
                 img.getFormat(), 
-                GL11.GL_UNSIGNED_BYTE, 
+                OpenGL.GL_UNSIGNED_BYTE, 
                 img.getData(texWidth, texHeight)
         );
     }
     
     @Override
     public void fillTypeSubTexture_P(int xPos, int yPos, DesktopLoadedImage img) {
-        GL11.glTexSubImage2D(
-                GL11.GL_TEXTURE_2D, 
+        OpenGL.glTexSubImage2D(
+                OpenGL.GL_TEXTURE_2D, 
                 0, 
                 xPos, yPos, 
                 img.getWidth(), img.getHeight(), 
                 img.getFormat(), 
-                GL11.GL_UNSIGNED_BYTE, 
+                OpenGL.GL_UNSIGNED_BYTE, 
                 img.getData()
         );
     }
@@ -839,5 +826,10 @@ public class DesktopBackend extends PlatformBackend<DesktopLoadedImage> {
     @Override
     public int getPlatformConstant() {
         return DESKTOP_CONSTANT;
+    }
+    
+    @Override
+    public String toString() {
+        return "Desktop Backend{ShaderService: " + shaderService + ", FramebufferService: " + framebufferService + "}";    
     }
 }

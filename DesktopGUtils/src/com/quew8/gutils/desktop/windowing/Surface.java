@@ -1,6 +1,7 @@
 package com.quew8.gutils.desktop.windowing;
 
 import com.quew8.gutils.opengl.Viewport;
+import org.lwjgl.opengl.ContextAttribs;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.PixelFormat;
 
@@ -69,5 +70,13 @@ public class Surface implements ISurface {
     
     public static PixelFormat getPixelFormat(int alpha, int depth, int stencil) {
         return new PixelFormat(alpha, depth, stencil);
+    }
+    
+    public static ContextAttribs getContextAttribs() {
+        return new ContextAttribs();
+    }
+    
+    public static ContextAttribs getContextAttribs(int major, int minor) {
+        return new ContextAttribs(major, minor);
     }
 }

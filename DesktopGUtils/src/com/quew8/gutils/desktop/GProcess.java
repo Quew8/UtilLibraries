@@ -1,6 +1,8 @@
 package com.quew8.gutils.desktop;
 
 import com.quew8.gutils.Clock;
+import com.quew8.gutils.debug.DebugLogger;
+import com.quew8.gutils.debug.LogLevel;
 import com.quew8.gutils.desktop.windowing.Window;
 import com.quew8.gutils.desktop.windowing.Window.WindowParams;
 import com.quew8.gutils.opengl.Viewport;
@@ -19,17 +21,23 @@ public abstract class GProcess {
     } 
     
     public final void play() {
+        DebugLogger.broadcast(LogLevel.VERBOSE, "Init Beginning");
         init();
         Clock.begin();
         while (window.remainOpen()) {
+            DebugLogger.broadcast(LogLevel.VERBOSE, "Loop Beginning");
             Clock.makeDelta();
             if(window.isResized()) {
+                DebugLogger.broadcast(LogLevel.VERBOSE, "Resize Beginning");
                 resize(window.getViewport());
             }
+            DebugLogger.broadcast(LogLevel.VERBOSE, "Update Beginning");
             update();
+            DebugLogger.broadcast(LogLevel.VERBOSE, "Render Beginning");
             render();
             window.endOfFrame();
         }
+        DebugLogger.broadcast(LogLevel.VERBOSE, "Deinit Beginning");
         deinit();
     }
     
