@@ -9,29 +9,32 @@ import java.util.regex.Pattern;
  * @author Quew8
  * @param <T>
  * @param <S>
+ * @param <U>
  */
-public class Generator<T extends Element, S extends Evaluator<T, S>> {
+public class Generator<T, S extends Element<T, ?>, U extends Evaluator<T, S, U>> {
     private static final Pattern KEY_PATTERN = Pattern.compile("~([\\w\\(\\)\\[\\]\\<\\>\\s,]+)~");
     
-    private final T element;
-    private final S evaluator;
-    private final FetchMethod<S>[] fetchers;
+    private final T data;
+    private final S element;
+    private final U evaluator;
+    private final FetchMethod<U>[] fetchers;
     private final HashMap<String, String> replacements;
     
-    public Generator(S evaluator, T element, HashMap<String, String> replacements) {
+    public Generator(T data, U evaluator, S element, HashMap<String, String> replacements) {
         evaluator.prepare(element);
+        this.data = data;
         this.element = element;
         this.evaluator = evaluator;
         this.fetchers = evaluator.getFetchMethods();
         this.replacements = replacements;
     }
     
-    public Generator(S evaluator, T element) {
-        this(evaluator, element, new HashMap<String, String>());
+    public Generator(T data, U evaluator, S element) {
+        this(data, evaluator, element, new HashMap<String, String>());
     }
     
     public String generate() {
-        String code = element.getCode();
+        String code = element.construct(data);
         Matcher matcher = KEY_PATTERN.matcher(code);
         int lastReadIndex = 0;
         String formattedCode = "";
@@ -50,7 +53,7 @@ public class Generator<T extends Element, S extends Evaluator<T, S>> {
         } else {
             Object result = evaluate(key);
             if(result instanceof Element) {
-                return ((Element) result).getCode();
+                return ((Element) result).construct(data);
             } else {
                 return (String) result;
             }
@@ -58,7 +61,7 @@ public class Generator<T extends Element, S extends Evaluator<T, S>> {
     }
     
     protected Object evaluate(String statement) {
-        for(FetchMethod<S> m: fetchers) {
+        for(FetchMethod<U> m: fetchers) {
             Object obj = m.evaluate(this, statement);
             if(obj != null) {
                 return obj;
@@ -67,7 +70,7 @@ public class Generator<T extends Element, S extends Evaluator<T, S>> {
         throw new RuntimeException("Generator statement \"" + statement + "\" not recognized as a replacable key or method invocation.");
     }
     
-    public S getEvaluator() {
+    public U getEvaluator() {
         return evaluator;
     }
 }

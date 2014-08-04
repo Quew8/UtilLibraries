@@ -1,10 +1,12 @@
 package com.quew8.codegen.glsl;
 
+import com.quew8.codegen.Element;
+
 /**
  *
  * @author Quew8
  */
-public class Type extends GLSLElement {
+public class Type extends GLSLElement<Type> {
     public static final Type
             FLOAT = new Type("float"),
             INT = new Type("int"),
@@ -20,11 +22,16 @@ public class Type extends GLSLElement {
     private String name;
 
     public Type(String name) {
+        super("<<name>>");
         this.name = name;
     }
 
-    public String getName() {
+    public String getNameString() {
         return name;
+    }
+
+    public Element<GLSLGenData, ?> getName() {
+        return Element.<GLSLGenData>wrap(name);
     }
 
     public Type setName(String name) {
@@ -32,8 +39,8 @@ public class Type extends GLSLElement {
         return this;
     }
 
-    @Override
+    /*@Override
     protected String getConstructedCode() {
         return name == null ? "void" : name;
-    }
+    }*/
 }

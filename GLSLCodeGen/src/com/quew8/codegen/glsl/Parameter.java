@@ -1,14 +1,17 @@
 package com.quew8.codegen.glsl;
 
+import com.quew8.codegen.Element;
+
 /**
  *
  * @author Quew8
  */
-public class Parameter extends GLSLElement {
+public class Parameter extends GLSLElement<Parameter> {
     private Type type;
     private String name;
 
     public Parameter(Type type, String name) {
+        super("<<type>> <<name>>");
         this.type = type;
         this.name = name;
     }
@@ -22,8 +25,12 @@ public class Parameter extends GLSLElement {
         return this;
     }
 
-    public String getName() {
+    public String getNameString() {
         return name;
+    }
+
+    public Element<GLSLGenData, ?> getName() {
+        return Element.<GLSLGenData>wrap(name);
     }
 
     public Parameter setName(String name) {
@@ -31,13 +38,13 @@ public class Parameter extends GLSLElement {
         return this;
     }
 
-    @Override
+    /*@Override
     protected String getConstructedCode() {
         return GLSLCodeGenUtils.getConstruction()
                 .add(type)
                 .add(name)
                 .get();
-    }
+    }*/
     
     
 }

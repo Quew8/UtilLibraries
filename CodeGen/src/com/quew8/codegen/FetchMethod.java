@@ -9,7 +9,7 @@ import java.util.regex.Pattern;
  * @author Quew8
  * @param <T>
  */
-public abstract class FetchMethod<T extends Evaluator<?, T>> {
+public abstract class FetchMethod<T extends Evaluator<?, ?, T>> {
     private final String name;
     private final Pattern pattern;
     private final String expectedParams;
@@ -24,7 +24,7 @@ public abstract class FetchMethod<T extends Evaluator<?, T>> {
         return name;
     }
 
-    public Object evaluate(Generator<?, T> gen, String statement) {
+    public Object evaluate(Generator<?, ?, T> gen, String statement) {
         Matcher m = pattern.matcher(statement);
         if (m.matches()) {
             String[] argStrings = splitArgs(m.group(1));

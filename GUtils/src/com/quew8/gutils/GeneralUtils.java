@@ -72,6 +72,14 @@ public abstract class GeneralUtils {
         return readFrom(path, DEFAULT_IO_HANDLER);
     }
     
+    public static InputStream throwableReadFrom(String path) throws IOException {
+        InputStream stream = TextureUtils.class.getClassLoader().getResourceAsStream(path);
+        if (stream == null) {
+            throw new IOException("Could not load: " + path);
+        }
+        return stream;
+    }
+    
     public static void write(OutputStream out, String s, ExceptionHandler<IOException> handler) {
         try(OutputStreamWriter writer = new OutputStreamWriter(out)) {
             writer.write(s);
@@ -109,6 +117,10 @@ public abstract class GeneralUtils {
     
     public static InputStream readFrom(File file) {
         return readFrom(file, DEFAULT_IO_HANDLER);
+    }
+    
+    public static InputStream throwableReadFrom(File file) throws IOException {
+        return new FileInputStream(file);
     }
     
     public static String getResourceParent(String resourcePath) {

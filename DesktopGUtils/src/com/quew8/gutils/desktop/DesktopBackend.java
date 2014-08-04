@@ -15,6 +15,7 @@ import java.net.URL;
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
+import java.util.HashMap;
 import org.lwjgl.Sys;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL13;
@@ -26,6 +27,20 @@ import org.lwjgl.opengl.GL15;
  * @author Quew8
  */
 public class DesktopBackend extends PlatformBackend<DesktopLoadedImage> {
+    private static final HashMap<Integer, Integer> oglToGLSLVersions = new HashMap<Integer, Integer>();
+    static {
+        oglToGLSLVersions.put(200, 110);
+        oglToGLSLVersions.put(210, 120);
+        oglToGLSLVersions.put(300, 130);
+        oglToGLSLVersions.put(310, 140);
+        oglToGLSLVersions.put(320, 150);
+        oglToGLSLVersions.put(330, 330);
+        oglToGLSLVersions.put(400, 400);
+        oglToGLSLVersions.put(410, 410);
+        oglToGLSLVersions.put(420, 420);
+        oglToGLSLVersions.put(430, 430);
+        oglToGLSLVersions.put(440, 440);
+    }
     private static final LogStream 
             DEFAULT_STREAM = new LogStream() {
                 @Override
@@ -40,16 +55,22 @@ public class DesktopBackend extends PlatformBackend<DesktopLoadedImage> {
                 }
             };
     
+    private final int openGLVersion, glslVersion;
     private final ShaderServiceImpl shaderService;
     private final FramebufferServiceImpl framebufferService;
     
-    public DesktopBackend(ShaderServiceImpl shaderService, FramebufferServiceImpl framebufferService) {
+    public DesktopBackend(int openGLVersion, int glslVersion, ShaderServiceImpl shaderService, 
+            FramebufferServiceImpl framebufferService) {
+        this.openGLVersion = openGLVersion;
+        this.glslVersion = glslVersion;
         this.shaderService = shaderService;
         this.framebufferService = framebufferService;
     }
     
-    public DesktopBackend(URL[] urls) {
+    public DesktopBackend(int openGLVersion, int glslVersion, URL[] urls) {
         this(
+                openGLVersion,
+                glslVersion,
                 new ServiceImplLoader<ShaderServiceImpl>(
                         ShaderServiceImpl.class, 
                         urls,
@@ -771,6 +792,16 @@ public class DesktopBackend extends PlatformBackend<DesktopLoadedImage> {
     public void glViewport_P(int x, int y, int width, int height) {
         GL11.glViewport(x, y, width, height);
     }
+
+    @Override
+    public int getOpenGLVersion_P() {
+        return openGLVersion;
+    }
+
+    @Override
+    public int getGLSLVersion_P() {
+        return glslVersion;
+    }
     
     @Override
     public DesktopLoadedImage loadImage_P(InputStream is, boolean flip) {
@@ -831,5 +862,9 @@ public class DesktopBackend extends PlatformBackend<DesktopLoadedImage> {
     @Override
     public String toString() {
         return "Desktop Backend{ShaderService: " + shaderService + ", FramebufferService: " + framebufferService + "}";    
+    }
+    
+    public static int getGLSLVersionForOGL(int oglVersion) {
+        return oglToGLSLVersions.get(oglVersion);
     }
 }

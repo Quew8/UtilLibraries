@@ -1,18 +1,17 @@
 package com.quew8.codegen.java;
 
-import com.quew8.codegen.CodeGenUtils;
-
 /**
  *
  * @author Quew8
  */
-public class Constructor extends MethodDef {
+public class Constructor extends MethodDef<Constructor> {
     private AccessModifier access;
     private Class clazz;
     private Parameter[] parameters;
     private Block codeBlock;
     
     public Constructor(AccessModifier access, Class clazz, Parameter[] parameters, Block codeBlock) {
+        super("<<access> ><<returnType>>(<<, <parameters>>>) <<codeBlock>>");
         this.access = access;
         this.clazz = clazz;
         this.parameters = parameters != null ? parameters : new Parameter[]{};
@@ -27,31 +26,31 @@ public class Constructor extends MethodDef {
         this(null);
     }
     
-    protected AccessModifier getAccess() {
+    public AccessModifier getAccess() {
         return access;
     }
     
-    protected Class getClazz() {
+    public Class getClazz() {
         return clazz;
     }
 
     @Override
-    protected Parameter[] getParameters() {
+    public Parameter[] getParameters() {
         return parameters;
     }
 
-    protected Block getCodeBlock() {
+    public Block getCodeBlock() {
         return codeBlock;
     }
     
     @Override
-    protected Type getReturnType() {
+    public Type getReturnType() {
         return clazz.getBaseType();
     }
     
     @Override
-    protected String getName() {
-        return getReturnType().getName();
+    public String getNameString() {
+        return getReturnType().getNameString();
     }
 
     public Constructor setAccess(AccessModifier access) {
@@ -74,14 +73,14 @@ public class Constructor extends MethodDef {
         return this;
     }
     
-    @Override
+    /*@Override
     protected String getConstructedCode() {
         return CodeGenUtils.getConstruction()
                 .add(getAccess(), getReturnType())
                 .addNoGap("(", CodeGenUtils.getCommaSeperatedList(getParameters()), ")")
                 .add(codeBlock)
                 .get();
-    }
+    }*/
 
     @Override
     protected Variable[] getVariables() {

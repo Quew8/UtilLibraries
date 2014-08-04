@@ -1,12 +1,12 @@
 package com.quew8.codegen.java;
 
-import com.quew8.codegen.CodeGenUtils;
+import com.quew8.codegen.Element;
 
 /**
  *
  * @author Quew8
  */
-public class Type extends JavaElement {
+public class Type extends JavaElement<Type> {
     public static final Type 
             INT = new Type("int"),
             FLOAT = new Type("float"),
@@ -20,9 +20,14 @@ public class Type extends JavaElement {
     private String name;
     private Type[] generics;
     
-    public Type(String name, Type[] generics) {
+    protected Type(String definition, String name, Type[] generics) {
+        super(definition);
         this.name = name;
         this.generics = generics != null ? generics : new Type[]{};
+    }
+    
+    public Type(String name, Type[] generics) {
+        this("<<name>><&lt;<, <generics>>&gt;>", name, generics);
     }
     
     public Type(String name) {
@@ -33,11 +38,15 @@ public class Type extends JavaElement {
         this(null);
     }
     
-    protected String getName() {
+    public String getNameString() {
         return name;
     }
     
-    protected Type[] getGenerics() {
+    public Element<JavaGenData, ?> getName() {
+        return wrap(name);
+    }
+    
+    public Type[] getGenerics() {
         return generics;
     }
     
@@ -51,26 +60,39 @@ public class Type extends JavaElement {
         return this;
     }
     
-    @Override
+    /*@Override
     protected String getConstructedCode() {
         return CodeGenUtils.getConstruction()
                 .addNoGap(name, getGenericsString())
                 .get();
-    }
+    }*/
     
-    private String getGenericsString() {
+    /*private String getGenericsString() {
         if(generics.length != 0) {
             return "<" + CodeGenUtils.getCommaSeperatedList(generics) + ">";
         } else {
             return "";
         }
-    }
+    }*/
     
     public static Type arrayOf(Type type) {
-        return new Type(type.getCode() + "[]");
+        return new ArrayType(type);
     }
     
     public static Type makeGeneric(Type baseType, Type... genericTypes) {
-        return new Type(baseType.getCode() + "<" + CodeGenUtils.getCommaSeperatedList(genericTypes) + ">");
+        return new Type(baseType.name, genericTypes);
+    }
+    
+    public static class ArrayType extends Type {
+        private final Type elementType;
+
+        public ArrayType(Type elementType) {
+            super("<<elementType>>[]", elementType.name, elementType.generics);
+            this.elementType = elementType;
+        }
+        
+        public Type getElementType() {
+            return elementType;
+        }
     }
 }

@@ -44,11 +44,11 @@ public abstract class JavaCodeGenUtils extends CodeGenUtils {
         return combineElements(TypeDef.class, methods);
     }
     
-    public static String generateJava(JavaElement element, HashMap<String, String> replacements) {
-        return new Generator<JavaElement, JavaEvaluator>(JavaEvaluator.INSTANCE, element, replacements).generate();
+    public static String generateJava(JavaGenData data, JavaElement element, HashMap<String, String> replacements) {
+        return new Generator<JavaGenData, JavaElement<?>, JavaEvaluator>(data, JavaEvaluator.INSTANCE, element, replacements).generate();
     }
     
-    public static String generateJava(JavaElement element) {
-        return generateJava(element, new HashMap<String, String>());
+    public static String generateJava(JavaGenData data, JavaElement element) {
+        return generateJava(data, element, new HashMap<String, String>());
     }
 }

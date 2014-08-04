@@ -3,7 +3,7 @@ package com.quew8.geng.content;
 import com.quew8.geng.glslparser.GLSLProgramParser;
 import com.quew8.gutils.content.ContentReader;
 import com.quew8.gutils.content.Source;
-import com.quew8.gutils.content.SourceSheet;
+import com.quew8.gutils.opengl.OpenGL;
 import com.quew8.gutils.opengl.shaders.ShaderProgram;
 import com.quew8.gutils.opengl.shaders.ShaderUtils;
 import java.util.HashMap;
@@ -32,7 +32,7 @@ public class ShaderReader implements ContentReader<ShaderProgram> {
         
         GLSLProgramParser parser = new GLSLProgramParser();
         parser.read(in.getSource());
-        ShaderProgram program = parser.getProgram(constants, attribs);
+        ShaderProgram program = parser.getProgram(100, OpenGL.getGLSLVersion(), constants, attribs);
         if(in.getParamLists().containsKey(UNIFORMS)) {
             program.use();
             Entry<String, String>[] entries = in.getParamLists().get(UNIFORMS);

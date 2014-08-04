@@ -3,24 +3,29 @@ package com.quew8.codegen.java;
 /**
  *
  * @author Quew8
+ * @param <T>
  */
-public abstract class MethodDef extends JavaElement {
+public abstract class MethodDef<T extends MethodDef<T>> extends JavaElement<T> {
+
+    public MethodDef(String definition) {
+        super(definition);
+    }
     
-    protected abstract String getName();
+    public abstract String getNameString();
 
-    protected abstract Parameter[] getParameters();
+    public abstract Parameter[] getParameters();
 
-    protected abstract Type getReturnType();
+    public abstract Type getReturnType();
 
     protected boolean matchesDef(String name, Type... params) {
-        if (!getName().matches(name)) {
+        if (!getNameString().matches(name)) {
             return false;
         }
         if (getParameters().length != params.length) {
             return false;
         }
         for (int i = 0; i < params.length; i++) {
-            if (!getParameters()[i].getType().getName().matches(params[i].getName())) {
+            if (!getParameters()[i].getType().getNameString().matches(params[i].getNameString())) {
                 return false;
             }
         }

@@ -1,13 +1,16 @@
 package com.quew8.codegen.java;
 
+import com.quew8.codegen.Element;
+
 /**
  *
  * @author Quew8
  */
-public class Block extends JavaElement {
+public class Block extends JavaElement<Block> {
     private String code;
     
     public Block(String code) {
+        super("{<<!code>>}");
         this.code = code;
     }
     
@@ -20,12 +23,11 @@ public class Block extends JavaElement {
         return this;
     }
     
-    @Override
-    protected String getConstructedCode() {
-        return JavaCodeGenUtils.getConstruction()
-                .add("{")
-                .addNewline(JavaCodeGenUtils.shiftRight(code))
-                .addNewline("}")
-                .get();
+    public String getCodeString() {
+        return code;
+    }
+    
+    public Element<JavaGenData, ?> getCode() {
+        return Element.wrap(code);
     }
 }

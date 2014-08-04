@@ -1,16 +1,19 @@
 package com.quew8.codegen.glsl;
 
+import com.quew8.codegen.Element;
+
 /**
  *
  * @author Quew8
  */
-public class Method extends GLSLElement {
+public class Method extends GLSLElement<Method> {
     private Type returnType;
     private String name;
     private Parameter[] parameters;
     private Block block;
 
     public Method(Type returnType, String name, Parameter[] parameters, Block block) {
+        super("<<returnType|void>> <<name>>(<<, <parameters|void>>>) <<block>>");
         this.returnType = returnType;
         this.name = name;
         this.parameters = parameters != null ? parameters : new Parameter[]{};
@@ -30,8 +33,12 @@ public class Method extends GLSLElement {
         return this;
     }
 
-    public String getName() {
+    public String getNameString() {
         return name;
+    }
+
+    public Element<GLSLGenData, ?> getName() {
+        return Element.<GLSLGenData>wrap(name);
     }
 
     public Method setName(String name) {
@@ -57,7 +64,7 @@ public class Method extends GLSLElement {
         return this;
     }
 
-    @Override
+    /*@Override
     protected String getConstructedCode() {
         return GLSLCodeGenUtils.getConstruction()
                 .add(returnType != null, returnType)
@@ -67,7 +74,5 @@ public class Method extends GLSLElement {
                 .addNoGap(parameters.length == 0, "(void)")
                 .add(block)
                 .get();
-    }
-    
-    
+    }*/
 }

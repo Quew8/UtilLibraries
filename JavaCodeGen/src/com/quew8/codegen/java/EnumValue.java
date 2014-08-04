@@ -1,15 +1,18 @@
 package com.quew8.codegen.java;
 
+import com.quew8.codegen.Element;
+
 /**
  *
  * @author Quew8
  */
-public class EnumValue extends Variable {
+public class EnumValue extends Variable<EnumValue> {
     private Enum enumType;
     private String name;
     private String args;
 
     public EnumValue(Enum enumType, String name, String args) {
+        super("<<name>>(<<args>>)");
         this.enumType = enumType;
         this.name = name;
         this.args = args;
@@ -23,12 +26,16 @@ public class EnumValue extends Variable {
         this(null, null);
     }
     
-    protected Enum getEnumType() {
+    public Enum getEnumType() {
         return enumType;
     }
     
-    protected String getArgs() {
+    public String getArgsString() {
         return args;
+    }
+    
+    public Element<JavaGenData, ?> getArgs() {
+        return wrap(args);
     }
     
     public EnumValue setEnumType(Enum enumType) {
@@ -47,20 +54,24 @@ public class EnumValue extends Variable {
     }
     
     @Override
-    protected String getName() {
+    public String getNameString() {
         return name;
+    }
+    
+    public Element<JavaGenData, ?> getName() {
+        return wrap(name);
     }
 
     @Override
-    protected Type getType() {
+    public Type getType() {
         return enumType.getType();
     }
 
-    @Override
+    /*@Override
     protected String getConstructedCode() {
         return JavaCodeGenUtils.getConstruction()
                 .add(name)
                 .addNoGap("(", args, ")")
                 .get();
-    }
+    }*/
 }

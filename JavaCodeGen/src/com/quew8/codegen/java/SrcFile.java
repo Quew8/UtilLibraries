@@ -4,12 +4,13 @@ package com.quew8.codegen.java;
  *
  * @author Quew8
  */
-public class SrcFile extends JavaElement {
+public class SrcFile extends JavaElement<SrcFile> {
     private PackageStatement inPackage;
     private ImportStatement[] imports;
     private TypeDef type;
     
     public SrcFile(PackageStatement inPackage, ImportStatement[] imports, TypeDef type) {
+        super("<<inPackage>\n\n><<\n<imports>>\n\n><<type>>");
         this.inPackage = inPackage;
         this.imports = imports != null ? imports : new ImportStatement[]{};
         this.type = type;
@@ -23,7 +24,7 @@ public class SrcFile extends JavaElement {
         this(null);
     }
     
-    protected PackageStatement getInPackage() {
+    public PackageStatement getInPackage() {
         return inPackage;
     }
 
@@ -32,7 +33,7 @@ public class SrcFile extends JavaElement {
         return this;
     }
 
-    protected ImportStatement[] getImports() {
+    public ImportStatement[] getImports() {
         return imports;
     }
 
@@ -41,7 +42,7 @@ public class SrcFile extends JavaElement {
         return this;
     }
 
-    protected TypeDef getType() {
+    public TypeDef getType() {
         return type;
     }
 
@@ -65,7 +66,7 @@ public class SrcFile extends JavaElement {
         return type.getTypes();
     }
     
-    @Override
+    /*@Override
     protected String getConstructedCode() {
         return JavaCodeGenUtils.getConstruction()
                 .add(inPackage != null, inPackage)
@@ -76,5 +77,5 @@ public class SrcFile extends JavaElement {
                 )
                 .addLineSeparated(type)
                 .get();
-    }
+    }*/
 }

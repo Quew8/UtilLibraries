@@ -1,10 +1,12 @@
 package com.quew8.codegen.glsl;
 
+import com.quew8.codegen.Element;
+
 /**
  *
  * @author Quew8
  */
-public class Modifier extends GLSLElement {
+public class Modifier extends GLSLElement<Modifier> {
     public static final Modifier 
             ATTRIBUTE = new Modifier("attribute"), 
             VARYING = new Modifier("varying"),
@@ -15,11 +17,16 @@ public class Modifier extends GLSLElement {
     private String mod;
     
     private Modifier(String mod) {
+        super("<<mod>>");
         this.mod = mod;
     }
 
-    protected String getMod() {
+    public String getModString() {
         return mod;
+    }
+
+    public Element<GLSLGenData, ?> getMod() {
+        return Element.<GLSLGenData>wrap(mod);
     }
 
     public Modifier setMod(String mod) {
@@ -27,10 +34,10 @@ public class Modifier extends GLSLElement {
         return this;
     }
 
-    @Override
+    /*@Override
     protected String getConstructedCode() {
         return mod;
-    }
+    }*/
     
     public static Modifier getModifier(String name) {
         switch(name) {

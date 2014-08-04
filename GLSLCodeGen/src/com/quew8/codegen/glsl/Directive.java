@@ -1,20 +1,27 @@
 package com.quew8.codegen.glsl;
 
+import com.quew8.codegen.Element;
+
 /**
  *
  * @author Quew8
  */
-public class Directive extends GLSLElement {
+public class Directive extends GLSLElement<Directive> {
     private String name;
     private String body;
 
     public Directive(String name, String body) {
+        super("#<<name>>< <body>>");
         this.name = name;
         this.body = body;
     }
 
-    public String getName() {
+    public String getNameString() {
         return name;
+    }
+
+    public Element<GLSLGenData, ?> getName() {
+        return Element.<GLSLGenData>wrap(name);
     }
 
     public Directive setName(String name) {
@@ -22,8 +29,12 @@ public class Directive extends GLSLElement {
         return this;
     }
 
-    public String getBody() {
+    public String getBodyString() {
         return body;
+    }
+
+    public Element<GLSLGenData, ?> getBody() {
+        return Element.<GLSLGenData>wrap(body);
     }
 
     public Directive setBody(String body) {
@@ -31,12 +42,12 @@ public class Directive extends GLSLElement {
         return this;
     }
     
-    @Override
+    /*@Override
     protected String getConstructedCode() {
         return GLSLCodeGenUtils.getConstruction()
                 .add("#" + name, body)
                 .get();
-    }
+    }*/
     
     public static Directive getVersion(String version) {
         return new Directive("version", version);

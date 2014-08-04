@@ -8,7 +8,7 @@ import java.util.Arrays;
  *
  * @author Quew8
  */
-public class JavaEvaluator implements Evaluator<JavaElement, JavaEvaluator> {
+public class JavaEvaluator implements Evaluator<JavaGenData, JavaElement<?>, JavaEvaluator> {
     public static final JavaEvaluator INSTANCE = new JavaEvaluator();
     
     @SuppressWarnings("unchecked")
@@ -66,11 +66,11 @@ public class JavaEvaluator implements Evaluator<JavaElement, JavaEvaluator> {
             @Override
             public Object run(JavaEvaluator eval, Object[] args) {
                 if(args[0] instanceof Variable) {
-                    ((Variable) args[0]).getName();
+                    ((Variable) args[0]).getNameString();
                 } else if(args[0] instanceof MethodDef) {
-                    return ((MethodDef) args[0]).getName();
+                    return ((MethodDef) args[0]).getNameString();
                 } else {
-                    return ((TypeDef) args[0]).getName();
+                    return ((TypeDef) args[0]).getNameString();
                 }
                 return ((Variable) args[0]).getType();
             }
@@ -93,7 +93,7 @@ public class JavaEvaluator implements Evaluator<JavaElement, JavaEvaluator> {
                 Parameter[] params = ((MethodDef) args[0]).getParameters();
                 if(args[1] instanceof String) {
                     for(Parameter param : params) {
-                        if (param.getName().matches((String) args[1])) {
+                        if (param.getNameString().matches((String) args[1])) {
                             return param;
                         }
                     }
@@ -113,7 +113,7 @@ public class JavaEvaluator implements Evaluator<JavaElement, JavaEvaluator> {
                 Variable[] fields = ((Class) args[0]).getFields();
                 if(args[1] instanceof String) {
                     for(Variable v : fields) {
-                        if (v.getName().matches((String) args[1])) {
+                        if (v.getNameString().matches((String) args[1])) {
                             return v;
                         }
                     }
@@ -162,7 +162,7 @@ public class JavaEvaluator implements Evaluator<JavaElement, JavaEvaluator> {
     
     public Variable getVariable(String name) {
         for(Variable v: variables) {
-            if(v.getName().matches(name)) {
+            if(v.getNameString().matches(name)) {
                 return v;
             }
         }
@@ -171,7 +171,7 @@ public class JavaEvaluator implements Evaluator<JavaElement, JavaEvaluator> {
     
     public MethodDef getMethod(String name) {
         for(MethodDef m: methods) {
-            if(m.getName().matches(name)) {
+            if(m.getNameString().matches(name)) {
                 return m;
             }
         }
@@ -189,7 +189,7 @@ public class JavaEvaluator implements Evaluator<JavaElement, JavaEvaluator> {
     
     public TypeDef getType(String name) {
         for(TypeDef t: types) {
-            if(t.getName().matches(name)) {
+            if(t.getNameString().matches(name)) {
                 return t;
             }
         }

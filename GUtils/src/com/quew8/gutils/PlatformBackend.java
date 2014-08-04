@@ -328,6 +328,10 @@ public abstract class PlatformBackend<T extends LoadedImage> {
     
     public abstract void glViewport_P(int x, int y, int width, int height);
     
+    public abstract int getOpenGLVersion_P();
+    
+    public abstract int getGLSLVersion_P();
+    
     public abstract LogStream getLogStream_P(LogLevel level);
     
     public abstract File getLogFile_P(String filename);

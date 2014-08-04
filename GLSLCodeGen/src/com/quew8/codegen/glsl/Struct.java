@@ -1,14 +1,17 @@
 package com.quew8.codegen.glsl;
 
+import com.quew8.codegen.Element;
+
 /**
  *
  * @author Quew8
  */
-public class Struct extends GLSLElement {
+public class Struct extends GLSLElement<Struct> {
     private String name;
     private Variable[] variables;
 
     public Struct(String name, Variable[] variables) {
+        super("<<name>> {\n<<\n<variables>>>\n};");
         this.name = name;
         this.variables = variables != null ? variables : new Variable[]{};
     }
@@ -17,8 +20,12 @@ public class Struct extends GLSLElement {
         this(name, null);
     }
 
-    public String getName() {
+    public String getNameString() {
         return name;
+    }
+
+    public Element<GLSLGenData, ?> getName() {
+        return Element.<GLSLGenData>wrap(name);
     }
 
     public Struct setName(String name) {
@@ -33,11 +40,6 @@ public class Struct extends GLSLElement {
     public Struct setVariables(Variable[] variables) {
         this.variables = variables;
         return this;
-    }
-    
-    @Override
-    protected String getConstructedCode() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
 }

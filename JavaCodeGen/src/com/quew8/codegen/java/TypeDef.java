@@ -3,23 +3,28 @@ package com.quew8.codegen.java;
 /**
  *
  * @author Quew8
+ * @param <T>
  */
-public abstract class TypeDef extends JavaElement {
+public abstract class TypeDef<T extends TypeDef<T>> extends JavaElement<T> {
 
-    protected abstract String getName();
+    public TypeDef(String definition) {
+        super(definition);
+    }
 
-    protected abstract Type getSuperType();
-    
-    protected abstract String[] getGenericArgs();
+    public abstract String getNameString();
 
-    protected abstract Field[] getFields();
+    public abstract Type getSuperType();
     
-    protected abstract Method[] getDefinedMethods();
+    public abstract String[] getGenericArgStrings();
+
+    public abstract Field[] getFields();
     
-    protected Type getType(Type... generics) {
-        if(generics.length != getGenericArgs().length) {
+    public abstract Method[] getDefinedMethods();
+    
+    public Type getType(Type... generics) {
+        if(generics.length != getGenericArgStrings().length) {
             throw new RuntimeException("Wrong Number Of Generic Arguments");
         }
-        return new Type(getName(), generics);
+        return new Type(getNameString(), generics);
     }
 }

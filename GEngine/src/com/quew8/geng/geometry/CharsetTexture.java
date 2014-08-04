@@ -40,21 +40,32 @@ public class CharsetTexture extends BasicTexture {
         return map;
     }*/
     
-    public static HashMap<Character, Image> getMapping(String chars, float charWidth, float charHeight, float texWidth, float texHeight) {
+    public static HashMap<Character, Image> getMapping(String chars, float charWidth, 
+            float charHeight, float texWidth, float texHeight, float imgWidth, 
+            float imgHeight) {
+        
         final HashMap<Character, Image> map = new HashMap<Character, Image>();
         float xPos = 0, yPos = 0;
         final float texCharWidth = charWidth / texWidth, texCharHeight = charHeight / texHeight;
+        final float maxWidthCoord = imgWidth / texWidth, maxHeightCoord = imgHeight / texHeight;
         for(int i = 0; i < chars.length(); i++) {
-            map.put(chars.charAt(i), new Image(xPos, yPos, xPos + texCharWidth, yPos + texCharHeight));
-            xPos += texCharWidth;
-            if(xPos >= 1) {
+            if(xPos >= maxWidthCoord) {
                 yPos += texCharHeight;
                 xPos = 0;
-                if(yPos >= 1) {
+                if(yPos >= maxHeightCoord) {
                     throw new RuntimeException("Insufficient texture size for given chars");
                 }
             }
+            map.put(chars.charAt(i), new Image(xPos, yPos, xPos + texCharWidth, yPos + texCharHeight));
+            xPos += texCharWidth;
         }
         return map;
+    }
+    
+    public static HashMap<Character, Image> getMapping(String chars, float charWidth, 
+            float charHeight, TextureDetails texDetails) {
+        
+        return getMapping(chars, charWidth, charHeight, texDetails.texWidth, 
+                texDetails.texHeight, texDetails.usedWidth, texDetails.usedHeight);
     }
 }

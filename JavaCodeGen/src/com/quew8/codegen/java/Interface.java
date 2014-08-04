@@ -1,10 +1,12 @@
 package com.quew8.codegen.java;
 
+import com.quew8.codegen.Element;
+
 /**
  *
  * @author Quew8
  */
-public class Interface extends TypeDef {
+public class Interface extends TypeDef<Interface> {
     private AccessModifier access;
     private Modifier modifier;
     private String name;
@@ -18,6 +20,8 @@ public class Interface extends TypeDef {
             String[] genericArgs, Type superType, Field[] fields, 
             Method[] definedMethods, TypeDef[] nestedTypes) {
         
+        super("<<access> ><<modifier> >interface <<name>>&lt;<<, <genericArgs>>>&gt;< extends <superType>> {\n"
+                + "<<\n<!fields>>\n\n><<\n\n<!definedMethods>>\n\n><<\n\n<nestedTypes>>>\n}");
         this.access = access;
         this.modifier = modifier;
         this.name = name;
@@ -36,40 +40,48 @@ public class Interface extends TypeDef {
         this(null);
     }
     
-    protected AccessModifier getAccess() {
+    public AccessModifier getAccess() {
         return access;
     }
 
-    protected Modifier getModifier() {
+    public Modifier getModifier() {
         return modifier;
     }
     
     @Override
-    protected String getName() {
+    public String getNameString() {
         return name;
+    }
+    
+    public Element<JavaGenData, ?> getName() {
+        return wrap(name);
     }
 
     @Override
-    protected String[] getGenericArgs() {
+    public String[] getGenericArgStrings() {
         return genericArgs;
     }
 
+    public Element<JavaGenData, ?>[] getGenericArgs() {
+        return wrap(genericArgs);
+    }
+
     @Override
-    protected Type getSuperType() {
+    public Type getSuperType() {
         return superType;
     }
 
     @Override
-    protected Field[] getFields() {
+    public Field[] getFields() {
         return fields;
     }
 
     @Override
-    protected Method[] getDefinedMethods() {
+    public Method[] getDefinedMethods() {
         return definedMethods;
     }
 
-    protected TypeDef[] getNestedTypes() {
+    public TypeDef[] getNestedTypes() {
         return nestedTypes;
     }
 
@@ -113,7 +125,7 @@ public class Interface extends TypeDef {
         return this;
     }
 
-    @Override
+    /*@Override
     protected String getConstructedCode() {
         return JavaCodeGenUtils.getConstruction()
                 .add(access, modifier)
@@ -134,7 +146,7 @@ public class Interface extends TypeDef {
                 )
                 .addNewline("}")
                 .get();
-    }
+    }*/
 
     @Override
     protected MethodDef[] getMethods() {

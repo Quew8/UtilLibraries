@@ -17,13 +17,13 @@ abstract class GLSLElementStructure<T extends GLSLElementStructure<T>> extends G
     private final ArrayList<GLSLStructParser> structs = new ArrayList<GLSLStructParser>();
     private final ArrayList<GLSLMethodParser> methods = new ArrayList<GLSLMethodParser>();
     private final ArrayList<GLSLVariableParser> globalVariables = new ArrayList<GLSLVariableParser>();
-    private final ArrayList<Directive> directives = new ArrayList<Directive>();
+    private final ArrayList<DirectiveDesc> directives = new ArrayList<DirectiveDesc>();
     
     public void addGlobalVariable(GLSLVariableParser variable) {
         globalVariables.add(variable);
     }
     
-    public void add(Directive[] directives) {
+    public void add(DirectiveDesc[] directives) {
         this.directives.addAll(Arrays.asList(directives));
     }
     
@@ -39,7 +39,7 @@ abstract class GLSLElementStructure<T extends GLSLElementStructure<T>> extends G
         return globalVariables;
     }
     
-    public ArrayList<Directive> getDirectives() {
+    public ArrayList<DirectiveDesc> getDirectives() {
         return directives;
     }
     
@@ -51,7 +51,7 @@ abstract class GLSLElementStructure<T extends GLSLElementStructure<T>> extends G
     }
     
     public void addTo(GLSLElements elements) {
-        for(Directive directive: directives) {
+        for(DirectiveDesc directive: directives) {
             elements.directives.add(directive);
         }
         for(GLSLVariableParser globalVariable: globalVariables) {
@@ -83,24 +83,21 @@ abstract class GLSLElementStructure<T extends GLSLElementStructure<T>> extends G
         to.put(VERSION, new XMLElementParser() {
             @Override
             public void parse(Element element) {
-                directives.add(Directive.getVersion(element.getText()));
+                directives.add(GLSLElementStructure.this.parseWith(element, new GLSLVersionParser()).getDirective());
             }
         }
         );
         to.put(EXTENSION, new XMLElementParser() {
             @Override
             public void parse(Element element) {
-                directives.add(Directive.getExtension(
-                        element.getText(),
-                        Boolean.parseBoolean(element.attributeValue("enable", "true"))
-                ));
+                directives.add(GLSLElementStructure.this.parseWith(element, new GLSLExtensionParser()).getDirective());
             }
         }
         );
         to.put(EXTRA, new XMLElementParser() {
             @Override
             public void parse(Element element) {
-                directives.add(CodeGenUtils.getElement(Directive.class, element.getText()));
+                directives.add(GLSLElementStructure.this.parseWith(element, new GLSLExtraParser()).getDirective());
             }
         }
         );

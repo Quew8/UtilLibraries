@@ -7,6 +7,7 @@ import com.quew8.codegen.glsl.Type;
 import com.quew8.geng.glslparser.GLSLShaderParser.GLSLElements;
 import com.quew8.geng.xmlparser.XMLAttributeParser;
 import com.quew8.geng.xmlparser.XMLElementParser;
+import com.quew8.geng.xmlparser.XMLParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import org.dom4j.Attribute;
@@ -76,6 +77,17 @@ public class GLSLMethodParser extends GLSLElementStructure<GLSLMethodParser> {
             }
         });
         return to;
+    }
+
+    @Override
+    public XMLParseException onParsingDone() {
+        if(name == null || name.isEmpty()) {
+            return new XMLParseException("Name attribute is empty in method");
+        }
+        if(code == null || code.isEmpty()) {
+            return new XMLParseException("Method has no code");
+        }
+        return super.onParsingDone();
     }
     
     @Override

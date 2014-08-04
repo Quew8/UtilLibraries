@@ -52,7 +52,11 @@ public abstract class XMLParser {
     }
 
     public <K extends XMLParser> K parseWith(String targetURL, K parser) {
-        return parseWith(findTarget(targetURL), parser);
+        Element elem = findTarget(targetURL);
+        if(elem == null) {
+            throw new XMLParseException("No element found with url \"" + targetURL + "\"");
+        }
+        return parseWith(elem, parser);
     }
     
     public void parse(Element element) {

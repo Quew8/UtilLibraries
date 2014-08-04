@@ -11,13 +11,15 @@ import org.dom4j.Element;
  * @author Quew8
  * @param <T>
  */
-public abstract class GLSLParser<T extends GLSLParser<T>> extends XMLParser {
+abstract class GLSLParser<T extends GLSLParser<T>> extends XMLParser {
+    public static final String GLSL_PARSER_LOG = "GLSL_PARSER";
     public static final String 
             SHADER_PROGRAM = "shader_program", 
             SHADER = "shader", 
             PIPELINE = "pipeline",
             EFFECT = "effect", 
             CODE = "code",
+            IN_LINE_CODE = "in_line_code",
             VARIABLE = "variable",
             METHOD = "method",
             STRUCT = "struct",
@@ -29,15 +31,15 @@ public abstract class GLSLParser<T extends GLSLParser<T>> extends XMLParser {
             NAME = "name", 
             TYPE = "type", 
             SEMANTIC = "semantic",
+            INDEX = "index",
             MOD = "mod", 
             SRC = "src",
             PREDEFINED = "predefined",
-            RETURN_TYPE = "returnType";
-    
-    @Override
-    public void parse(Element element) {
-        super.parse(element);
-    }
+            RETURN_TYPE = "returnType",
+            MIN = "min",
+            MAX = "max",
+            ENABLE = "enable",
+            BELOW = "belowVersion";
     
     public void loadPredefined(Element element, String predefinedName) {
         throw new RuntimeException("No predefined " + element.getName() + " found.");

@@ -1,10 +1,12 @@
 package com.quew8.codegen.java;
 
+import com.quew8.codegen.Element;
+
 /**
  *
  * @author Quew8
  */
-public class Field extends Variable {
+public class Field extends Variable<Field> {
     private AccessModifier access;
     private Modifier modifier;
     private Type type;
@@ -12,6 +14,7 @@ public class Field extends Variable {
     private String initStatement;
     
     public Field(AccessModifier access, Modifier modifier, Type type, String name, String initStatement) {
+        super("<<access> ><<modifier> >><<type>> <<name>>< = <initStatement>>;");
         this.access = access;
         this.modifier = modifier;
         this.type = type;
@@ -27,26 +30,34 @@ public class Field extends Variable {
         this(null, null);
     }
     
-    protected AccessModifier getAccess() {
+    public AccessModifier getAccess() {
         return access;
     }
 
-    protected Modifier getModifier() {
+    public Modifier getModifier() {
         return modifier;
     }
 
     @Override
-    protected Type getType() {
+    public Type getType() {
         return type;
     }
 
     @Override
-    protected String getName() {
+    public String getNameString() {
         return name;
     }
 
-    protected String getInitStatement() {
+    public Element<JavaGenData, ?> getName() {
+        return wrap(name);
+    }
+
+    public String getInitStatementString() {
         return initStatement;
+    }
+
+    public Element<JavaGenData, ?> getInitStatement() {
+        return wrap(initStatement);
     }
     
     public Field setAccess(AccessModifier access) {
@@ -74,7 +85,7 @@ public class Field extends Variable {
         return this;
     }
     
-    @Override
+    /*@Override
     protected String getConstructedCode() {
         return JavaCodeGenUtils.getConstruction()
                 .add(access, modifier, getType())
@@ -82,5 +93,5 @@ public class Field extends Variable {
                 .add(initStatement != null, "=", initStatement)
                 .addNoGap(";")
                 .get();
-    }
+    }*/
 }

@@ -7,7 +7,7 @@ import com.quew8.codegen.FetchMethod;
  *
  * @author Quew8
  */
-public class GLSLEvaluator implements Evaluator<GLSLElement, GLSLEvaluator> {
+public class GLSLEvaluator implements Evaluator<GLSLGenData, GLSLElement<?>, GLSLEvaluator> {
     public static final GLSLEvaluator INSTANCE = new GLSLEvaluator();
     @SuppressWarnings("unchecked")
     private static final FetchMethod<GLSLEvaluator>[] METHODS = GLSLEvaluator.<FetchMethod<GLSLEvaluator>>getArray(

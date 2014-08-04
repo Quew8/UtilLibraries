@@ -3,10 +3,15 @@ package com.quew8.codegen.java;
 /**
  *
  * @author Quew8
+ * @param <T>
  */
-public abstract class Variable extends JavaElement {
-
-    protected abstract String getName();
+public abstract class Variable<T extends Variable<T>> extends JavaElement<T> {
     
-    protected abstract Type getType();
+    public Variable(String definition) {
+        super(definition);
+    }
+    
+    public abstract String getNameString();
+    
+    public abstract Type getType();
 }

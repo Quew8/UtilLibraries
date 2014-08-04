@@ -1024,6 +1024,16 @@ public class DebugBackend<T extends LoadedImage> extends PlatformBackend<T> {
     }
 
     @Override
+    public int getOpenGLVersion_P() {
+        return impl.getOpenGLVersion_P();
+    }
+
+    @Override
+    public int getGLSLVersion_P() {
+        return impl.getGLSLVersion_P();
+    }
+
+    @Override
     public LogStream getLogStream_P(LogLevel level) {
         return impl.getLogStream_P(level);
     }

@@ -1,16 +1,17 @@
 package com.quew8.codegen.java;
 
-import com.quew8.codegen.CodeGenUtils;
+import com.quew8.codegen.Element;
 
 /**
  *
  * @author Quew8
  */
-public class Parameter extends Variable {
+public class Parameter extends Variable<Parameter> {
     private Type type;
     private String name;
     
     public Parameter(Type type, String name) {
+        super("<<type>> <<name>>");
         this.type = type;
         this.name = name;
     }
@@ -20,13 +21,17 @@ public class Parameter extends Variable {
     }
     
     @Override
-    protected Type getType() {
+    public Type getType() {
         return type;
     }
 
     @Override
-    protected String getName() {
+    public String getNameString() {
         return name;
+    }
+
+    public Element<JavaGenData, ?> getName() {
+        return wrap(name);
     }
 
     public Parameter setType(Type type) {
@@ -39,11 +44,11 @@ public class Parameter extends Variable {
         return this;
     }
     
-    @Override
+    /*@Override
     protected String getConstructedCode() {
         return CodeGenUtils.getConstruction()
                 .add(getType())
                 .add(getName())
                 .get();
-    }
+    }*/
 }

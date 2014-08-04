@@ -4,6 +4,7 @@ import com.quew8.codegen.glsl.Struct;
 import com.quew8.codegen.glsl.Variable;
 import com.quew8.geng.xmlparser.XMLAttributeParser;
 import com.quew8.geng.xmlparser.XMLElementParser;
+import com.quew8.geng.xmlparser.XMLParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import org.dom4j.Attribute;
@@ -63,5 +64,13 @@ public class GLSLStructParser extends GLSLParser<GLSLStructParser> {
             vars[i] = variables.get(i).getVariable();
         }
         return new Struct(name, vars);
+    }
+
+    @Override
+    public XMLParseException onParsingDone() {
+        if(name == null || name.isEmpty()) {
+            throw new XMLParseException("Name attribute is empty in struct");
+        }
+        return super.onParsingDone();
     }
 }

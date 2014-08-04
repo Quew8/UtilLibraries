@@ -4,7 +4,7 @@ package com.quew8.codegen.java;
  *
  * @author Quew8
  */
-public class Enum extends TypeDef {
+public class Enum extends TypeDef<Enum> {
     private AccessModifier access;
     private Modifier modifier;
     private String name;
@@ -18,6 +18,9 @@ public class Enum extends TypeDef {
             EnumValue[] values, Constructor[] constructors, Field[] fields, 
             Method[] definedMethods, TypeDef[] nestedTypes) {
         
+        super("<<access> ><<modifier> >enum <<name>> {\n"
+                + "<<, <values>>\n\n><<\n\n<constructors>>\n\n><<\n<fields>>\n\n><<\n\n<definedMethods>>\n\n><<\n\n<nestedTypes>>\n\n>"
+                + "\n}");
         this.access = access;
         this.modifier = modifier;
         this.name = name;
@@ -82,44 +85,44 @@ public class Enum extends TypeDef {
         return this;
     }
     
-    protected AccessModifier getAccess() {
+    public AccessModifier getAccess() {
         return access;
     }
     
-    protected Modifier getModifier() {
+    public Modifier getModifier() {
         return modifier;
     }
     
     @Override
-    protected String getName() {
+    public String getNameString() {
         return name;
     }
 
     @Override
-    protected Type getSuperType() {
+    public Type getSuperType() {
         return new Type("Enum<" + name + ">");
     }
 
     @Override
-    protected String[] getGenericArgs() {
+    public String[] getGenericArgStrings() {
         return new String[]{};
     }
     
-    protected EnumValue[] getValues() {
+    public EnumValue[] getValues() {
         return values;
     }
     
-    protected Constructor[] getConstructors() {
+    public Constructor[] getConstructors() {
         return constructors;
     }
 
     @Override
-    protected Field[] getFields() {
+    public Field[] getFields() {
         return fields;
     }
 
     @Override
-    protected Method[] getDefinedMethods() {
+    public Method[] getDefinedMethods() {
         return definedMethods;
     }
 
@@ -127,7 +130,7 @@ public class Enum extends TypeDef {
         return nestedTypes;
     }
     
-    @Override
+    /*@Override
     protected String getConstructedCode() {
         return JavaCodeGenUtils.getConstruction()
                 .add(access, modifier)
@@ -147,20 +150,20 @@ public class Enum extends TypeDef {
                 )
                 .addNewline("}")
                 .get();
-    }
+    }*/
 
     @Override
-    protected MethodDef[] getMethods() {
+    public MethodDef[] getMethods() {
         return JavaCodeGenUtils.combineElements(MethodDef.class, definedMethods, JavaCodeGenUtils.getMethodsOf(nestedTypes));
     }
 
     @Override
-    protected Variable[] getVariables() {
+    public Variable[] getVariables() {
         return JavaCodeGenUtils.combineElements(Variable.class, values, fields, JavaCodeGenUtils.getVariablesOf(definedMethods, nestedTypes));
     }
 
     @Override
-    protected TypeDef[] getTypes() {
+    public TypeDef[] getTypes() {
         return JavaCodeGenUtils.combineElements(TypeDef.class, nestedTypes, JavaCodeGenUtils.getTypesOf(nestedTypes));
     }
     

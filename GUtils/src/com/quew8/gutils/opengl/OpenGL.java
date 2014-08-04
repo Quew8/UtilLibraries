@@ -853,5 +853,11 @@ public abstract class OpenGL {
         PlatformBackend.backend.glViewport_P(x, y, width, height);
     }
     
+    public static int getOpenGLVersion() {
+        return PlatformBackend.backend.getOpenGLVersion_P();
+    }
     
+    public static int getGLSLVersion() {
+        return PlatformBackend.backend.getGLSLVersion_P();
+    }
 }

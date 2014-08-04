@@ -26,7 +26,9 @@ public class Window extends Surface {
         Display.setTitle(title);
         Display.setResizable(resizable);
         Display.create(pixelFormat, contextAttribs);
-        PlatformBackend.setBackend(new DesktopBackend(serviceLocations));
+        int oglVersion = ( ( contextAttribs.getMajorVersion() * 10) + contextAttribs.getMinorVersion() ) * 10;
+        int glslVersion = DesktopBackend.getGLSLVersionForOGL(oglVersion);
+        PlatformBackend.setBackend(new DesktopBackend(oglVersion, glslVersion, serviceLocations));
         DebugLogger.v(INIT_LOG, "Vendor: " + OpenGL.glGetString(OpenGL.GL_VENDOR));
         DebugLogger.v(INIT_LOG, "Renderer: " + OpenGL.glGetString(OpenGL.GL_RENDERER));
         DebugLogger.v(INIT_LOG, "Version: " + OpenGL.glGetString(OpenGL.GL_VERSION));

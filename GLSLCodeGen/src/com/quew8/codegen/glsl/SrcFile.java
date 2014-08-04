@@ -4,13 +4,14 @@ package com.quew8.codegen.glsl;
  *
  * @author Quew8
  */
-public class SrcFile extends GLSLElement {
+public class SrcFile extends GLSLElement<SrcFile> {
     private Directive[] directives;
     private Struct[] structs;
     private Variable[] variables;
     private Method[] methods;
 
     public SrcFile(Directive[] directives, Struct[] structs, Variable[] variables, Method[] methods) {
+        super("<<\n<directives>>\n\n><<\n\n<structs>>\n\n><<\n<variables>>\n\n><<\n\n<methods>>>");
         this.directives = directives != null ? directives : new Directive[]{};
         this.structs = structs != null ? structs : new Struct[]{};
         this.variables = variables != null ? variables : new Variable[]{};
@@ -57,7 +58,7 @@ public class SrcFile extends GLSLElement {
         return this;
     }
     
-    @Override
+    /*@Override
     protected String getConstructedCode() {
         return GLSLCodeGenUtils.getConstruction()
                 .addLineSeparated(GLSLCodeGenUtils.getNewlineList(directives))
@@ -65,6 +66,6 @@ public class SrcFile extends GLSLElement {
                 .addLineSeparated(GLSLCodeGenUtils.getNewlineList(variables))
                 .addLineSeparated(methods)
                 .get();
-    }
+    }*/
     
 }

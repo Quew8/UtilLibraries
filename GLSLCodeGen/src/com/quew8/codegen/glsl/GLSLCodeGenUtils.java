@@ -11,7 +11,7 @@ import java.util.HashMap;
 public class GLSLCodeGenUtils extends CodeGenUtils {
     
     public static String generateGLSL(GLSLElement element, HashMap<String, String> replacements) {
-        return new Generator<GLSLElement, GLSLEvaluator>(GLSLEvaluator.INSTANCE, element, replacements).generate();
+        return new Generator<GLSLGenData, GLSLElement<?>, GLSLEvaluator>(new GLSLGenData(), GLSLEvaluator.INSTANCE, element, replacements).generate();
     }
     
     public static String generateGLSL(GLSLElement element) {

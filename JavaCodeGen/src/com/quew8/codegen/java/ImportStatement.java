@@ -1,16 +1,17 @@
 package com.quew8.codegen.java;
 
-import com.quew8.codegen.CodeGenUtils;
+import com.quew8.codegen.Element;
 
 /**
  *
  * @author Quew8
  */
-public class ImportStatement extends JavaElement {
+public class ImportStatement extends JavaElement<ImportStatement> {
     private boolean isStatic;
     private String toImport;
 
     public ImportStatement(boolean isStatic, String toImport) {
+        super("import< <mod>> <<import>>;");
         this.isStatic = isStatic;
         this.toImport = toImport;
     }
@@ -23,7 +24,7 @@ public class ImportStatement extends JavaElement {
         this(null);
     }
     
-    protected boolean isStatic() {
+    public boolean isStatic() {
         return isStatic;
     }
 
@@ -32,8 +33,20 @@ public class ImportStatement extends JavaElement {
         return this;
     }
 
-    protected String getImport() {
+    public Element<JavaGenData, ?> getMod() {
+        if(isStatic) {
+            return wrap("static");
+        } else {
+            return null;
+        }
+    }
+    
+    public String getImportString() {
         return toImport;
+    }
+    
+    public Element<JavaGenData, ?> getImport() {
+        return wrap(toImport);
     }
 
     public ImportStatement setImport(String toImport) {
@@ -41,7 +54,7 @@ public class ImportStatement extends JavaElement {
         return this;
     }
 
-    @Override
+    /*@Override
     protected String getConstructedCode() {
         return CodeGenUtils.getConstruction()
                 .add("import") 
@@ -49,5 +62,5 @@ public class ImportStatement extends JavaElement {
                 .add(toImport)
                 .addNoGap(";")
                 .get(); 
-    }
+    }*/
 }

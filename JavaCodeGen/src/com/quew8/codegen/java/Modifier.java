@@ -1,12 +1,12 @@
 package com.quew8.codegen.java;
 
-import com.quew8.codegen.CodeGenUtils;
+import com.quew8.codegen.Element;
 
 /**
  *
  * @author Quew8
  */
-public class Modifier extends JavaElement {
+public class Modifier extends JavaElement<Modifier> {
     private static final int 
             STATIC_BIT = 1,
             FINAL_BIT = 2,
@@ -21,6 +21,7 @@ public class Modifier extends JavaElement {
     private int mask;
     
     private Modifier(int mask) {
+        super("<<mods>>");
         this.mask = mask;
     }
     
@@ -59,26 +60,30 @@ public class Modifier extends JavaElement {
         return this;
     }
     
-    protected boolean isStatic() {
+    public boolean isStatic() {
         return (STATIC_BIT & mask) != 0;
     }
     
-    protected boolean isFinal() {
+    public boolean isFinal() {
         return (FINAL_BIT & mask) != 0;
     }
     
-    protected boolean isAbstract() {
+    public boolean isAbstract() {
         return (ABSTRACT_BIT & mask) != 0;
     }
     
-    @Override
+    public Element<JavaGenData, ?> getMods() {
+        return wrap((isStatic() ? "static " : "") + (isFinal() ? "final " : "") + (isAbstract() ? "abstract" : ""));
+    }
+    
+    /*@Override
     protected String getConstructedCode() {
         return CodeGenUtils.getConstruction()
                 .add(isStatic(), "static")
                 .add(isFinal(), "final")
                 .add(isAbstract(), "abstract")
                 .get();
-    }
+    }*/
     
     private static int getModifierMask(boolean isStatic, boolean isFinal, boolean isAbstract) {
         int mask = 0;

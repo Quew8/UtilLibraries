@@ -1,6 +1,7 @@
 package com.quew8.gutils;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -13,6 +14,7 @@ public interface ResourceLoader {
     public static final ResourceLoader INTERNAL = new InternalResourceLoader();
     public static final ResourceLoader EXTERNAL = new ExternalResourceLoader();
     
+    public InputStream throwableLoad(String resource) throws IOException;
     public InputStream load(String resource);
     public URL getURL(String resource);
     
@@ -20,6 +22,11 @@ public interface ResourceLoader {
 
         private InternalResourceLoader() {
             
+        }
+        
+        @Override
+        public InputStream throwableLoad(String resourcePath) throws IOException {
+            return GeneralUtils.throwableReadFrom(resourcePath);
         }
         
         @Override
@@ -38,6 +45,11 @@ public interface ResourceLoader {
 
         private ExternalResourceLoader() {
             
+        }
+        
+        @Override
+        public InputStream throwableLoad(String resource) throws IOException {
+            return GeneralUtils.throwableReadFrom(new File(GeneralUtils.toPlatformPath(resource)));
         }
         
         @Override

@@ -1,10 +1,12 @@
 package com.quew8.codegen.java;
 
+import com.quew8.codegen.Element;
+
 /**
  *
  * @author Quew8
  */
-public class Class extends TypeDef {
+public class Class extends TypeDef<Class> {
     private AccessModifier access;
     private Modifier modifier;
     private String name;
@@ -23,6 +25,8 @@ public class Class extends TypeDef {
             Field[] fields, Block[] blocks, Block[] staticBlocks, 
             Constructor[] constructors, Method[] definedMethods, TypeDef[] nestedTypes) {
         
+        super("<<access> ><<modifier> >class <<name>><&lt;<, <genericArgs>>&gt;>< extends <superType>>< implement <, <impldInterfaces>>> {\n"
+                + "<<\n<!fields>>\n\n><<\n\n<!blocks>>\n\n><<\n\n<!staticBlocks>>\n\n><<\n\n<!constructors>>\n\n><<\n\n<!definedMethods>>\n\n><<\n\n<!nestedTypes>>\n\n>");
         this.access = access;
         this.modifier = modifier;
         this.name = name;
@@ -48,56 +52,64 @@ public class Class extends TypeDef {
         this(null);
     }
     
-    protected AccessModifier getAccess() {
+    public AccessModifier getAccess() {
         return access;
     }
 
-    protected Modifier getModifier() {
+    public Modifier getModifier() {
         return modifier;
     }
     
     @Override
-    protected String getName() {
+    public String getNameString() {
         return name;
     }
 
-    @Override
-    protected String[] getGenericArgs() {
-        return genericArgs;
+    public Element<JavaGenData, ?> getName() {
+        return wrap(name);
     }
     
     @Override
-    protected Type getSuperType() {
+    public String[] getGenericArgStrings() {
+        return genericArgs;
+    }
+
+    public Element<JavaGenData, ?>[] getGenericArgs() {
+        return wrap(genericArgs);
+    }
+    
+    @Override
+    public Type getSuperType() {
         return superType;
     }
 
-    protected Type[] getImpldInterfaces() {
+    public Type[] getImpldInterfaces() {
         return impldInterfaces;
     }
 
     @Override
-    protected Field[] getFields() {
+    public Field[] getFields() {
         return fields;
     }
 
-    protected Block[] getBlocks() {
+    public Block[] getBlocks() {
         return blocks;
     }
 
-    protected Block[] getStaticBlocks() {
+    public Block[] getStaticBlocks() {
         return staticBlocks;
     }
     
-    protected Constructor[] getConstructors() {
+    public Constructor[] getConstructors() {
         return constructors;
     }
 
     @Override
-    protected Method[] getDefinedMethods() {
+    public Method[] getDefinedMethods() {
         return definedMethods;
     }
     
-    protected TypeDef[] getNestedTypes() {
+    public TypeDef[] getNestedTypes() {
         return nestedTypes;
     }
     
@@ -162,35 +174,6 @@ public class Class extends TypeDef {
     public Class setNestedTypes(TypeDef... nestedTypes) {
         this.nestedTypes = nestedTypes;
         return this;
-    }
-    
-    @Override
-    protected String getConstructedCode() {
-        return
-                JavaCodeGenUtils.getConstruction()
-                        .add(access, modifier)
-                        .add("class", name)
-                        .addNoGap(genericArgs.length != 0, "<", JavaCodeGenUtils.getCommaSeperatedList(genericArgs), ">")
-                        .add(superType != null, "extends")
-                        .add(superType != null, superType)
-                        .add(impldInterfaces.length > 0, "implements", JavaCodeGenUtils.getCommaSeperatedList(impldInterfaces))
-                        .add("{")
-                        .addNewline(
-                                JavaCodeGenUtils.shiftRight(
-                                        JavaCodeGenUtils.getConstruction()
-                                                .addLineSeparated(
-                                                        JavaCodeGenUtils.getNewlineList(fields),
-                                                        JavaCodeGenUtils.getLineSeperatedList(blocks),
-                                                        JavaCodeGenUtils.getLineSeperatedList(staticBlocks),
-                                                        JavaCodeGenUtils.getLineSeperatedList(constructors),
-                                                        JavaCodeGenUtils.getLineSeperatedList(definedMethods),
-                                                        JavaCodeGenUtils.getLineSeperatedList(nestedTypes)
-                                                )
-                                                .get()
-                                )
-                        )
-                        .addNewline("}")
-                        .get();
     }
     
     @Override

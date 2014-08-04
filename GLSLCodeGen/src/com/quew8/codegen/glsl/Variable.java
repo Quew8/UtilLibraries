@@ -1,10 +1,12 @@
 package com.quew8.codegen.glsl;
 
+import com.quew8.codegen.Element;
+
 /**
  *
  * @author Quew8
  */
-public class Variable extends GLSLElement {
+public class Variable extends GLSLElement<Variable> {
     public static final Variable
             GL_POSITION = new Variable(Modifier.VARYING, Type.VEC4, "gl_Position"),
             GL_FRAG_COLOR = new Variable(Modifier.NONE, Type.VEC4, "gl_FragColor");
@@ -14,6 +16,7 @@ public class Variable extends GLSLElement {
     private String name;
 
     public Variable(Modifier mod, Type type, String name) {
+        super("<<modifier> ><<type>> <<name>>;");
         this.mod = mod;
         this.type = type;
         this.name = name;
@@ -41,8 +44,12 @@ public class Variable extends GLSLElement {
         return this;
     }
 
-    public String getName() {
+    public String getNameString() {
         return name;
+    }
+
+    public Element<GLSLGenData, ?> getName() {
+        return Element.<GLSLGenData>wrap(name);
     }
 
     public Variable setName(String name) {
@@ -54,14 +61,14 @@ public class Variable extends GLSLElement {
         return name.startsWith("gl_");
     }
     
-    @Override
+    /*@Override
     protected String getConstructedCode() {
         return GLSLCodeGenUtils.getConstruction()
                 .add(mod, type)
                 .add(name)
                 .addNoGap(";")
                 .get();
-    }
+    }*/
     
     public static Variable getBuiltInVariable(String name) {
         switch(name) {

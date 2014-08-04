@@ -1,12 +1,12 @@
 package com.quew8.codegen.java;
 
-import com.quew8.codegen.CodeGenUtils;
+import com.quew8.codegen.Element;
 
 /**
  *
  * @author Quew8
  */
-public class Method extends MethodDef {
+public class Method extends MethodDef<Method> {
     private AccessModifier access;
     private Modifier modifier;
     private String name;
@@ -14,7 +14,10 @@ public class Method extends MethodDef {
     private Parameter[] parameters;
     private Block block;
     
-    public Method(AccessModifier access, Modifier modifier, Type returnType, String name, Parameter[] parameters, Block block) {
+    public Method(AccessModifier access, Modifier modifier, Type returnType, String name, 
+            Parameter[] parameters, Block block) {
+        
+        super("<<access> ><<modifier> ><<returnType>> <<name>>(<<, <parameters>>>) <<block>>");
         this.access = access;
         this.modifier = modifier;
         this.returnType = returnType;
@@ -35,26 +38,30 @@ public class Method extends MethodDef {
         this(null);
     }
     
-    protected AccessModifier getAccess() {
+    public AccessModifier getAccess() {
         return access;
     }
     
-    protected Modifier getModifier() {
+    public Modifier getModifier() {
         return modifier;
     }
 
     @Override
-    protected Type getReturnType() {
+    public Type getReturnType() {
         return returnType;
     }
 
     @Override
-    protected String getName() {
+    public String getNameString() {
         return name;
     }
 
+    public Element<JavaGenData, ?> getName() {
+        return wrap(name);
+    }
+
     @Override
-    protected Parameter[] getParameters() {
+    public Parameter[] getParameters() {
         return parameters;
     }
     
@@ -92,7 +99,7 @@ public class Method extends MethodDef {
         return this;
     }
     
-    @Override
+    /*@Override
     protected String getConstructedCode() {
         return 
                 CodeGenUtils.getConstruction()
@@ -104,10 +111,10 @@ public class Method extends MethodDef {
                         .add(block != null, block)
                         .addNoGap(block == null, ";")
                         .get();
-    }
+    }*/
 
     @Override
-    protected Variable[] getVariables() {
+    public Variable[] getVariables() {
         return parameters;
     }
 }

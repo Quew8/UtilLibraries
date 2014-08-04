@@ -5,6 +5,7 @@ import com.quew8.codegen.glsl.Parameter;
 import com.quew8.codegen.glsl.Type;
 import com.quew8.codegen.glsl.Variable;
 import com.quew8.geng.xmlparser.XMLAttributeParser;
+import com.quew8.geng.xmlparser.XMLIntAttributeParser;
 import com.quew8.geng.xmlparser.XMLParseException;
 import java.util.HashMap;
 import org.dom4j.Attribute;
@@ -19,6 +20,7 @@ public class GLSLVariableParser extends GLSLParser<GLSLVariableParser> {
     private Modifier mod = Modifier.NONE;
     private Type type;
     private String semantic;
+    private int index = 0;
     private Variable predefinedVariable = null;
     
     @Override
@@ -26,7 +28,7 @@ public class GLSLVariableParser extends GLSLParser<GLSLVariableParser> {
         predefinedVariable = Variable.getBuiltInVariable(predefinedName);
         mod = predefinedVariable.getModifier();
         type = predefinedVariable.getType();
-        name = predefinedVariable.getName();
+        name = predefinedVariable.getNameString();
     }
     
     public Parameter getParameter() {
@@ -55,8 +57,12 @@ public class GLSLVariableParser extends GLSLParser<GLSLVariableParser> {
         return semantic;
     }
     
+    public int getIndex() {
+        return index;
+    }
+    
     public boolean compatible(GLSLVariableParser other) {
-        return type.getName().matches(other.type.getName());
+        return type.getNameString().matches(other.type.getNameString());
     }
     
     public boolean isInputVariable() {
@@ -104,6 +110,12 @@ public class GLSLVariableParser extends GLSLParser<GLSLVariableParser> {
                 semantic = attribute.getValue();
             }
         });
+        to.put(INDEX, new XMLIntAttributeParser() {
+            @Override
+            public void parse(int value, Element parent) {
+                index = value;
+            }
+        });
         return to;
     }
     
@@ -118,7 +130,21 @@ public class GLSLVariableParser extends GLSLParser<GLSLVariableParser> {
         this.mod = source.mod;
         this.predefinedVariable = source.predefinedVariable;
         this.semantic = source.semantic;
+        this.index = source.index;
         this.type = source.type;
     }
-    
+
+    @Override
+    public XMLParseException onParsingDone() {
+        if(name == null || name.isEmpty()) {
+            return new XMLParseException("Name attribute is empty in variable");
+        }
+        if(type == null) {
+            return new XMLParseException("Type attribute is empty in variable");
+        }
+        if(semantic == null) {
+            return new XMLParseException("Semantic attribute is empty in variable");
+        }
+        return super.onParsingDone();
+    }
 }
