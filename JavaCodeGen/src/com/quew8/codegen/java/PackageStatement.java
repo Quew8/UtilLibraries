@@ -10,7 +10,7 @@ public class PackageStatement extends JavaElement<PackageStatement> {
     private String inPackage;
     
     public PackageStatement(String inPackage) {
-        super("import <<package>>;");
+        super("package <<package>>;");
         this.inPackage = inPackage;
     }
     

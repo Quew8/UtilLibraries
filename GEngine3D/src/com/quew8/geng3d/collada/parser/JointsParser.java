@@ -58,7 +58,7 @@ class JointsParser extends XMLParser {
                     nodes[i].getSID(),
                     nodes[i].getAbsoluteTransform(), 
                     sidToMatrix.get(nodes[i].getSID()),
-                    getJoints(nodes[i].getLeafs(), sidToMatrix)
+                    getJoints(nodes[i].getAllChildNodes(), sidToMatrix)
             );
         }
         return joints;

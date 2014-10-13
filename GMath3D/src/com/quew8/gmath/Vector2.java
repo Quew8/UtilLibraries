@@ -52,6 +52,14 @@ public class Vector2 {
     public float[] getXY() {
         return new float[]{x, y};
     }
+
+    public void setX(float x) {
+        this.x = x;
+    }
+
+    public void setY(float y) {
+        this.y = y;
+    }
     
     public float getX() {
         return x;
@@ -115,6 +123,22 @@ public class Vector2 {
     
     public float magnitude() {
         return GMath.length(x, y);
+    }
+    
+    public float manhattenMagnitude() {
+        return x + y;
+    }
+    
+    public float distance(Vector2 other) {
+        return Vector2.subtract(new Vector2(), this, other).magnitude();
+    }
+    
+    public float distanceSquared(Vector2 other) {
+        return Vector2.subtract(new Vector2(), this, other).magnitudeSquared();
+    }
+    
+    public float manhattenDistance(Vector2 other) {
+        return Vector2.subtract(new Vector2(), this, other).manhattenMagnitude();
     }
     
     public float normalize() {

@@ -7,7 +7,11 @@ import com.quew8.gutils.PlatformUtils;
 import com.quew8.gutils.threads.WorkerTask;
 
 /**
- *
+ * Task to load an array of images and load these into an OpenGL texture grid 
+ * wise. Must be supplied with the number of columns and rows in the grid as 
+ * well as the dimensions of each cell of the grid. Images are loaded in column-
+ * major order.
+ * 
  * @author Quew8
  */
 class TextureSheetLoaderTask extends WorkerTask<TextureSheetLoaderTask, TextureLoadVariables, Void, TextureLoadVariables> {
@@ -16,7 +20,7 @@ class TextureSheetLoaderTask extends WorkerTask<TextureSheetLoaderTask, TextureL
 	private final int nColumns, nRows;
 	private LoadedImage[] images;
     
-    public TextureSheetLoaderTask(int cellWidth, int cellHeight, int borderSize,
+    TextureSheetLoaderTask(int cellWidth, int cellHeight, int borderSize,
     		int nColumns, int nRows) {
     	
 		this.cellWidth = cellWidth;
@@ -26,7 +30,7 @@ class TextureSheetLoaderTask extends WorkerTask<TextureSheetLoaderTask, TextureL
 		this.nRows = nRows;
 	}
     
-	@Override
+    @Override
     public TextureLoadVariables work(TextureLoadVariables input) {
         images = new LoadedImage[input.imageLoaders.length];
         for (int i = 0; i < images.length; i++) {

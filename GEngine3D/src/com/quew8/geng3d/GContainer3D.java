@@ -8,12 +8,11 @@ import com.quew8.gutils.collections.Bag;
 /**
  * 
  * @author Quew8
+ * @param <T>
  *
  */
-public class GContainer3D extends GContainer {
+public class GContainer3D<T extends Identifiable> extends GContainer<T> {
     public final Bag<Collidable> collidables = new Bag<Collidable>(Collidable.class);
-
-    
     
     /*public void checkCollision(Body e, Vector v) {
     Vector originalV = new Vector(v);
@@ -51,10 +50,16 @@ public class GContainer3D extends GContainer {
     }
     
     @Override
-    public int add(Identifiable i) {
+    public int add(T i) {
         if(i instanceof Collidable) {
             collidables.add((Collidable) i);
         }
         return super.add(i);
+    }
+
+    @Override
+    public void remove(T t) {
+        removeFrom(t, collidables);
+        super.remove(t);
     }
 }

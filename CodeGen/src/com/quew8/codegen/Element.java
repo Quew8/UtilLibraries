@@ -65,20 +65,20 @@ public class Element<T, S extends Element<T, S>> {
                         return s;
                     }
                 } else {
-                    return exp.elseExpresssion;
+                    return exp.elseExpression;
                 }
             }
             case 3: {
                 LoopExpression exp = LoopExpression.evaluate(this, data, expression);
                 String[] sa = exp.reference.elements;
-                if(sa.length == 0) {
-                    return exp.elseExpresssion;
+                if(sa.length == 0) { //If list is empty.
+                    return exp.elseExpression;
                 } else {
                     int i = 0;
-                    while(sa[i].isEmpty()) {
+                    while(sa[i].isEmpty()) { //Skip foward to first non-empty element.
                         i++;
-                        if(i >= sa.length) {
-                            return exp.elseExpresssion;
+                        if(i >= sa.length) { //If reached end then all empty.
+                            return exp.elseExpression;
                         }
                     }
                     String s = exp.pre + sa[i++];
@@ -188,7 +188,7 @@ public class Element<T, S extends Element<T, S>> {
             if(!m.find()) {
                 m = INDEXED_REF_PATTERN.matcher(expression);
                 if(!m.find()) {
-                    throw new RuntimeException("Malformed Expression");
+                    throw new RuntimeException("Malformed Reference: \"" + expression + "\"");
                 }
             }
             boolean indent = m.group(1) != null;
@@ -217,22 +217,22 @@ public class Element<T, S extends Element<T, S>> {
     }
     
     private static class Expression {
-        public static final String ELEMENT_PATTERN_STRING = "\\<([,\\(\\)\\w\\s]*)\\<([!,\\(\\)\\w\\[\\]]+)(\\|([,\\(\\)\\s\\w\\[\\]]+))?\\>([,\\(\\)\\w\\s]*)\\>";
+        public static final String ELEMENT_PATTERN_STRING = "\\<([^\\<\\>]*)\\<([^\\<\\>\\|]+)(\\|([^\\<\\>]+))?\\>([^\\<\\>]*)\\>";
         public static final Pattern ELEMENT_PATTERN = Pattern.compile(ELEMENT_PATTERN_STRING);
-        public final String pre, post, elseExpresssion;
+        public final String pre, post, elseExpression;
         public final Reference reference;
 
-        private Expression(String pre, String post, Reference reference, String elseExpresssion) {
+        private Expression(String pre, String post, Reference reference, String elseExpression) {
             this.pre = pre;
             this.post = post;
             this.reference = reference;
-            this.elseExpresssion = elseExpresssion != null ? elseExpresssion : "";
+            this.elseExpression = elseExpression != null ? elseExpression : "";
         }
 
         public static <T> Expression evaluate(Element<T, ?> parent, T data, String expression) {
             Matcher m = ELEMENT_PATTERN.matcher(expression);
             if(!m.find()) {
-                throw new RuntimeException("Malformed Expression");
+                throw new RuntimeException("Malformed Expression: \"" + expression + "\"");
             }
             return new Expression(
                     m.group(1), 
@@ -245,25 +245,25 @@ public class Element<T, S extends Element<T, S>> {
     }
     
     private static class LoopExpression extends Expression {
-        public static final String LOOP_ELEMENT_PATTERN_STRING = "\\<([,\\(\\)\\w\\s]*)" + ELEMENT_PATTERN_STRING + "([,\\(\\)\\w\\s]*)\\>";
+        public static final String LOOP_ELEMENT_PATTERN_STRING = "\\<([^\\<\\>]*)" + ELEMENT_PATTERN_STRING + "([^\\<\\>]*)\\>";
         public static final Pattern LOOP_ELEMENT_PATTERN = Pattern.compile(LOOP_ELEMENT_PATTERN_STRING);
         public final String separator;
 
-        private LoopExpression(String pre, String post, Reference reference, String elseExpresssion, String separator) {
-            super(pre, post, reference, elseExpresssion);
+        private LoopExpression(String pre, String post, Reference reference, String elseExpression, String separator) {
+            super(pre, post, reference, elseExpression);
             this.separator = separator;
         }
 
         public static <T> LoopExpression evaluate(Element<T, ?> parent, T data, String expression) {
             Matcher m = LOOP_ELEMENT_PATTERN.matcher(expression);
             if(!m.find()) {
-                throw new RuntimeException("Malformed Expression");
+                throw new RuntimeException("Malformed Expression: \"" + expression + "\"");
             }
             return new LoopExpression(
-                    m.group(1), 
-                    m.group(7), 
-                    Reference.evaluate(parent, data, m.group(3)), 
-                    m.group(5), 
+                    m.group(1),
+                    m.group(7),
+                    Reference.evaluate(parent, data, m.group(3)),
+                    m.group(5),
                     m.group(2) + m.group(6)
             );
         }

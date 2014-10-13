@@ -1,6 +1,7 @@
 package com.quew8.geng;
 
 import com.quew8.geng.interfaces.Identifiable;
+import com.quew8.geng.interfaces.Parent;
 
 /**
  * 
@@ -28,8 +29,14 @@ public abstract class GameObject implements Identifiable {
         return id;
     }
     
+    @Override
+    public Parent getParent() {
+        return NoParent.NO_PARENT;
+    }
+    
     public static class Creator {
         private int maxId = Integer.MIN_VALUE;
+        
         public int makeId() {
             return maxId++;
         }

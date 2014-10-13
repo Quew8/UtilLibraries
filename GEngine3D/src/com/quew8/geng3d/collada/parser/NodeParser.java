@@ -44,7 +44,7 @@ class NodeParser extends XMLParser {
     private final ArrayList<InstanceGeometryParser> geometry = new ArrayList<InstanceGeometryParser>();
     private final ArrayList<InstanceControllerParser> controllers = new ArrayList<InstanceControllerParser>();
     
-    public NodeParser(NodeParser parent) {
+    NodeParser(NodeParser parent) {
         this.parent = parent;
     }
     
@@ -171,9 +171,7 @@ class NodeParser extends XMLParser {
                 sid,
                 Node.Type.JOINT, 
                 transform,
-                children,
-                null,
-                null
+                children
         );
     }
     

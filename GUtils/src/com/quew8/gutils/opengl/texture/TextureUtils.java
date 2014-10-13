@@ -2,6 +2,7 @@ package com.quew8.gutils.opengl.texture;
 
 import com.quew8.gutils.BufferUtils;
 import com.quew8.gutils.Colour;
+import com.quew8.gutils.PlatformUtils;
 import com.quew8.gutils.debug.DebugLogger;
 import com.quew8.gutils.debug.LogLevel;
 import com.quew8.gutils.debug.LogOutput;
@@ -30,6 +31,9 @@ public class TextureUtils {
     }
     
     /**
+     * Fills a texture as a texture sheet with an array of images, calculating
+     * optimal number of columns and rows for a minimum texture size. Images are
+     * loaded in column-major order.
      * 
      * @param texture
      * @param destFormat
@@ -38,7 +42,7 @@ public class TextureUtils {
      * @param cellWidth
      * @param cellHeight
      * @param borderSize
-     * @return
+     * @return An integer array containing {nColumns, nRows, texWidth, texHeight}
      */
     protected static int[] fillTextureSheet(TextureObj texture, int destFormat, TextureParams params, ImageLoader[] imageLoaders, 
     		int cellWidth, int cellHeight, int borderSize) {
@@ -51,7 +55,7 @@ public class TextureUtils {
         int bestTexHeight = get2Fold(sy);
         for(int i = 2; i <= imageLoaders.length; i++) {
             if(imageLoaders.length % i == 0) {
-                int width = imageLoaders.length / 2;
+                int width = imageLoaders.length / i;
                 int tempTexWidth = get2Fold(width * sx);
                 int tempTexHeight = get2Fold(i * sy);
                 if(tempTexWidth*tempTexHeight < bestTexWidth*bestTexHeight 
@@ -69,6 +73,9 @@ public class TextureUtils {
     }
     
     /**
+     * Creates a texture sheet from imageLoaders, calculating optimal number of 
+     * columns and rows for a minimum texture size. Images are loaded in 
+     * column-major order.
      * 
      * @param imageLoaders
      * @param destFormat
@@ -78,8 +85,9 @@ public class TextureUtils {
      * @param borderSize
      * @return
      */
-    public static TextureSheetDetails createTextureSheet(ImageLoader[] imageLoaders, int destFormat, 
-    		TextureParams params, int imgWidth, int imgHeight, int borderSize) {
+    public static TextureSheetDetails createTextureSheet(ImageLoader[] imageLoaders, 
+            int destFormat, TextureParams params, int imgWidth, int imgHeight, 
+            int borderSize) {
     	
         TextureObj texture = new TextureObj(GL_TEXTURE_2D);
         int[] gs = fillTextureSheet(texture, destFormat, params, imageLoaders, imgWidth, imgHeight, borderSize);
@@ -87,6 +95,9 @@ public class TextureUtils {
     }
     
     /**
+     * Creates a texture sheet from imageLoaders, calculating optimal number of 
+     * columns and rows for a minimum texture size. Images are loaded in 
+     * column-major order.
      * 
      * @param imageLoaders
      * @param destFormat
@@ -103,6 +114,9 @@ public class TextureUtils {
     }
     
     /**
+     * Creates a texture sheet from imageLoaders, calculating optimal number of 
+     * columns and rows for a minimum texture size. Images are loaded in 
+     * column-major order.
      * 
      * @param details
      * @param imgWidth
@@ -117,19 +131,6 @@ public class TextureUtils {
         
         TextureSheetDetails sheetDetails = new TextureSheetDetails(details, imgWidth, imgHeight, gridWidth, gridHeight, borderSize);
         return sheetDetails;
-    }
-    
-    /**
-     * 
-     * @param index
-     * @param width
-     * @param height
-     * @return
-     */
-    public static int[] getPositionInSheet(int index, int width, int height) {
-        int y = index % height;
-        int x = (index - y) / height;
-        return new int[]{x, y};
     }
     
     /**
@@ -350,7 +351,7 @@ public class TextureUtils {
     public static ImageLoader[] getImageLoaders(InputStream[] iss, boolean flip) {
     	ImageLoader[] loaders = new ImageLoader[iss.length];
     	for(int i = 0; i < loaders.length; i++) {
-    		loaders[i] = getImageLoader(iss[i], flip);
+            loaders[i] = getImageLoader(iss[i], flip);
     	}
     	return loaders;
     }
@@ -375,5 +376,9 @@ public class TextureUtils {
     		loaders[i] = getImageLoader(imgs[i]);
     	}
     	return loaders;
+    }
+    
+    public static LoadedImage loadImage(InputStream in, boolean flip) {
+        return PlatformUtils.loadImage(in, flip);
     }
 }

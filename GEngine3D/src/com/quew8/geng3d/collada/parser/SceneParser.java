@@ -5,6 +5,7 @@ import com.quew8.geng3d.collada.Scene;
 import com.quew8.geng.geometry.Image;
 import com.quew8.geng.xmlparser.XMLElementParser;
 import com.quew8.geng.xmlparser.XMLParser;
+import com.quew8.geng3d.collada.Asset;
 import java.util.HashMap;
 import org.dom4j.Element;
 
@@ -32,7 +33,7 @@ class SceneParser extends XMLParser {
         return to;
     }
     
-    public <T, S> Scene<T, S> getScene(DataFactory<?, ?, T, S> factory, Image texture) {
-        return new Scene<T, S>(visualScene.getVisualScene(factory, texture));
+    public <T, S> Scene<T, S> getScene(Asset asset, DataFactory<?, ?, T, S> factory, Image texture) {
+        return new Scene<T, S>(asset, visualScene.getVisualScene(factory, texture));
     }
 }

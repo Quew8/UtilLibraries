@@ -31,7 +31,7 @@ public class Stack<T> extends AbstractCollection {
     }
     
     public void reset() {
-        while(pos >= 0) {
+        while(pos > 0) {
             stack[--pos] = null;
         }
     }

@@ -34,6 +34,9 @@ public class Window extends Surface {
         DebugLogger.v(INIT_LOG, "Version: " + OpenGL.glGetString(OpenGL.GL_VERSION));
         DebugLogger.v(INIT_LOG, "GLSL Version: " + OpenGL.glGetString(OpenGL.GL_SHADING_LANGUAGE_VERSION));
     }
+    public Window(String title, DisplayMode displayMode, PixelFormat pixelFormat, ContextAttribs contextAttribs, int fps, boolean resizable) throws LWJGLException {
+        this(title, displayMode, pixelFormat, contextAttribs, fps, resizable, new URL[]{});
+    }
     
     public Window(WindowParams params, URL[] serviceLocations) throws LWJGLException {
         this(params.title, params.displayMode, params.pixelFormat, params.contextAttribs, params.fps, params.resizable, serviceLocations);

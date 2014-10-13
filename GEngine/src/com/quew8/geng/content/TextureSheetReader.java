@@ -3,7 +3,6 @@ package com.quew8.geng.content;
 import com.quew8.geng.geometry.TextureSheet;
 import com.quew8.gutils.content.ContentReader;
 import com.quew8.gutils.content.Source;
-import com.quew8.gutils.content.SourceSheet;
 import com.quew8.gutils.opengl.texture.TextureParams;
 
 /**
@@ -20,13 +19,13 @@ public class TextureSheetReader implements ContentReader<TextureSheet> {
     
     @Override
     public TextureSheet read(Source in) {
-        int texWidth = Integer.parseInt(in.getParams().get(TEX_WIDTH));
-        int texHeight = Integer.parseInt(in.getParams().get(TEX_HEIGHT));
-        int imgWidth = Integer.parseInt(in.getParams().get(IMG_WIDTH));
-        int imgHeight = Integer.parseInt(in.getParams().get(IMG_HEIGHT));
+        int texWidth = in.getParamInt(TEX_WIDTH);
+        int texHeight = in.getParamInt(TEX_HEIGHT);
+        int imgWidth = in.getParamInt(IMG_WIDTH);
+        int imgHeight = in.getParamInt(IMG_HEIGHT);
         int gridWidth = texWidth / imgWidth;
         int gridHeight = texHeight / imgHeight;
-        int borderSize = Integer.parseInt(in.getParams().get(BORDER));
+        int borderSize = in.getParamInt(BORDER);
         
         return new TextureSheet(in.getStream(), texWidth, texHeight, 
                 imgWidth, imgHeight, gridWidth, gridHeight, borderSize, 

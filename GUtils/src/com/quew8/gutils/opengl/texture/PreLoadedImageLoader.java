@@ -11,8 +11,12 @@ class PreLoadedImageLoader implements ImageLoader {
     	this.img = img;
     }
     
-	@Override
-	public LoadedImage getLoadedImage() {
-		return img;
-	}
+    public PreLoadedImageLoader(ImageLoader imgLoader) {
+        this(imgLoader.getLoadedImage());
+    }
+    
+    @Override
+    public LoadedImage getLoadedImage() {
+            return img;
+    }
 }

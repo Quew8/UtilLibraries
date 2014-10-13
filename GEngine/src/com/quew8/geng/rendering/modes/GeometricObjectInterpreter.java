@@ -1,5 +1,6 @@
 package com.quew8.geng.rendering.modes;
 
+import com.quew8.geng.rendering.modes.interfaces.GeometricDataInterpreter;
 import com.quew8.geng.geometry.AbstractVertex;
 import com.quew8.geng.geometry.GeometricObject;
 import com.quew8.gmath.Vector;

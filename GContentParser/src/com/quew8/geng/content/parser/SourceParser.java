@@ -2,8 +2,11 @@ package com.quew8.geng.content.parser;
 
 import com.quew8.geng.xmlparser.XMLAttributeParser;
 import com.quew8.geng.xmlparser.XMLElementParser;
+import com.quew8.geng.xmlparser.XMLParseException;
 import com.quew8.geng.xmlparser.XMLParser;
 import com.quew8.gutils.content.Source;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map.Entry;
 import org.dom4j.Attribute;
@@ -15,16 +18,20 @@ import org.dom4j.Element;
  */
 public class SourceParser extends XMLParser {
     private static final String
+            ID_STRING = "id",
             INPUT = "input",
             PARAM = "param",
             PARAM_LIST = "param_list";
     
-    private String source;
+    private String dir;
+    private String idString = null;
+    private final HashMap<Integer, String> indexedSources = new HashMap<Integer, String>();
+    private final ArrayList<String> unindexedSources = new ArrayList<String>();
     private final HashMap<String, String> params = new HashMap<String, String>();
     private final HashMap<String, Entry<String, String>[]> paramLists = new HashMap<String, Entry<String, String>[]>();
     
     public SourceParser(String dir) {
-        this.source = dir;
+        this.dir = dir;
     }
     
     public SourceParser() {
@@ -34,11 +41,19 @@ public class SourceParser extends XMLParser {
     @Override
     public HashMap<String, XMLAttributeParser> addAttributeParsers(HashMap<String, XMLAttributeParser> to) {
         to = super.addAttributeParsers(to);
+        to.put(ID_STRING, new XMLAttributeParser() {
+            
+            @Override
+            public void parse(Attribute attribute, Element parent) {
+                idString = attribute.getValue();
+            }
+            
+        });
         to.put(INPUT, new XMLAttributeParser() {
             
             @Override
             public void parse(Attribute attribute, Element parent) {
-                source += attribute.getValue();
+                unindexedSources.add(attribute.getValue());
             }
             
         });
@@ -52,7 +67,12 @@ public class SourceParser extends XMLParser {
             
             @Override
             public void parse(Element element) {
-                source += element.getText();
+                InputParser input = SourceParser.this.parseWith(element, new InputParser());
+                if(input.getIndex() == -1) {
+                    unindexedSources.add(input.getSource());
+                } else {
+                    indexedSources.put(input.getIndex(), input.getSource());
+                }
             }
             
         });
@@ -77,9 +97,41 @@ public class SourceParser extends XMLParser {
         return to;
     }
     
-    
-    
     public Source getSource() {
-        return new Source(source, params, paramLists);
+        String[] sources = new String[indexedSources.size() + unindexedSources.size()];
+        int j = 0;
+        for(int i = 0; i < sources.length; i++) {
+            if(indexedSources.containsKey(i)) {
+                sources[i] = dir + indexedSources.get(i);
+            } else {
+                if(j >= unindexedSources.size()) {
+                    throw new XMLParseException("Not enough unindexed sources to fill gaps in indexed sources");
+                } else {
+                    sources[i] = dir + unindexedSources.get(j++);
+                }
+            }
+        }
+        String id = idString == null ? getIdString(sources) : idString;
+        return new Source(id, Arrays.asList(sources), params, paramLists);
+    }
+    
+    private static String getIdString(String[] sources) {
+        String s = getIdString(sources[0]);
+        for(int i = 1; i < sources.length; i++) {
+            s += getIdString(sources[i]);
+        }
+        return s;
+    }
+    
+    private static String getIdString(String source) {
+        int i = source.lastIndexOf('/');
+        if(i == -1) {
+            i = source.lastIndexOf('\\');
+        }
+        String id = source;
+        if(i != -1) {
+            id = id.substring(i + 1, id.length());
+        }
+        return id.replace('.', '_');
     }
 }

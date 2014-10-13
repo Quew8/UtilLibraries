@@ -26,7 +26,7 @@ public class Class extends TypeDef<Class> {
             Constructor[] constructors, Method[] definedMethods, TypeDef[] nestedTypes) {
         
         super("<<access> ><<modifier> >class <<name>><&lt;<, <genericArgs>>&gt;>< extends <superType>>< implement <, <impldInterfaces>>> {\n"
-                + "<<\n<!fields>>\n\n><<\n\n<!blocks>>\n\n><<\n\n<!staticBlocks>>\n\n><<\n\n<!constructors>>\n\n><<\n\n<!definedMethods>>\n\n><<\n\n<!nestedTypes>>\n\n>");
+                + "<<\n<!fields>>\n\n><<\n\n<!blocks>>\n\n><<\n\n<!staticBlocks>>\n\n><<\n\n<!constructors>>\n\n><<\n\n<!definedMethods>>\n\n><<\n\n<!nestedTypes>>\n\n>}");
         this.access = access;
         this.modifier = modifier;
         this.name = name;

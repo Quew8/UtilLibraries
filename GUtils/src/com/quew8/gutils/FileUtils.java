@@ -129,6 +129,14 @@ public class FileUtils {
         return file.length();
     }
     
+    public static String getExtension(String s) {
+        int i = s.lastIndexOf('.');
+        if(i == -1) {
+            throw new IllegalArgumentException("\"" + s + "\" has no extension");
+        }
+        return s.substring(i + 1);
+    }
+    
     /**
      * 
      */

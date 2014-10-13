@@ -1,39 +1,25 @@
 package com.quew8.geng.rendering;
 
-import com.quew8.gmath.Vector;
+import com.quew8.geng.geometry.Plane;
 import com.quew8.gutils.Clock;
-import com.quew8.gutils.Colour;
 
 /**
  *
  * @author Quew8
+ * @param <T>
  */
-public abstract class Particle<T, S> {
+public abstract class Particle<T extends SpriteBatcher<?>> implements Sprite<T> {
     private int timeRemaining;
     private final int lifeSpan;
-    private T t;
-    private S s;
     
-    public Particle(int lifeSpan, T t, S s) {
+    public Particle(int lifeSpan) {
         this.timeRemaining = lifeSpan;
         this.lifeSpan = lifeSpan;
-        this.t = t;
-        this.s = s;
     }
     
     protected boolean update() {
         timeRemaining -= Clock.getDelta();
-        t = incPosition(t);
-        s = incColour(s);
         return timeRemaining <= 0;
-    }
-    
-    public Vector getPosition() {
-        return getPosition(t);
-    }
-    
-    public Colour getColour() {
-        return getColour(s);
     }
     
     public int getTimeRemaining() {
@@ -43,9 +29,4 @@ public abstract class Particle<T, S> {
     public int getLifeSpan() {
         return lifeSpan;
     }
-    
-    public abstract T incPosition(T t);
-    public abstract S incColour(S s);
-    public abstract Vector getPosition(T t);
-    public abstract Colour getColour(S s);
 }

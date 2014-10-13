@@ -29,11 +29,11 @@ public class ControlSet {
             MouseMovementControl mouseMovementControl, Control[] mouseControls, 
             MouseDownControl[] mouseDownControls) {
         
-        this.keyControls = keyControls;
-        this.keyDownControls = keyDownControls;
-        this.mouseMovementControl = mouseMovementControl;
-        this.mouseControls = mouseControls;
-        this.mouseDownControls = mouseDownControls;
+        this.keyControls = keyControls == null ? new Control[0] : keyControls;
+        this.keyDownControls = keyDownControls == null ? new KeyDownControl[0] : keyDownControls;
+        this.mouseMovementControl = mouseMovementControl == null ? new MouseMovementControl() : mouseMovementControl;
+        this.mouseControls = mouseControls == null ? new Control[0] : mouseControls;
+        this.mouseDownControls = mouseDownControls == null ? new MouseDownControl[0] : mouseDownControls;
     }
     
     public ControlSet(Control[] keyControls, KeyDownControl[] keyDownControls) {
@@ -67,9 +67,9 @@ public class ControlSet {
                 }
             }*/
             outerLoop:
-            for (int i = 0; i < keyControls.length; i++) {
-                for (int k = 0; k < ks.getLength(); k++) {
-                    if (keyControls[i].isKey(ks.getControl(k))) {
+            for(int i = 0; i < keyControls.length; i++) {
+                for(int k = 0; k < ks.getLength(); k++) {
+                    if(keyControls[i].isKey(ks.getControl(k))) {
                         keyControls[i].key(ks.getState(k));
                         ks.consume(k);
                         break outerLoop;
@@ -84,9 +84,9 @@ public class ControlSet {
     
     public void checkMouse(ControlEventSet ks) {
         outerLoop:
-        for (int i = 0; i < mouseControls.length; i++) {
-            for (int k = 0; k < ks.getLength(); k++) {
-                if (mouseControls[i].isKey(ks.getControl(k))) {
+        for(int i = 0; i < mouseControls.length; i++) {
+            for(int k = 0; k < ks.getLength(); k++) {
+                if(mouseControls[i].isKey(ks.getControl(k))) {
                     mouseControls[i].key(ks.getState(k));
                     ks.consume(k);
                     break outerLoop;
@@ -96,7 +96,7 @@ public class ControlSet {
         for(int i = 0; i < mouseDownControls.length; i++) {
             mouseDownControls[i].checkKeys();
         }
-        if (mouseDX != 0 && mouseDY != 0) {
+        if(mouseDX != 0 && mouseDY != 0) {
             mouseMovementControl.movement(mouseX, mouseY, mouseDX, mouseDY);
         }
     }

@@ -56,7 +56,7 @@ public class CharsetTexture extends BasicTexture {
                     throw new RuntimeException("Insufficient texture size for given chars");
                 }
             }
-            map.put(chars.charAt(i), new Image(xPos, yPos, xPos + texCharWidth, yPos + texCharHeight));
+            map.put(chars.charAt(i), Image.getRegion(xPos, yPos, xPos + texCharWidth, yPos + texCharHeight));
             xPos += texCharWidth;
         }
         return map;

@@ -14,7 +14,7 @@ public class Field extends Variable<Field> {
     private String initStatement;
     
     public Field(AccessModifier access, Modifier modifier, Type type, String name, String initStatement) {
-        super("<<access> ><<modifier> >><<type>> <<name>>< = <initStatement>>;");
+        super("<<access> ><<modifier> ><<type>> <<name>>< = <initStatement>>;");
         this.access = access;
         this.modifier = modifier;
         this.type = type;

@@ -17,11 +17,11 @@ abstract class Handle {
         this.end = end;
     }
 
-    public int getStart() {
+    protected int getStart() {
         return start;
     }
 
-    public int getEnd() {
+    protected int getEnd() {
         return end;
     }
 

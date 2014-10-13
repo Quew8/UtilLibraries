@@ -10,8 +10,9 @@ import com.quew8.gutils.collections.Bag;
 /**
  *
  * @author Quew8
+ * @param <T>
  */
-public class GContainer {
+public class GContainer<T extends Identifiable> {
     public final Bag<Disposable> disposables = new Bag<Disposable>(Disposable.class);
     public final Bag<Drawable> drawables = new Bag<Drawable>(Drawable.class);
     public final Bag<FinalDrawable> finalDrawables = new Bag<FinalDrawable>(FinalDrawable.class);
@@ -41,7 +42,7 @@ public class GContainer {
         }
     }
     
-    public int add(Identifiable i) {
+    public int add(T i) {
         if(i instanceof Drawable) {
             drawables.add((Drawable) i);
         }
@@ -57,7 +58,7 @@ public class GContainer {
         return i.getId();
     }
 
-    public int[] add(Identifiable... identifiables) {
+    public int[] add(T... identifiables) {
         int[] ids = new int[identifiables.length];
         for (int i = 0; i < identifiables.length; i++) {
             ids[i] = add(identifiables[i]);
@@ -81,13 +82,33 @@ public class GContainer {
         return getFrom(id, disposables);
     }
     
+    public void remove(T t) {
+        removeFrom(t, drawables);
+        removeFrom(t, finalDrawables);
+        removeFrom(t, updateables);
+        removeFrom(t, disposables);
+        t.getParent().remove(t);
+    }
+    
+    public static void removeFrom(Identifiable i, Bag<? extends Identifiable> from) {
+        int index = getIndexFrom(i.getId(), from);
+        if(index != -1) {
+            from.remove(index);
+        }
+    }
+    
     public static <T extends Identifiable> T getFrom(int id, Bag<T> from) {
+        int index = getIndexFrom(id, from);
+        return index != -1 ? from.get(index) : null;
+    }
+    
+    public static int getIndexFrom(int id, Bag<? extends Identifiable> from) {
         for (int i = 0; i < from.size(); i++) {
             if (from.get(i).getId() == id) {
-                return from.get(i);
+                return i;
             }
         }
-        return null;
+        return -1;
     }
     
 }

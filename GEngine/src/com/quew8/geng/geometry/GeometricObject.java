@@ -22,7 +22,7 @@ public abstract class GeometricObject<T extends GeometricObject<T, S>, S extends
     }
     
     protected GeometricObject(S[] vertices, int[] indices) {
-        this(vertices, indices, new Image(0, 0, 1, 1));
+        this(vertices, indices, Image.WHOLE);
     }
 
     public S[] getVertices() {
@@ -60,6 +60,15 @@ public abstract class GeometricObject<T extends GeometricObject<T, S>, S extends
                 cpyIndices[i+1] = j;
                 i++;
             }
+        }
+        return construct(self(), newVertices, cpyIndices);
+    }
+    
+    public T transform(Image img) {
+        int[] cpyIndices = Arrays.copyOf(indices, indices.length);
+        S[] newVertices = Arrays.copyOf(vertices, vertices.length);
+        for(int i = 0; i < newVertices.length; i++) {
+            newVertices[i].transformTextureCoords(img);
         }
         return construct(self(), newVertices, cpyIndices);
     }

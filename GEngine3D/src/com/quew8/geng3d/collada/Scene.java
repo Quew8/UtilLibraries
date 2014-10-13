@@ -1,8 +1,5 @@
 package com.quew8.geng3d.collada;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-
 /**
  *
  * @author Quew8
@@ -10,10 +7,16 @@ import java.util.Arrays;
  * @param <S>
  */
 public class Scene<T, S> {
+    private final Asset asset;
     private final InstanceVisualScene<T, S> visualScene;
     
-    public Scene(InstanceVisualScene<T, S> visualScene) {
+    public Scene(Asset asset, InstanceVisualScene<T, S> visualScene) {
+        this.asset = asset;
         this.visualScene = visualScene;
+    }
+    
+    public Asset getAsset() {
+        return asset;
     }
     
     public InstanceVisualScene<T, S> getVisualScene() {
@@ -21,29 +24,37 @@ public class Scene<T, S> {
     }
     
     public InstanceController<S> findController(String name) {
+        if(name.startsWith("#")) {
+            return getVisualScene().getController(name.substring(1));
+        }
         return getVisualScene().findController(name);
     }
     
     public InstanceGeometry<T> findGeometry(String name) {
+        if(name.startsWith("#")) {
+            return getVisualScene().getGeometry(name.substring(1));
+        }
         return getVisualScene().findGeometry(name);
     }
     
-    @SuppressWarnings("unchecked")
+    public InstanceController<S> getController(String path) {
+        return getVisualScene().getController(path);
+    }
+    
+    public InstanceGeometry<T> getGeometry(String path) {
+        return getVisualScene().getGeometry(path);
+    }
+    
     public InstanceController<S>[] getControllers() {
-        ArrayList<InstanceController<S>> to = new ArrayList<InstanceController<S>>();
-        visualScene.addControllers(to);
-        return to.toArray(Scene.<InstanceController<S>>getArray(to.size()));
+        return getVisualScene().getAllControllers();
     }
     
-    @SuppressWarnings("unchecked")
     public InstanceGeometry<T>[] getGeometry() {
-        ArrayList<InstanceGeometry<T>> to = new ArrayList<InstanceGeometry<T>>();
-        visualScene.addGeometry(to);
-        return to.toArray(Scene.<InstanceGeometry<T>>getArray(to.size()));
+        return getVisualScene().getAllGeometry();
     }
     
-    @SuppressWarnings("unchecked")
-    private static <T> T[] getArray(int length, T... array) {
-        return Arrays.copyOf(array, length);
+    @Override
+    public String toString() {
+        return visualScene.getString("");
     }
 }

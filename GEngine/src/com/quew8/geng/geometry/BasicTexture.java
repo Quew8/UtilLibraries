@@ -37,7 +37,7 @@ public class BasicTexture implements Texture {
     
     @Override
     public Image getWholeArea() {
-        return new Image(0, 0, 
+        return Image.getRegion(0, 0, 
                 textureDetails.usedWidth/textureDetails.texWidth, 
                 textureDetails.usedHeight/textureDetails.texHeight);
     }

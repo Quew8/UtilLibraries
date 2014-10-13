@@ -1,13 +1,13 @@
 package com.quew8.gutils;
 
-import java.util.ArrayList;
+import com.quew8.gutils.collections.Bag;
 
 /**
  *
  * @author Quew8
  */
 public class Timer {
-    private static final ArrayList<Timer> timers = new ArrayList<Timer>();
+    private static final Bag<Timer> timers = new Bag<Timer>(Timer.class, 20);
     
     private final Runnable run;
     private long remaining;

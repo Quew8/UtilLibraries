@@ -4,6 +4,9 @@ import com.quew8.geng.rendering.modes.DynamicRenderMode;
 import com.quew8.geng.rendering.modes.StaticRenderMode;
 import com.quew8.gmath.Matrix;
 import com.quew8.gutils.BufferUtils;
+import static com.quew8.gutils.opengl.OpenGL.GL_ARRAY_BUFFER;
+import static com.quew8.gutils.opengl.OpenGL.GL_ELEMENT_ARRAY_BUFFER;
+import com.quew8.gutils.opengl.VertexBuffer;
 import java.nio.FloatBuffer;
 
 /**
@@ -15,7 +18,7 @@ public class RenderState {
     private static final FloatBuffer idMatrixFB;
     private static final FloatBuffer modelMatrixFB;
     private static final FloatBuffer projectionMatrixFB;
-    
+    private static boolean immediateMode = false;
     private static StaticRenderMode currentRenderMode = new StaticDoNothingRenderMode();
     private static DynamicRenderMode<?> currentDynamicRenderMode = new DynamicDoNothingRenderMode();
     
@@ -31,12 +34,17 @@ public class RenderState {
         
     }
     
-    public static void setRenderMode(StaticRenderMode renderMode) {
+    public static void setRenderMode(boolean immediateMode, StaticRenderMode renderMode) {
+        if(immediateMode && !RenderState.immediateMode) {
+            VertexBuffer.unbind(GL_ARRAY_BUFFER);
+        }
+        RenderState.immediateMode = immediateMode;
         setCurrentStaticRenderMode(renderMode);
         currentRenderMode.updateProjectionMatrix(projectionMatrixFB);
     }
 
     public static void setRenderMode(DynamicRenderMode<?> renderMode) {
+        RenderState.immediateMode = false;
         setCurrentDynamicRenderMode(renderMode);
         currentRenderMode.updateProjectionMatrix(projectionMatrixFB);
     }

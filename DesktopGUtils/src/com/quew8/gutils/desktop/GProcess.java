@@ -14,31 +14,79 @@ import org.lwjgl.LWJGLException;
  * @author Quew8
  */
 public abstract class GProcess {
+    private final boolean debug;
+    private DebugView debugView = null;
     private final Window window;
     
-    public GProcess(WindowParams params, URL[] services) throws LWJGLException {
+    public GProcess(boolean debug, WindowParams params, URL[] services) throws LWJGLException {
+        this.debug = debug;
         this.window = new Window(params, services);
-    } 
+    }
+    
+    public GProcess(WindowParams params, URL[] services) throws LWJGLException {
+        this(false, params, services);
+    }
+    
+    public GProcess(boolean debug, WindowParams params) throws LWJGLException {
+        this(debug, params, new URL[]{});
+    }
+    
+    public GProcess(WindowParams params) throws LWJGLException {
+        this(false, params);
+    }
     
     public final void play() {
-        DebugLogger.broadcast(LogLevel.VERBOSE, "Init Beginning");
+        if(debug) {
+            DebugLogger.broadcast(LogLevel.VERBOSE, "Init Beginning");
+        }
         init();
         Clock.begin();
-        while (window.remainOpen()) {
+        if(debug) {
+            debugLoop();
+            DebugLogger.broadcast(LogLevel.VERBOSE, "Deinit Beginning");
+        } else {
+            loop();
+        }
+        deinit();
+    }
+    
+    private void loop() {
+        while(window.remainOpen()) {
+            Clock.makeDelta();
+            if(window.isResized()) {
+                resize(window.getViewport());
+            }
+            update();
+            render();
+            window.endOfFrame();
+        }
+    }
+    
+    private void debugLoop() {
+        while(window.remainOpen()) {
             DebugLogger.broadcast(LogLevel.VERBOSE, "Loop Beginning");
             Clock.makeDelta();
             if(window.isResized()) {
                 DebugLogger.broadcast(LogLevel.VERBOSE, "Resize Beginning");
+                if(debugView != null) {
+                    debugView.resize(window.getViewport());
+                }
                 resize(window.getViewport());
             }
             DebugLogger.broadcast(LogLevel.VERBOSE, "Update Beginning");
-            update();
+            if(debugView != null) {
+                debugView.update();
+            } else {
+                update();
+            }
             DebugLogger.broadcast(LogLevel.VERBOSE, "Render Beginning");
-            render();
+            if(debugView != null) {
+                debugView.render();
+            } else {
+                render();
+            }
             window.endOfFrame();
         }
-        DebugLogger.broadcast(LogLevel.VERBOSE, "Deinit Beginning");
-        deinit();
     }
     
     protected abstract void init();
@@ -61,5 +109,24 @@ public abstract class GProcess {
     
     public void requestClose() {
         window.requestClose();
+    }
+    
+    public void setDebugView(DebugView debugView) {
+        if(this.debugView != null) {
+            this.debugView.deinit();
+        }
+        this.debugView = debugView;
+        if(debugView != null) {
+            debugView.init();
+            debugView.resize(window.getViewport());
+        }
+    }
+    
+    public static interface DebugView {
+        void init();
+        void resize(Viewport viewport);
+        void update();
+        void render();
+        void deinit();
     }
 }

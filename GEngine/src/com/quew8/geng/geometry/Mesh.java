@@ -8,7 +8,6 @@ import com.quew8.gmath.Vector;
 /**
  * 
  * @author Quew8
- *
  */
 public class Mesh extends GeometricObject<Mesh, Vertex> {
     
@@ -113,6 +112,5 @@ public class Mesh extends GeometricObject<Mesh, Vertex> {
 
     public static Mesh createCircle(float cx, float cy, float cz, float r, Axis axis, int lod, boolean normalsOut, Image texture) {
         return createCircle(new VectorMapper(axis, new Vector(cx, cy, cz)), r, lod, normalsOut, texture);
-        
     }
 }

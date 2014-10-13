@@ -3,6 +3,8 @@ package com.quew8.gutils.desktop;
 import com.quew8.gutils.PlatformBackend;
 import com.quew8.gutils.debug.LogLevel;
 import com.quew8.gutils.debug.LogStream;
+import com.quew8.gutils.desktop.opengl.services.DefaultFramebufferServiceImpl;
+import com.quew8.gutils.desktop.opengl.services.DefaultShaderServiceImpl;
 import com.quew8.gutils.desktop.opengl.services.FramebufferServiceImpl;
 import com.quew8.gutils.desktop.opengl.services.NoFramebufferServiceImpl;
 import com.quew8.gutils.desktop.opengl.services.NoShaderServiceImpl;
@@ -74,11 +76,13 @@ public class DesktopBackend extends PlatformBackend<DesktopLoadedImage> {
                 new ServiceImplLoader<ShaderServiceImpl>(
                         ShaderServiceImpl.class, 
                         urls,
+                        DefaultShaderServiceImpl.INSTANCE,
                         NoShaderServiceImpl.INSTANCE
                 ).getImplementationNoThrow(),
                 new ServiceImplLoader<FramebufferServiceImpl>(
                         FramebufferServiceImpl.class, 
                         urls,
+                        DefaultFramebufferServiceImpl.INSTANCE,
                         NoFramebufferServiceImpl.INSTANCE
                 ).getImplementationNoThrow()
         );

@@ -3,6 +3,7 @@ package com.quew8.gutils.opengl.shaders;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import com.quew8.gutils.BufferUtils;
+import com.quew8.gutils.Colour;
 import static com.quew8.gutils.opengl.OpenGL.*;
 
 /**
@@ -72,6 +73,22 @@ public class ShaderUtils {
         }
     }
     
+    /**
+     * 
+     * @param programId
+     * @param name
+     * @param colour 
+     */
+    public static void setUniformColour(int programId, String name, Colour colour) {
+        setUniformVarf(programId, name, colour.getRed(), colour.getGreen(), colour.getBlue(), colour.getAlpha());
+    }
+    
+    /**
+     * 
+     * @param programId
+     * @param name
+     * @param fb 
+     */
     public static void getUniformVarf(int programId, String name, FloatBuffer fb) {
         int loc = glGetUniformLocation(programId, name);
         glGetUniformfv(programId, loc, fb);

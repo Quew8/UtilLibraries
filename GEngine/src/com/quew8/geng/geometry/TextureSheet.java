@@ -63,7 +63,7 @@ public class TextureSheet implements Texture {
         int yPosP = yPos * sy;
         int widthP = ( nw * sx ) - textureDetails.borderSize;
         int heightP = ( nh * sy ) - textureDetails.borderSize;
-        return new Image(
+        return Image.getRegion(
                 (float)xPosP / textureDetails.texWidth,
                 (float)yPosP / textureDetails.texHeight,
                 ( (float)xPosP + widthP ) / textureDetails.texWidth,
@@ -75,14 +75,23 @@ public class TextureSheet implements Texture {
         return getArea(xPos, yPos, 1, 1);
     }
 
+    /**
+     * Returns an Image representing the column-major (the default used in the 
+     * com.quew8.gutils.opengl.texture package) indexed texture within this
+     * sheet.
+     * 
+     * @param index
+     * @return 
+     */
     public Image getArea(int index) {
-        int[] pos = TextureUtils.getPositionInSheet(index, textureDetails.gridWidth, textureDetails.gridHeight);
-        return getArea(pos[0], pos[1]);
+        int y = index % textureDetails.gridHeight;
+        int x = ( index - y ) / textureDetails.gridHeight;
+        return getArea(x, y);
     }
 
     @Override
     public Image getWholeArea() {
-        return new Image(0, 0, 
+        return Image.getRegion(0, 0, 
                 textureDetails.usedWidth/textureDetails.texWidth,
                 textureDetails.usedHeight/textureDetails.texHeight);
     }

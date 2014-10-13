@@ -31,15 +31,6 @@ public class Matrix {
         });
     }
     
-    public Matrix(FloatBuffer fb) {
-        this(new float[]{
-            fb.get(0), fb.get(1), fb.get(2), fb.get(3), 
-            fb.get(4), fb.get(5), fb.get(6), fb.get(7), 
-            fb.get(8), fb.get(9), fb.get(10), fb.get(11), 
-            fb.get(12), fb.get(13), fb.get(14), fb.get(15)
-        });
-    }
-    
     /**
      * Requires data in column-major format.
      * @param f1
@@ -243,19 +234,19 @@ public class Matrix {
         return new Vector(-data[1], -data[5], -data[9]);
     }
     
-    public Vector getRightDirection() {
+    public Vector getLeftDirection() {
         return new Vector(-data[0], -data[4], -data[8]);
     }
     
-    public Vector getRightDirectionXZ() {
+    public Vector getLeftDirectionXZ() {
         return new Vector(-data[0], 0, -data[8], Vector.NORMALIZE_BIT);
     }
     
-    public Vector getLeftDirection() {
+    public Vector getRightDirection() {
         return new Vector(data[0], data[4], data[8]);
     }
     
-    public Vector getLeftDirectionXZ() {
+    public Vector getRightDirectionXZ() {
         return new Vector(data[0], 0, data[8], Vector.NORMALIZE_BIT);
     }
     
@@ -313,10 +304,10 @@ public class Matrix {
                 h = top - bottom,
                 j = far - near;
         result.setData(
-                f / g, 0,     (right+left)/g, 0,
-                0,     f / h, (top+bottom)/h, 0,
-                0,     0,     -(far+near)/j,  -(f * far)/j,
-                0,     0,     -1,             0
+                f / g, 0,     (right+left) / g, 0,
+                0,     f / h, (top+bottom) / h, 0,
+                0,     0,     -(far+near) / j,  -(f * far) / j,
+                0,     0,     -1,               0
                 );
         return result;
     }
@@ -675,6 +666,16 @@ public class Matrix {
                 m.data[8], m.data[9], m.data[10], 0, 
                 0,         0,         0,          1
                 );
+        return result;
+    }
+    
+    public static Matrix transpose(Matrix result, Matrix m) {
+        result.setData(
+                m.get(0), m.get(4), m.get(8),  m.get(12), 
+                m.get(1), m.get(5), m.get(9),  m.get(13), 
+                m.get(2), m.get(6), m.get(10), m.get(14), 
+                m.get(3), m.get(7), m.get(11), m.get(15)
+        );
         return result;
     }
     

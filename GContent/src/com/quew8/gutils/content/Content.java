@@ -17,7 +17,7 @@ public class Content<T> {
     
     public void loadSources(SourceSheet sourceSheet) {
         ContentReader<T> reader = sourceSheet.getReader(clazz);
-        for(com.quew8.gutils.content.Source s: sourceSheet.getSources()) {
+        for(Source s: sourceSheet.getSources()) {
             T t = reader.read(s);
             if(t == null) {
                 throw new RuntimeException("Loading Null Resource: " + s.getSource());
@@ -37,7 +37,7 @@ public class Content<T> {
         return content.values().toArray(in);
     }
     
-    private static int getId(Class<?> idClass, com.quew8.gutils.content.Source source) {
+    private static int getId(Class<?> idClass, Source source) {
         try {
             return idClass.getField(source.getIdString()).getInt(null);
         } catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException ex) {

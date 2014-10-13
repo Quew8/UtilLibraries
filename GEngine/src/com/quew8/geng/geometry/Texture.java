@@ -1,6 +1,6 @@
 package com.quew8.geng.geometry;
 
-import com.quew8.geng.rendering.modes.TextureFetchable;
+import com.quew8.geng.rendering.modes.interfaces.TextureFetchable;
 
 /**
  * 
