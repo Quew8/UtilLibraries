@@ -160,7 +160,7 @@ public class Vector2 {
     
     @Override
     public String toString() {
-        return "Vector: X = " + x + ", Y = " + y;
+        return "Vector2{" + "x=" + x + ", y=" + y + '}';
     }
     
     public static Vector2 add(Vector2 result, Vector2 a, Vector2 b) {
@@ -178,6 +178,12 @@ public class Vector2 {
     public static Vector2 times(Vector2 result, Vector2 a, Vector2 b) {
         result.x = a.x * b.x;
         result.y = a.y * b.y;
+        return result;
+    }
+	
+    public static Vector2 divide(Vector2 result, Vector2 a, Vector2 b) {
+        result.x = a.x / b.x;
+        result.y = a.y / b.y;
         return result;
     }
 	

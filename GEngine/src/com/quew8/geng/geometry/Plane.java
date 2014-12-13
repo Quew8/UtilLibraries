@@ -2,29 +2,61 @@ package com.quew8.geng.geometry;
 
 import com.quew8.gmath.GMath;
 import com.quew8.gmath.Vector;
+import com.quew8.gmath.Vector2;
 
 /**
  *
  * @author Quew8
  */
 public class Plane {
-    public static final Plane NEG_Z = Plane.getPlane(new Vector(0, 0, -1));
+    public static final Plane 
+            NEG_Z = Plane.getPlane(new Vector(0, 0, -1)),
+            POS_Z = Plane.getPlane(new Vector(0, 0, 1));
     public static Plane BILLBOARD_PLANE = NEG_Z;
     private final Vector tempA = new Vector(), tempB = new Vector();
-    private final Vector up, right;
+    private final Vector right, up, forward;
 
-    public Plane(Vector up, Vector right) {
-        this.up = up;
-        this.right = right;
+    public Plane(Vector right, Vector up, Vector forward) {
+        this.up = new Vector(up);
+        this.right = new Vector(right);
+        this.forward = new Vector(forward);
     }
+
+    /*public Vector getUp() {
+        return up;
+    }
+
+    public Vector getRight() {
+        return right;
+    }
+
+    public Vector getForward() {
+        return forward;
+    }*/
 
     public Vector map(float dx, float dy) {
         return Vector.add(new Vector(), Vector.times(tempA, up, dy), Vector.times(tempB, right, dx));
+    }
+
+    public Vector map(Vector2 v) {
+        return map(v.getX(), v.getY());
+    }
+    
+    public Vector2 unmap(Vector v) {
+        return new Vector2(
+                GMath.dot(v, right),
+                GMath.dot(v, up)
+        );
+    }
+
+    @Override
+    public String toString() {
+        return "Plane{" + "right=" + right + ", up=" + up + ", forward=" + forward + '}';
     }
     
     public static Plane getPlane(Vector forward) {
         Vector right = GMath.cross(forward, new Vector(0, 1, 0)).negate();
         Vector up = GMath.cross(forward, right);
-        return new Plane(up, right);
+        return new Plane(right, up, forward);
     }
 }

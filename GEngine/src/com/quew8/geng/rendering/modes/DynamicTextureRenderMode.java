@@ -14,6 +14,7 @@ public class DynamicTextureRenderMode<T extends TextureFetchable> extends Dynami
     private final DynamicRenderMode<T> superRenderMode;
     
     public DynamicTextureRenderMode(DynamicRenderMode<T> superRenderMode) {
+        super(superRenderMode.getNAttribs());
         this.superRenderMode = superRenderMode;
     }
     

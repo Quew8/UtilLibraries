@@ -45,14 +45,14 @@ public class CharsetTexture extends BasicTexture {
             float imgHeight) {
         
         final HashMap<Character, Image> map = new HashMap<Character, Image>();
-        float xPos = 0, yPos = 0;
+        float xPos = 0, yPos = 1 - (imgHeight / texHeight);
         final float texCharWidth = charWidth / texWidth, texCharHeight = charHeight / texHeight;
         final float maxWidthCoord = imgWidth / texWidth, maxHeightCoord = imgHeight / texHeight;
         for(int i = 0; i < chars.length(); i++) {
             if(xPos >= maxWidthCoord) {
                 yPos += texCharHeight;
                 xPos = 0;
-                if(yPos >= maxHeightCoord) {
+                if(yPos >= 1) {
                     throw new RuntimeException("Insufficient texture size for given chars");
                 }
             }
@@ -67,5 +67,18 @@ public class CharsetTexture extends BasicTexture {
         
         return getMapping(chars, charWidth, charHeight, texDetails.texWidth, 
                 texDetails.texHeight, texDetails.usedWidth, texDetails.usedHeight);
+    }
+    
+    public static HashMap<Character, Image> getMapping(HashMap<Character, float[]> mapping) {
+        HashMap<Character, Image> result = new HashMap<Character, Image>();
+        for(Character c: mapping.keySet()) {
+            result.put(c, Image.getRegion(
+                    mapping.get(c)[0], 
+                    mapping.get(c)[1], 
+                    mapping.get(c)[2], 
+                    mapping.get(c)[3]
+            ));
+        }
+        return result;
     }
 }

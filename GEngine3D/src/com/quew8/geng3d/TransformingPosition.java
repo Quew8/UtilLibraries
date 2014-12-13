@@ -51,6 +51,10 @@ public class TransformingPosition extends Position {
             }
         }
         
+        public int getNVertices() {
+            return originalVertices.length;
+        }
+        
         public Vector[] getOriginalVertices() {
             return originalVertices;
         }
@@ -59,7 +63,7 @@ public class TransformingPosition extends Position {
             createTransformedVertices();
             return transformedVertices;
         }
-
+        
         private void createTransformedVertices() {
             if(needsNewTransformedVertices) {
                 for(int i = 0; i < originalVertices.length; i++) {

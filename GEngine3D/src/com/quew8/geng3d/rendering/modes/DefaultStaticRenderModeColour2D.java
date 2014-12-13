@@ -11,40 +11,38 @@ import java.nio.FloatBuffer;
  *
  * @author Quew8
  */
-public class DefaultStaticRenderMode2D extends StaticRenderMode {
-    public final ShaderProgram shader = new ShaderProgram(
+public class DefaultStaticRenderModeColour2D extends StaticRenderMode {
+    public final ShaderProgram shader;
+    
+    public DefaultStaticRenderModeColour2D() {
+        super(2);
+        shader = new ShaderProgram(
             "uniform mat4 projectionMatrix;"
                     + "attribute vec2 position;"
-                    + "attribute vec2 texCoords;"
-                    + "varying vec2 fInTexCoords;"
+                    + "attribute vec3 colour;"
+                    + "varying vec3 fInColour;"
                     + "void main(void) {"
-                    + "    fInTexCoords = texCoords;"
+                    + "    fInColour = colour;"
                     + "    gl_Position = projectionMatrix * vec4(position.xy, 0, 1);"
                     + "}",
-            "uniform sampler2D texture;"
-                    + "varying vec2 fInTexCoords;"
+            "varying vec3 fInColour;"
                     + "void main(void) {"
-                    + "    fInTexCoords = texCoords;"
-                    + "    gl_FragColor = texture2D(texture, fInTexCoords);"
+                    + "    gl_FragColor = vec4(1, 1, 1, 1);/*vec4(fInColour.rgb, 1);*/"
                     + "}",
             "position",
-            "texCoords"
+            "colour"
             );
-    {
-        ShaderUtils.setUniformVari(shader.getId(), "texture", 0);
     }
     
     @Override
     public void onMadeCurrent() {
-        ShaderUtils.setAttribIndicesEnabled(true, 0, 1);
-        ShaderUtils.setAttribIndicesEnabled(false, 2);
         shader.use();
     }
 
     @Override
     public void onPreRendering(VertexData vd) {
-         vd.vertexAttribPointer(0, 2, GL_FLOAT, false, 16, 0);
-         vd.vertexAttribPointer(1, 2, GL_FLOAT, false, 16, 8);
+         vd.vertexAttribPointer(0, 2, GL_FLOAT, false, 20, 0);
+         vd.vertexAttribPointer(1, 3, GL_FLOAT, false, 20, 8);
     }
     
     @Override
@@ -54,7 +52,6 @@ public class DefaultStaticRenderMode2D extends StaticRenderMode {
 
     @Override
     public void onMadeNonCurrent() {
-        ShaderUtils.setAttribIndicesEnabled(true, 2);
         ShaderUtils.useFixedFunctions();
     }
     

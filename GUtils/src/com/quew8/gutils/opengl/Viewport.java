@@ -1,5 +1,6 @@
 package com.quew8.gutils.opengl;
 
+import static com.quew8.gutils.opengl.OpenGL.glScissor;
 import static com.quew8.gutils.opengl.OpenGL.glViewport;
 
 /**
@@ -25,6 +26,10 @@ public class Viewport {
         glViewport(xPos, yPos, getWidth(), getHeight());
     }
     
+    public void setScissor() {
+        glScissor(getX(), getY(), getWidth(), getHeight());
+    }
+    
     public boolean getIsLandscape() {
     	return width > height;
     }
@@ -36,11 +41,11 @@ public class Viewport {
     }
     
     public float getPortraitAspectRatio() {
-        return (float)getHeight() / (float)getWidth();
+        return (float)getHeight() / getWidth();
     }
     
     public float getLandscapeAspectRatio() {
-    	return (float)getWidth() / (float)getHeight();
+    	return (float)getWidth() / getHeight();
     }
     
     public int getX() {
@@ -59,13 +64,25 @@ public class Viewport {
         return height;
     }
     
+    public float getPixelWidth() {
+        return 1f / width;
+    }
+    
+    public float getPixelHeight() {
+        return 1f / height;
+    }
+    
     public Viewport getSubViewport(float left, float bottom, float right, float top) {
+        int x0 = (int) ( xPos + ( width * left ) );
+        int y0 = (int) ( yPos + ( height * bottom ) );
+        int x1 = (int) ( xPos + ( width * right ) );
+        int y1 = (int) ( yPos + ( height * top ) );
     	return new Viewport(
-    			(int) ( xPos + ( width * left ) ),
-    			(int) ( yPos + ( height * bottom ) ),
-    			(int) ( xPos + ( width * right ) ),
-    		    (int) ( yPos + ( height * top ) )
-    			);
+                x0,
+                y0,
+                x1 - x0,
+                y1 - y0
+        );
     }
     
     public Viewport getCentredSubViewport(float subWidth, float subHeight) {

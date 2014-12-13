@@ -3,10 +3,12 @@ package com.quew8.geng.rendering;
 import com.quew8.geng.rendering.modes.DynamicRenderMode;
 import com.quew8.geng.rendering.modes.StaticRenderMode;
 import com.quew8.gmath.Matrix;
+import com.quew8.gutils.ArrayUtils;
 import com.quew8.gutils.BufferUtils;
 import static com.quew8.gutils.opengl.OpenGL.GL_ARRAY_BUFFER;
 import static com.quew8.gutils.opengl.OpenGL.GL_ELEMENT_ARRAY_BUFFER;
 import com.quew8.gutils.opengl.VertexBuffer;
+import com.quew8.gutils.opengl.shaders.ShaderUtils;
 import java.nio.FloatBuffer;
 
 /**
@@ -28,6 +30,7 @@ public class RenderState {
         matrixFB = BufferUtils.createFloatBuffer(16);
         modelMatrixFB = BufferUtils.createFloatBuffer(16);
         projectionMatrixFB = BufferUtils.createFloatBuffer(16);
+        new Matrix().putIn(projectionMatrixFB);
     }
 
     private RenderState() {
@@ -77,23 +80,57 @@ public class RenderState {
     
     private static void setCurrentStaticRenderMode(StaticRenderMode renderMode) {
         RenderState.currentRenderMode.onMadeNonCurrent();
+        setCurrentAttribs(renderMode);
         RenderState.currentRenderMode = renderMode;
         RenderState.currentRenderMode.onMadeCurrent();
     }
     
     private static void setCurrentDynamicRenderMode(DynamicRenderMode<?> renderMode) {
         RenderState.currentRenderMode.onMadeNonCurrent();
+        setCurrentAttribs(renderMode);
         RenderState.currentRenderMode = renderMode;
         RenderState.currentDynamicRenderMode = renderMode;
         RenderState.currentRenderMode.onMadeCurrent();
     }
     
+    private static void setCurrentAttribs(StaticRenderMode renderMode) {
+        if(renderMode.getNAttribs() != RenderState.currentRenderMode.getNAttribs()) {
+            if(renderMode.getNAttribs() < RenderState.currentRenderMode.getNAttribs()) {
+                ShaderUtils.setAttribIndicesEnabled(
+                        false, 
+                        ArrayUtils.list(
+                                renderMode.getNAttribs(),
+                                RenderState.currentRenderMode.getNAttribs(),
+                                1
+                        )
+                );
+            } else {
+                ShaderUtils.setAttribIndicesEnabled(
+                        true, 
+                        ArrayUtils.list(
+                                RenderState.currentRenderMode.getNAttribs(),
+                                renderMode.getNAttribs(),
+                                1
+                        )
+                );
+            }
+        } 
+    }
+    
     private static class StaticDoNothingRenderMode extends StaticRenderMode {
+        StaticDoNothingRenderMode() {
+            super(0);
+        }
+        
         @Override
         public void updateProjectionMatrix(FloatBuffer matrix) {}
     }
     
     private static class DynamicDoNothingRenderMode extends DynamicRenderMode<Object> {
+        DynamicDoNothingRenderMode() {
+            super(0);
+        }
+        
         @Override
         public void updateProjectionMatrix(FloatBuffer matrix) {}
         @Override

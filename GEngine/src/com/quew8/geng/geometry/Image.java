@@ -47,21 +47,6 @@ public class Image {
         return subImage(img, getRotation(theta));
     }
     
-    /*private static class SubImage extends Image {
-        private final Image img;
-        private final Image subimg;
-
-        public SubImage(Image img, Image subimg) {
-            this.img = img;
-            this.subimg = subimg;
-        }
-        
-        @Override
-        public void transformCoords(float[] coords, int offset) {
-            
-        }
-    }*/
-    
     private static class RegionImage extends Image {
         private final float minX, minY, sizeX, sizeY;
 
@@ -82,8 +67,12 @@ public class Image {
         protected Matrix3 getTransform() {
             Matrix3 m = Matrix3.makeScaling(new Matrix3(), sizeX, sizeY);
             Matrix3 m2 = Matrix3.translate(new Matrix3(), m, new Vector2(minX, minY));
-            //System.out.println(m);
             return m2;
+        }
+
+        @Override
+        public String toString() {
+            return "RegionImage{" + "minX=" + minX + ", minY=" + minY + ", sizeX=" + sizeX + ", sizeY=" + sizeY + '}';
         }
     }
     

@@ -8,9 +8,23 @@ import com.quew8.gutils.debug.LogLevel;
 import com.quew8.gutils.debug.LogOutput;
 import static com.quew8.gutils.opengl.OpenGL.*;
 import com.quew8.gutils.threads.ThreadUtils;
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.FontMetrics;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
+import java.awt.color.ColorSpace;
+import java.awt.image.BufferedImage;
+import java.awt.image.ColorModel;
+import java.awt.image.ComponentColorModel;
+import java.awt.image.DataBuffer;
+import java.awt.image.DataBufferByte;
+import java.awt.image.Raster;
+import java.awt.image.WritableRaster;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
+import java.util.HashMap;
 
 /**
  * 
@@ -205,7 +219,6 @@ public class TextureUtils {
      * @return 
      */
     public static TextureDetails createAlphaMaskTexture(ImageLoader imgLoader, TextureParams params) {
-        
         return createTexture(imgLoader, GL_RED, params);
     }
     
@@ -247,6 +260,86 @@ public class TextureUtils {
                 COLOUR_TEXTURE_LENGTH, COLOUR_TEXTURE_LENGTH, 
                 COLOUR_TEXTURE_LENGTH, COLOUR_TEXTURE_LENGTH
                 );
+    }
+    
+    public static TextureDetails createFontTexture(Font font, int imgWidth, int imgHeight, HashMap<Character, float[]> mapping, TextureParams params) {
+        BufferedImage img = new BufferedImage(imgWidth, imgHeight, BufferedImage.TYPE_INT_ARGB);
+        Graphics2D g = img.createGraphics();
+        g.setBackground(new Color(255, 255, 255, 0));
+        g.clearRect(0, 0, imgWidth, imgHeight);  
+        g.setColor(Color.WHITE);
+        g.setFont(font);
+        g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        FontMetrics metrics = g.getFontMetrics();
+        
+        int texWidth = get2Fold(imgWidth);
+        int texHeight = get2Fold(imgHeight);
+        
+        int rowHeight = 0;
+        int positionX = 0;
+        int positionY = 1 - (imgWidth / texWidth);
+        int charHeight = metrics.getHeight();
+        
+        for (int index = 0; index < 256; index++) {
+            char letter = (char) index;
+            int charWidth = metrics.charWidth(letter);
+            if(positionX + charWidth > imgWidth) {
+                if(positionY + charHeight > imgHeight) {
+                    throw new IllegalArgumentException("Texture Size too small to accomadate characters");
+                }
+                positionX = 0;
+                positionY += rowHeight;
+                rowHeight = 0;
+            }
+            if(charHeight > rowHeight) {
+                rowHeight = charHeight;
+            }
+            mapping.put(letter, new float[]{
+                (float) positionX / texWidth, 
+                (float) positionY / texHeight, 
+                (float) ( positionX + charWidth ) / texWidth, 
+                (float) ( positionY + charHeight ) / texHeight
+            });
+            System.out.println(letter + " :: " + mapping.get(letter)[0] + " " + mapping.get(letter)[1] + " " + mapping.get(letter)[2] + " " + mapping.get(letter)[3]);
+            g.drawString(String.valueOf(letter), positionX, positionY);
+            positionX += charWidth;
+        }
+        
+        ByteBuffer data = convertImageData(img, texWidth, texHeight, true, 4, glAlphaColourModel);
+        TextureObj tex = new TextureObj(GL_TEXTURE_2D);
+        tex.bind();
+        params.setAll(GL_TEXTURE_2D);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, texWidth, texHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+        params.run();
+        
+        return new TextureDetails(tex, imgWidth, imgHeight, texWidth, texHeight);
+    }
+    private static final ColorModel glAlphaColourModel = new ComponentColorModel(ColorSpace.getInstance(ColorSpace.CS_sRGB),
+			new int[] {8,8,8,8},
+			true,
+			false,
+			ComponentColorModel.TRANSLUCENT,
+			DataBuffer.TYPE_BYTE);
+    
+    private static ByteBuffer convertImageData(BufferedImage img, 
+            int texWidth, int texHeight, boolean flip, 
+            int rasterBands, ColorModel colorModel) {
+        
+        WritableRaster raster = Raster.createInterleavedRaster(DataBuffer.TYPE_BYTE, texWidth, texHeight, rasterBands, null);
+        BufferedImage texImage = new BufferedImage(colorModel, raster, false, null);
+
+        Graphics2D g = texImage.createGraphics();
+        if(flip) {
+            g.translate(texWidth/2, texHeight/2);
+            g.scale(1, -1);
+            g.translate(-texWidth/2, -texHeight/2);
+        }
+        g.setColor(new java.awt.Color(0f, 0f, 0f, 0f));
+        g.fillRect(0, 0, texWidth, texHeight);
+        g.drawImage(img, 0, 0, null);
+        
+        byte[] data = ((DataBufferByte) texImage.getRaster().getDataBuffer()).getData();
+        return BufferUtils.createByteBuffer(data);
     }
     
     /**
@@ -378,6 +471,12 @@ public class TextureUtils {
     	return loaders;
     }
     
+    /**
+     * 
+     * @param in
+     * @param flip
+     * @return 
+     */
     public static LoadedImage loadImage(InputStream in, boolean flip) {
         return PlatformUtils.loadImage(in, flip);
     }

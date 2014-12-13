@@ -8,7 +8,12 @@ import java.nio.FloatBuffer;
  * @author Quew8
  */
 public abstract class StaticRenderMode {
-
+    private final int nAttribs;
+    
+    public StaticRenderMode(int nAttribs) {
+        this.nAttribs = nAttribs;
+    }
+    
     public void onMadeCurrent() {}
     
     public void onMadeNonCurrent() {}
@@ -18,4 +23,8 @@ public abstract class StaticRenderMode {
     public void onPostRendering() {}
 
     public abstract void updateProjectionMatrix(FloatBuffer matrix);
+    
+    public int getNAttribs() {
+        return nAttribs;
+    }
 }

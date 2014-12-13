@@ -1,156 +1,148 @@
 package com.quew8.gmath;
 
-public class Vector {
-    private float x, y, z;
-	
-    public static final byte 
-            NORMALIZE_BIT = 1,
-            ABSOLUTE_BIT = 2,
-            NEGATE_BIT = 4;
-			
-    public Vector(float x, float y, float z, byte op) {
+import static com.quew8.gmath.Vector.ABSOLUTE_BIT;
+import static com.quew8.gmath.Vector.NEGATE_BIT;
+import static com.quew8.gmath.Vector.NORMALIZE_BIT;
+
+/**
+ *
+ * @author Quew8
+ */
+public class Vector4 {
+    private float x, y, z, w;
+
+    public Vector4(float x, float y, float z, float w) {
         this.x = x;
         this.y = y;
         this.z = z;
-        performOp(op);
-    }
-			
-    public Vector(float x, float y, float z) {
-        this.x = x;
-        this.y = y;
-        this.z = z;
-    }
-	
-    public Vector(Vector a, Vector b, byte op) {
-        this(b.x - a.x, b.y - a.y, b.z - a.z, op);
-    }
-	
-    public Vector(Vector a, Vector b) {
-        this(b.x - a.x, b.y - a.y, b.z - a.z);
-    }
-	
-    public Vector(Vector v, byte op) {
-        this(v.x, v.y, v.z, op);
-    }
-	
-    public Vector(Vector v) {
-        this(v.x, v.y, v.z);
-    }
-	
-    public Vector() {
-        this.x = 0;
-        this.y = 0;
-        this.z = 0;
+        this.w = w;
     }
     
-    public Vector setXYZ(float x, float y, float z) {
-        this.x = x;
-        this.y = y;
-        this.z = z;
-        return this;
-    }
-    
-    public Vector setX(float x) {
-        this.x = x;
-        return this;
+    public Vector4(float x, float y, float z) {
+        this(x, y, z, 1);
     }
 
-    public Vector setY(float y) {
-        this.y = y;
-        return this;
+    public Vector4(Vector v, float w) {
+        this(v.getX(), v.getY(), v.getZ(), w);
     }
-	
-    public Vector setZ(float z) {
-        this.z = z;
-        return this;
+    
+    public Vector4(Vector v) {
+        this(v, 1);
+    }
+    
+    public Vector4() {
+        this(0, 0, 0, 1);
     }
     
     public Vector2 getVector2() {
         return new Vector2(x, y);
     }
     
-    public float[] getXYZ() {
-        return new float[]{x, y, z};
+    public Vector getVector3() {
+        return new Vector(x, y, z);
     }
-    
+
     public float getX() {
         return x;
     }
-	
+
     public float getY() {
         return y;
     }
-	
+
     public float getZ() {
         return z;
+    }
+
+    public float getW() {
+        return w;
+    }
+
+    public void setX(float x) {
+        this.x = x;
+    }
+
+    public void setY(float y) {
+        this.y = y;
+    }
+
+    public void setZ(float z) {
+        this.z = z;
+    }
+
+    public void setW(float w) {
+        this.w = w;
     }
 	
     public boolean equals(Vector v) {
         return (this.x == v.getX() && this.y == v.getY() && this.z == v.getZ());
     }
 	
-    public final Vector performOp(byte op) {
+    public final Vector4 performOp(byte op) {
         if((op & NORMALIZE_BIT) != 0) {
-            float length = GMath.length(x, y, z);
+            float length = GMath.length(x, y, z, w);
             this.x /= length;
             this.y /= length;
             this.z /= length;
+            this.w /= length;
         }
         if((op & ABSOLUTE_BIT) != 0) {
             this.x = Math.abs(this.x);
             this.y = Math.abs(this.y);
             this.z = Math.abs(this.z);
+            this.w = Math.abs(this.w);
         }
         if((op & NEGATE_BIT) != 0) {
             this.x = -this.x;
             this.y = -this.y;
             this.z = -this.z;
+            this.w = -this.w;
         }
         return this;
     }
     
-    public Vector add(Vector b) {
-        return Vector.add(this, this, b);
+    public Vector4 add(Vector4 b) {
+        return Vector4.add(this, this, b);
     }
 	
-    public Vector subtract(Vector b) {
-        return Vector.subtract(this, this, b);
+    public Vector4 subtract(Vector4 b) {
+        return Vector4.subtract(this, this, b);
     }
 	
-    public Vector times(Vector b) {
-        return Vector.times(this, this, b);
+    public Vector4 times(Vector4 b) {
+        return Vector4.times(this, this, b);
     }
 	
-    public Vector times(float f) {
-        return Vector.times(this, this, f);
+    public Vector4 times(float f) {
+        return Vector4.times(this, this, f);
     }
 	
-    public Vector divide(float f) {
-        return Vector.divide(this, this, f);
+    public Vector4 divide(float f) {
+        return Vector4.divide(this, this, f);
     }
 	
-    public Vector add(float f) {
-        return Vector.add(this, this, f); 
+    public Vector4 add(float f) {
+        return Vector4.add(this, this, f); 
     }
 	
-    public Vector subtract(float f) {
-        return Vector.subtract(this, this, f);
+    public Vector4 subtract(float f) {
+        return Vector4.subtract(this, this, f);
     }
 	
     public boolean isNegative() {
-        return (x < 0 && y < 0 && z < 0);
+        return (x < 0 && y < 0 && z < 0 && w < 0);
     }
 	
     public boolean hasMagnitudeZero() {
-        return (x == 0 && y == 0 && z == 0);
+        return (x == 0 && y == 0 && z == 0 && w == 0);
     }
 	
     public float magnitudeSquared() {
-        return GMath.lengthSquared(x, y, z);
+        return GMath.lengthSquared(x, y, z, w);
     }
 	
     public float magnitude() {
-        return GMath.length(x, y, z);
+        return GMath.length(x, y, z, w);
     }
 	
     public float normalize() {
@@ -158,6 +150,7 @@ public class Vector {
         this.x /= magnitude;
         this.y /= magnitude;
         this.z /= magnitude;
+        this.w /= magnitude;
         return magnitude;
     }
 	
@@ -168,6 +161,7 @@ public class Vector {
             this.x /= magnitude;
             this.y /= magnitude;
             this.z /= magnitude;
+            this.w /= magnitude;
             return magnitude;
         }
         return 1;
@@ -180,57 +174,64 @@ public class Vector {
     	return curMag;
     }
     
-    public Vector absolute() {
+    public Vector4 absolute() {
         this.x = Math.abs(this.x);
         this.y = Math.abs(this.y);
         this.z = Math.abs(this.z);
+        this.w = Math.abs(this.w);
         return this;
     }
 	
-    public Vector negate() {
+    public Vector4 negate() {
         this.x = -this.x;
         this.y = -this.y;
         this.z = -this.z;
+        this.w = -this.w;
         return this;
     }
 
     @Override
     public String toString() {
-        return "Vector{" + "x=" + x + ", y=" + y + ", z=" + z + '}';
+        return "Vector{" + "x=" + x + ", y=" + y + ", z=" + z + ", w=" + w + '}';
     }
 	
-    public static Vector add(Vector result, Vector a, Vector b) {
+    public static Vector4 add(Vector4 result, Vector4 a, Vector4 b) {
         result.x = a.x + b.x;
         result.y = a.y + b.y;
         result.z = a.z + b.z;
+        result.w = a.w + b.w;
         return result;
     }
 	
-    public static Vector subtract(Vector result, Vector a, Vector b) {
+    public static Vector4 subtract(Vector4 result, Vector4 a, Vector4 b) {
         result.x = a.x - b.x;
         result.y = a.y - b.y;
         result.z = a.z - b.z;
+        result.w = a.w - b.w;
         return result;
     }
 	
-    public static Vector times(Vector result, Vector a, Vector b) {
+    public static Vector4 times(Vector4 result, Vector4 a, Vector4 b) {
         result.x = a.x * b.x;
         result.y = a.y * b.y;
         result.z = a.z * b.z;
+        result.w = a.w * b.w;
         return result;
     }
 	
-    public static Vector divide(Vector result, Vector a, Vector b) {
+    public static Vector4 divide(Vector4 result, Vector4 a, Vector4 b) {
         result.x = a.x / b.x;
         result.y = a.y / b.y;
         result.z = a.z / b.z;
+        result.w = a.w / b.w;
         return result;
     }
 	
-    public static Vector times(Vector result, Vector a, float f) {
+    public static Vector4 times(Vector4 result, Vector4 a, float f) {
         result.x = a.x * f;
         result.y = a.y * f;
         result.z = a.z * f;
+        result.w = a.w * f;
         return result;
     }
 	
@@ -241,31 +242,31 @@ public class Vector {
      * @param f
      * @return 
      */
-    public static Vector divide(Vector result, Vector a, float f) {
+    public static Vector4 divide(Vector4 result, Vector4 a, float f) {
         result.x = a.x / f;
         result.y = a.y / f;
         result.z = a.z / f;
+        result.w = a.z / f;
         return result;
     }
 	
-    public static Vector add(Vector result, Vector a, float f) {
+    public static Vector4 add(Vector4 result, Vector4 a, float f) {
         result.x = a.x + f;
         result.y = a.y + f;
         result.z = a.z + f;
+        result.w = a.w + f;
         return result;
     }
 	
-    public static Vector subtract(Vector result, Vector a, float f) {
+    public static Vector4 subtract(Vector4 result, Vector4 a, float f) {
         result.x = a.x - f;
         result.y = a.y - f;
         result.z = a.z - f;
+        result.w = a.w - f;
         return result;
     }
-	
-    /*public static Vector times(Vector result, Vector a, Matrix m) {
-        result.x = ( a.x * m.get(0) ) + ( a.y * m.get(4) ) + ( a.z * m.get(8) ) + m.get(12);
-        result.y = ( a.x * m.get(1) ) + ( a.y * m.get(5) ) + ( a.z * m.get(9) ) + m.get(13);
-        result.z = ( a.x * m.get(2) ) + ( a.y * m.get(6) ) + ( a.z * m.get(10) ) + m.get(14);
-        return result;
-    }*/
+    
+    public Vector perpectiveDivide() {
+        return new Vector(getX() / getW(), getY() / getW(), getZ() / getW());
+    }
 }

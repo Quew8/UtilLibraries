@@ -27,4 +27,20 @@ public class OpenGLUtils {
         }
     }
     
+    public static String toOpenGLMask(int mask) {
+        try {
+            String s = "";
+            Field[] fields = OpenGL.class.getDeclaredFields();
+            for(int i = 0; i < fields.length; i++) {
+                if(Modifier.isStatic(fields[i].getModifiers()) && (fields[i].getName().endsWith("_BIT")) ) {
+                    if((fields[i].getInt(null) & mask) != 0) {
+                        s += s.isEmpty() ? fields[i].getName() : " | " + fields[i].getName();
+                    }
+                }
+            }
+            return !s.isEmpty() ? s : "NO_BITFIELDS";
+        } catch (    IllegalArgumentException | IllegalAccessException ex) {
+            throw new RuntimeException(ex);
+        }
+    }
 }

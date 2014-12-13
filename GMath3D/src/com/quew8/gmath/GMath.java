@@ -286,6 +286,30 @@ public class GMath {
      * @param dx
      * @param dy
      * @param dz
+     * @param dw
+     * @return 
+     */
+    public static float lengthSquared(float dx, float dy, float dz, float dw) {
+        return square(dx) + square(dy) + square(dz) + square(dw);
+    }
+    
+    /**
+     * 
+     * @param dx
+     * @param dy
+     * @param dz
+     * @param dw
+     * @return 
+     */
+    public static float length(float dx, float dy, float dz, float dw) {
+        return sqrt(lengthSquared(dx, dy, dz, dw));
+    }
+    
+    /**
+     * 
+     * @param dx
+     * @param dy
+     * @param dz
      * @return 
      */
     public static float lengthSquared(float dx, float dy, float dz) {

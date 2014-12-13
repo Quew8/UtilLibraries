@@ -679,6 +679,18 @@ public class Matrix {
         return result;
     }
     
+    public static Vector4 times(Vector4 result, Matrix m, Vector4 v) {
+        return times(result, m.data, v);
+    }
+    
+    public static Vector4 times(Vector4 result, float[] m, Vector4 v) {
+        result.setX(( v.getX() * m[0] ) + ( v.getY() * m[4] ) + ( v.getZ() * m[8] ) + ( v.getW() * m[12] ));
+        result.setY(( v.getX() * m[1] ) + ( v.getY() * m[5] ) + ( v.getZ() * m[9] ) + ( v.getW() * m[13] ));
+        result.setZ(( v.getX() * m[2] ) + ( v.getY() * m[6] ) + ( v.getZ() * m[10] ) + ( v.getW() * m[14] ));
+        result.setW(( v.getX() * m[3] ) + ( v.getY() * m[7] ) + ( v.getZ() * m[11] ) + ( v.getW() * m[15] ));
+        return result;
+    }
+    
     public static Vector times(Vector result, Matrix m, Vector v) {
         return times(result, m.data, v);
     }

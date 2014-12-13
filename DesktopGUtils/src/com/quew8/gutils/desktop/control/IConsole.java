@@ -1,7 +1,5 @@
 package com.quew8.gutils.desktop.control;
 
-import org.lwjgl.input.Keyboard;
-
 /**
  *
  * @author Quew8
@@ -24,6 +22,9 @@ public interface IConsole {
     
     public void downKey();
     
+    /**
+     * 
+     */
     public static class TextInputControl extends Control {
         protected IConsole console;
         
@@ -33,6 +34,9 @@ public interface IConsole {
         }
     }
     
+    /**
+     * 
+     */
     public static class CharTextInputControl extends TextInputControl {
         private final char letter;
         private final char altLetter;
@@ -46,7 +50,7 @@ public interface IConsole {
         @Override
         public void onPressed() {
             console.charKey(
-                    ControlSet.checkKeyRegister(Keyboard.KEY_LSHIFT)
+                    ControlSet.isShiftDown()
                     ? altLetter
                     : letter);
         }

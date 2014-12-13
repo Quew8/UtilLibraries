@@ -10,6 +10,10 @@ import java.nio.FloatBuffer;
  */
 public abstract class DynamicRenderMode<T> extends StaticRenderMode {
     
+    public DynamicRenderMode(int nAttribs) {
+        super(nAttribs);
+    }
+    
     public void onPreDraw(T data) {};
 
     public void onPostDraw(T data) {};

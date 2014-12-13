@@ -179,6 +179,22 @@ public class ArrayUtils {
     
     /**
      * 
+     * @param from
+     * @param to
+     * @param step
+     * @return 
+     */
+    public static int[] list(int from, int to, int step) {
+        int[] array = new int[(to - from) / step];
+        array[0] = from;
+        for(int i = 1; i < array.length; i++) {
+            array[i] = array[i - 1] + step;
+        }
+        return array;
+    }
+    
+    /**
+     * 
      * @param <T>
      * @param array
      * @param comparator

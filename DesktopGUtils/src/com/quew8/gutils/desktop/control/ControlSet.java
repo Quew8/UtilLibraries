@@ -25,6 +25,15 @@ public class ControlSet {
     private static boolean mouseFixed = false;
     protected static int mouseX, mouseY, mouseDX = 0, mouseDY = 0;
     
+    static {
+        addKeyRegister(Keyboard.KEY_LSHIFT);
+        addKeyRegister(Keyboard.KEY_RSHIFT);
+        addKeyRegister(Keyboard.KEY_LCONTROL);
+        addKeyRegister(Keyboard.KEY_RCONTROL);
+        addKeyRegister(Keyboard.KEY_LMETA);
+        addKeyRegister(Keyboard.KEY_RMETA);
+    }
+    
     public ControlSet(Control[] keyControls, KeyDownControl[] keyDownControls, 
             MouseMovementControl mouseMovementControl, Control[] mouseControls, 
             MouseDownControl[] mouseDownControls) {
@@ -149,6 +158,21 @@ public class ControlSet {
         return keyRegisters.get(key);
     }
     
+    public static boolean isShiftDown() {
+        return checkKeyRegister(Keyboard.KEY_LSHIFT) || 
+                checkKeyRegister(Keyboard.KEY_RSHIFT);
+    }
+    
+    public static boolean isCtrlDown() {
+        return checkKeyRegister(Keyboard.KEY_LCONTROL) || 
+                checkKeyRegister(Keyboard.KEY_RCONTROL);
+    }
+    
+    public static boolean isMetaDown() {
+        return checkKeyRegister(Keyboard.KEY_LMETA) || 
+                checkKeyRegister(Keyboard.KEY_RMETA);
+    }
+    
     public static void addMouseRegister(int key) {
         if(mouseRegisters.containsKey(key)) {
             return;
@@ -174,6 +198,12 @@ public class ControlSet {
         mouseFixed = false;
     }
     
+    /**
+     * Creates controls for all used keys except 2, 3, grave and apostrophe.
+     * 
+     * @param console
+     * @return 
+     */
     private static Control[] createGeneralTextInputControls(IConsole console) {
         return new Control[]{
             new IConsole.CharTextInputControl(Keyboard.KEY_A, 'a', 'A', console),
@@ -211,6 +241,16 @@ public class ControlSet {
             new IConsole.CharTextInputControl(Keyboard.KEY_7, '7', '&', console),
             new IConsole.CharTextInputControl(Keyboard.KEY_8, '8', '*', console),
             new IConsole.CharTextInputControl(Keyboard.KEY_9, '9', '(', console),
+            new IConsole.CharTextInputControl(Keyboard.KEY_NUMPAD0, '0', '0', console),
+            new IConsole.CharTextInputControl(Keyboard.KEY_NUMPAD1, '1', '1', console),
+            new IConsole.CharTextInputControl(Keyboard.KEY_NUMPAD2, '2', '2', console),
+            new IConsole.CharTextInputControl(Keyboard.KEY_NUMPAD3, '3', '3', console),
+            new IConsole.CharTextInputControl(Keyboard.KEY_NUMPAD4, '4', '4', console),
+            new IConsole.CharTextInputControl(Keyboard.KEY_NUMPAD5, '5', '5', console),
+            new IConsole.CharTextInputControl(Keyboard.KEY_NUMPAD6, '6', '6', console),
+            new IConsole.CharTextInputControl(Keyboard.KEY_NUMPAD7, '7', '7', console),
+            new IConsole.CharTextInputControl(Keyboard.KEY_NUMPAD8, '8', '8', console),
+            new IConsole.CharTextInputControl(Keyboard.KEY_NUMPAD9, '9', '9', console),
             new IConsole.CharTextInputControl(Keyboard.KEY_MINUS, '-', '_', console),
             new IConsole.CharTextInputControl(Keyboard.KEY_EQUALS, '=', '+', console),
             new IConsole.CharTextInputControl(Keyboard.KEY_PERIOD, '.', '>', console),

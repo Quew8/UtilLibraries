@@ -23,9 +23,7 @@ class TextureLoaderTask extends WorkerTask<TextureLoaderTask, TextureLoadVariabl
     @Override
     public void onPostWork(TextureLoadVariables input) {
         input.texture.bind();
-        for(int i = 0; i < input.texParams.getNParams(); i++) {
-            glTexParameteri(GL_TEXTURE_2D, input.texParams.getPName(i), input.texParams.getParam(i));
-        }
+        input.texParams.setAll(GL_TEXTURE_2D);
         int destFormat = input.destFormat < 0 ?
                 loadedImage.hasAlpha() ? GL_RGBA : GL_RGB :
                 input.destFormat;

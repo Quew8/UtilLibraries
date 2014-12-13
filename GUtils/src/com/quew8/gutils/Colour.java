@@ -21,6 +21,7 @@ public class Colour {
     public static final Colour MAGENTA = new Colour(1f, 0f, 1f);
     public static final Colour BROWN = new Colour(0.6f, 0.3f, 0.1f);
     public static final Colour PINK = new Colour(1f, 0.4f, 0.8f);
+    public static final Colour ORANGE = new Colour(1f, 0.5f, 0f);
     
     /**
      * 
