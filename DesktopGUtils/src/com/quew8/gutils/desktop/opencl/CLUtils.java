@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.lwjgl.LWJGLException;
 import org.lwjgl.PointerBuffer;
 import org.lwjgl.opencl.*;
 
@@ -17,7 +16,7 @@ import org.lwjgl.opencl.*;
  * @author Quew8
  */
 public class CLUtils {
-    private static CLPlatform platform;
+    /*private static CLPlatform platform;
     private static List<CLDevice> devices;
     private static CLContext context;
     private static CLCommandQueue queue;
@@ -115,9 +114,6 @@ public class CLUtils {
                 ).getText();
     }
     
-    /**
-     * 
-     */
     public static class CLUtilsProgram {
         CLProgram program;
         HashMap<String, CLKernel> kernels = new HashMap<>();
@@ -155,5 +151,5 @@ public class CLUtils {
             }
             CL10.clReleaseProgram(program);
         }
-    }
+    }*/
 }

@@ -6,17 +6,15 @@ import java.util.HashMap;
 import java.util.Map.Entry;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.lwjgl.LWJGLException;
 import org.lwjgl.openal.AL;
 import org.lwjgl.openal.AL10;
-import org.lwjgl.util.WaveData;
 
 /**
  * 
  * @author Quew8
  */
 public class ALUtils {
-    private static HashMap<Integer, IntBuffer> buffers;
+    /*private static HashMap<Integer, IntBuffer> buffers;
     
     private ALUtils() {
         
@@ -68,5 +66,5 @@ public class ALUtils {
             buffers.remove(entry.getKey());
         }
         AL.destroy();
-    }
+    }*/
 }

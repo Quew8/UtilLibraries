@@ -13,7 +13,8 @@ public class DefaultFramebufferServiceImpl implements FramebufferServiceImpl {
     
     @Override
     public boolean isApplicable() {
-        return GLContext.getCapabilities().OpenGL30;
+        //#TODO Work out this.
+        return true;//GLContext.getCapabilities().OpenGL30;
     }
     
     @Override

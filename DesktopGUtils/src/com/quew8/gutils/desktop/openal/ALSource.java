@@ -10,7 +10,7 @@ import org.lwjgl.openal.AL10;
  * @author Quew8
  */
 public class ALSource {
-    private final IntBuffer idBuff;
+    /*private final IntBuffer idBuff;
     
     public ALSource(int bufferName, boolean loop, float[] position, float[] velocity, float pitch, float gain) {
         idBuff = BufferUtils.createIntBuffer(1);
@@ -45,5 +45,5 @@ public class ALSource {
     
     public void destroy() {
         AL10.alDeleteSources(idBuff);
-    }
+    }*/
 }

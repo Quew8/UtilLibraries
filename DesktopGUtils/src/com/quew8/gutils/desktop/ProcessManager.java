@@ -7,7 +7,6 @@ import com.quew8.gutils.opengl.Viewport;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
-import org.lwjgl.LWJGLException;
 
 /**
  *
@@ -17,7 +16,7 @@ public class ProcessManager {
     private final ISurface surface;
     private final ArrayList<Process> processes = new ArrayList<Process>();
     
-    public ProcessManager(Window.WindowParams params, Process[] processes) throws LWJGLException {
+    public ProcessManager(Window.WindowParams params, Process[] processes) {
         this.surface = new Window(params, new URL[]{});
         this.processes.addAll(Arrays.asList(processes));
     }

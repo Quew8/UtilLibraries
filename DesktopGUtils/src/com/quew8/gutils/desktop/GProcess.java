@@ -7,7 +7,6 @@ import com.quew8.gutils.desktop.windowing.Window;
 import com.quew8.gutils.desktop.windowing.Window.WindowParams;
 import com.quew8.gutils.opengl.Viewport;
 import java.net.URL;
-import org.lwjgl.LWJGLException;
 
 /**
  *
@@ -18,20 +17,20 @@ public abstract class GProcess {
     private DebugView debugView = null;
     private final Window window;
     
-    public GProcess(boolean debug, WindowParams params, URL[] services) throws LWJGLException {
+    public GProcess(boolean debug, WindowParams params, URL[] services) {
         this.debug = debug;
         this.window = new Window(params, services);
     }
     
-    public GProcess(WindowParams params, URL[] services) throws LWJGLException {
+    public GProcess(WindowParams params, URL[] services) {
         this(false, params, services);
     }
     
-    public GProcess(boolean debug, WindowParams params) throws LWJGLException {
+    public GProcess(boolean debug, WindowParams params) {
         this(debug, params, new URL[]{});
     }
     
-    public GProcess(WindowParams params) throws LWJGLException {
+    public GProcess(WindowParams params) {
         this(false, params);
     }
     
@@ -95,6 +94,10 @@ public abstract class GProcess {
     protected abstract void render();
     protected abstract void deinit();
 
+    public Window getWindow() {
+        return window;
+    }
+    
     public void toggleFullscreen() {
         window.toggleFullscreen();
     }

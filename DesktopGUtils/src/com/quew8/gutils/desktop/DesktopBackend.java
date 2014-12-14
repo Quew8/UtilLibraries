@@ -18,7 +18,7 @@ import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.HashMap;
-import org.lwjgl.Sys;
+import static org.lwjgl.glfw.GLFW.glfwGetTime;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL13;
 import org.lwjgl.opengl.GL14;
@@ -855,7 +855,7 @@ public class DesktopBackend extends PlatformBackend<DesktopLoadedImage> {
     
     @Override
     public long getTimeMillis_P() {
-        return (Sys.getTime() * 1000) / Sys.getTimerResolution();
+        return (long) (glfwGetTime() * 1000);
     }
     
     @Override

@@ -1,5 +1,7 @@
 package com.quew8.gutils.desktop.control;
 
+import org.lwjgl.glfw.GLFW;
+
 /**
  *
  * @author Quew8
@@ -48,9 +50,17 @@ public interface IConsole {
         }
 
         @Override
-        public void onPressed() {
+        public void onPressed(int mods) {
             console.charKey(
-                    ControlSet.isShiftDown()
+                    (mods & GLFW.GLFW_MOD_SHIFT) != 0
+                    ? altLetter
+                    : letter);
+        }
+
+        @Override
+        public void onRepeat(int mods) {
+            console.charKey(
+                    (mods & GLFW.GLFW_MOD_SHIFT) != 0
                     ? altLetter
                     : letter);
         }

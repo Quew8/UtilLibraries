@@ -18,7 +18,9 @@ public class DefaultShaderServiceImpl implements ShaderServiceImpl {
     
     @Override
     public boolean isApplicable() {
-        return GLContext.getCapabilities().OpenGL20;
+        //#TODO Work out this too.
+        return true;
+        //return GLContext.getCapabilities().OpenGL20;
     }
 
     @Override
@@ -78,7 +80,7 @@ public class DefaultShaderServiceImpl implements ShaderServiceImpl {
 
     @Override
     public String glGetActiveAttrib_P(int program, int index, IntBuffer length, IntBuffer type) {
-        return GL20.glGetActiveAttrib(program, index, index, type);
+        return GL20.glGetActiveAttrib(program, index, length, type);
     }
 
     @Override
@@ -298,7 +300,10 @@ public class DefaultShaderServiceImpl implements ShaderServiceImpl {
 
     @Override
     public void glVertexAttribPointer_P(int index, int size, boolean signed, boolean normalized, int stride, IntBuffer buffer) {
-        GL20.glVertexAttribPointer(index, size, signed, normalized, stride, buffer);
+        if(!signed) {
+            throw new UnsupportedOperationException();
+        }
+        GL20.glVertexAttribPointer(index, size, normalized, stride, buffer);
     }
 
     @Override

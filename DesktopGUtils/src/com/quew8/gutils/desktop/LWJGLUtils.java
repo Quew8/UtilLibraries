@@ -1,13 +1,9 @@
 package com.quew8.gutils.desktop;
-
+/*
 import org.lwjgl.LWJGLException;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
 
-/**
- *
- * @author Quew8
- */
 public class LWJGLUtils {
 
     private LWJGLUtils() {
@@ -55,4 +51,4 @@ public class LWJGLUtils {
     public static DisplayMode getDesktopDisplayMode() {
         return Display.getDesktopDisplayMode();
     }
-}
+}*/

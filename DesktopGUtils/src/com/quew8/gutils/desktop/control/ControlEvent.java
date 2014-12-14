@@ -6,11 +6,13 @@ package com.quew8.gutils.desktop.control;
  */
 public class ControlEvent {
     private int key;
-    private final boolean state;
+    private final int state;
+    private final int mods;
     
-    public ControlEvent(int key, boolean state) {
+    public ControlEvent(int key, int state, int mods) {
         this.key = key;
         this.state = state;
+        this.mods = mods;
     }
     
     public void consume() {
@@ -21,7 +23,11 @@ public class ControlEvent {
         return key;
     }
     
-    public boolean getState() {
+    public int getState() {
         return state;
+    }
+    
+    public int getMods() {
+        return mods;
     }
 }
