@@ -1,32 +1,32 @@
 package com.quew8.gutils.desktop.control;
 
-import com.quew8.gutils.desktop.windowing.Window;
 import org.lwjgl.glfw.GLFW;
 
 /**
  *
  * @author Quew8
  */
-public class Control extends AbstractControl {
+public class Control {
+    private final int key;
     
     public Control(int key) {
-        super(key);
+        this.key = key;
     }
     
-    /*protected boolean isKey(int key) {
-        return this.key == key;
-    }*/
-    
-    public void onAction(int action, int mods) {
+    protected void onAction(WindowInputHandler handler, int action, int mods) {
         switch(action) {
-            case GLFW.GLFW_PRESS: onPressed(mods); break;
-            case GLFW.GLFW_REPEAT: onRepeat(mods); break;
-            case GLFW.GLFW_RELEASE: onReleased(mods); break;
+            case GLFW.GLFW_PRESS: onPressed(handler, mods); break;
+            case GLFW.GLFW_REPEAT: onRepeat(handler, mods); break;
+            case GLFW.GLFW_RELEASE: onReleased(handler, mods); break;
             default: throw new IllegalArgumentException();
         }
     }
     
-    public void onPressed(int mods) {}
-    public void onRepeat(int mods) {}
-    public void onReleased(int mods) {}
+    protected void onPressed(WindowInputHandler handler, int mods) {}
+    protected void onRepeat(WindowInputHandler handler, int mods) {}
+    protected void onReleased(WindowInputHandler handler, int mods) {}
+
+    protected int getKey() {
+        return key;
+    }
 }

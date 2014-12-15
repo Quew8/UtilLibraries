@@ -9,14 +9,19 @@ import static com.quew8.gutils.opengl.OpenGL.GL_TRUE;
 import com.quew8.gutils.opengl.Viewport;
 import java.net.URL;
 import java.nio.ByteBuffer;
+import java.nio.DoubleBuffer;
 import static org.lwjgl.glfw.Callbacks.errorCallbackPrint;
 import static org.lwjgl.glfw.GLFW.*;
+import org.lwjgl.glfw.GLFWCharCallback;
+import org.lwjgl.glfw.GLFWCursorPosCallback;
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.glfw.GLFWFramebufferSizeCallback;
 import org.lwjgl.glfw.GLFWKeyCallback;
+import org.lwjgl.glfw.GLFWMouseButtonCallback;
 import org.lwjgl.glfw.GLFWvidmode;
 import org.lwjgl.opengl.GLContext;
 import static org.lwjgl.system.MemoryUtil.NULL;
+import org.lwjgl.system.libffi.Closure;
 
 /**
  * 
@@ -27,8 +32,11 @@ public class Window extends Surface {
     private static GLFWErrorCallback errorCallback;
     public final static String INIT_LOG = "INIT";
     
-    private GLFWFramebufferSizeCallback framebufferSizeCallback = null;
     private GLFWKeyCallback keyCallback = null;
+    private GLFWCharCallback charCallback = null;
+    private GLFWMouseButtonCallback mouseButtonCallback = null;
+    private GLFWCursorPosCallback cursorPosCallback = null;
+    private GLFWFramebufferSizeCallback framebufferSizeCallback = null;
     private final long window;
     private final boolean isFullscreen;
     
@@ -120,36 +128,56 @@ public class Window extends Surface {
         if(keyCallback != null) {
             keyCallback.release();
         }
+        if(charCallback != null) {
+            charCallback.release();
+        }
+        if(mouseButtonCallback != null) {
+            mouseButtonCallback.release();
+        }
+        if(cursorPosCallback != null) {
+            cursorPosCallback.release();
+        }
         if(framebufferSizeCallback != null) {
             framebufferSizeCallback.release();
         }
         unregisterWindow();
     }
     
-    public long getAddress() {
-        return window;
-    }
-    
     public boolean setKeyCallback(GLFWKeyCallback keyCallback) {
         this.keyCallback = keyCallback;
-        keyCallback = glfwSetKeyCallback(window, keyCallback);
-        if(keyCallback != null) {
-            keyCallback.release();
-            return true;
-        } else {
-            return false;
-        }
+        return releaseOldCallback(glfwSetKeyCallback(window, keyCallback));
+    }
+    
+    public boolean setCharCallback(GLFWCharCallback charCallback) {
+        this.charCallback = charCallback;
+        return releaseOldCallback(glfwSetCharCallback(window, charCallback));
+    }
+    
+    public boolean setMouseButtonCallback(GLFWMouseButtonCallback mouseButtonCallback) {
+        this.mouseButtonCallback = mouseButtonCallback;
+        return releaseOldCallback(glfwSetMouseButtonCallback(window, mouseButtonCallback));
+    }
+    
+    public boolean setCursorPosCallback(GLFWCursorPosCallback cursorPosCallback) {
+        this.cursorPosCallback = cursorPosCallback;
+        return releaseOldCallback(glfwSetCursorPosCallback(window, cursorPosCallback));
     }
     
     private boolean setFramebufferSizeCallback(GLFWFramebufferSizeCallback framebufferSizeCallback) {
         this.framebufferSizeCallback = framebufferSizeCallback;
-        framebufferSizeCallback = glfwSetFramebufferSizeCallback(window, framebufferSizeCallback);
-        if(framebufferSizeCallback != null) {
-            framebufferSizeCallback.release();
-            return true;
-        } else {
-            return false;
-        }
+        return releaseOldCallback(glfwSetFramebufferSizeCallback(window, framebufferSizeCallback));
+    }
+    
+    public int getKey(int key) {
+        return glfwGetKey(window, key);
+    }
+    
+    public int getMouseButton(int button) {
+        return glfwGetMouseButton(window, button);
+    }
+    
+    public void getCursorPos(DoubleBuffer xPos, DoubleBuffer yPos) {
+        glfwGetCursorPos(window, xPos, yPos);
     }
     
     private static void registerWindow() {
@@ -167,6 +195,15 @@ public class Window extends Surface {
         if(nWindows == 0) {
             glfwTerminate();
             errorCallback.release();
+        }
+    }
+    
+    private static boolean releaseOldCallback(Closure closure) {
+        if(closure != null) {
+            closure.release();
+            return true;
+        } else {
+            return false;
         }
     }
     
@@ -304,7 +341,7 @@ public class Window extends Surface {
             return this;
         }
         
-        public WindowParams setCompatibiltyProfile(boolean compatibility) {
+        public WindowParams setCompatibilityProfile(boolean compatibility) {
             this.compatibilityProfile = compatibility;
             this.coreProfile = !compatibility;
             return this;

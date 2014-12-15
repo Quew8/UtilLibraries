@@ -1,6 +1,7 @@
 package com.quew8.gutils.desktop.control;
 
 import org.lwjgl.glfw.GLFW;
+import org.lwjgl.glfw.GLFWCharCallback;
 
 /**
  *
@@ -50,7 +51,7 @@ public interface IConsole {
         }
 
         @Override
-        public void onPressed(int mods) {
+        public void onPressed(WindowInputHandler handler, int mods) {
             console.charKey(
                     (mods & GLFW.GLFW_MOD_SHIFT) != 0
                     ? altLetter
@@ -58,11 +59,20 @@ public interface IConsole {
         }
 
         @Override
-        public void onRepeat(int mods) {
+        public void onRepeat(WindowInputHandler handler, int mods) {
             console.charKey(
                     (mods & GLFW.GLFW_MOD_SHIFT) != 0
                     ? altLetter
                     : letter);
         }
+    }
+    
+    public static class ConsoleCharCallback extends GLFWCharCallback {
+
+        @Override
+        public void invoke(long window, int codepoint) {
+            System.out.println(codepoint + " " + ((char)codepoint) + " " + Character.getName(codepoint));
+        }
+        
     }
 }

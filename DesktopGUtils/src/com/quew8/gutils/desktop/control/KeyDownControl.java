@@ -1,28 +1,20 @@
 package com.quew8.gutils.desktop.control;
 
-import com.quew8.gutils.desktop.windowing.Window;
-import org.lwjgl.glfw.GLFW;
-
 /**
  *
  * @author Quew8
  */
-public class KeyDownControl extends AbstractControl {
+public class KeyDownControl {
+    private final int key;
     
     public KeyDownControl(int key) {
-        super(key);
+        this.key = key;
     }
 
-    protected void checkKeys(Window window) {
-        if(getKeyState(window) == GLFW.GLFW_PRESS) {
-            onIsPressed();
-        } else {
-            System.out.println(getKeyState(window));
-            onIsReleased();
-        }
+    protected void onIsPressed(WindowInputHandler handler) {}
+    protected void onIsReleased(WindowInputHandler handler) {}
+    
+    protected int getKey() {
+        return key;
     }
-
-    public void onIsPressed() {}
-
-    public void onIsReleased() {}
 }
