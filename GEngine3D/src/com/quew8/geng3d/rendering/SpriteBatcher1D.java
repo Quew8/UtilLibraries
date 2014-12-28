@@ -1,6 +1,5 @@
 package com.quew8.geng3d.rendering;
 
-import com.quew8.geng.geometry.Image;
 import com.quew8.geng.geometry.Texture;
 import com.quew8.geng.rendering.SpriteBatcher;
 import com.quew8.geng3d.rendering.modes.SpriteDataFactory1D;

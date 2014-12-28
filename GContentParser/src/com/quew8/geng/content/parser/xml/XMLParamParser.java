@@ -1,4 +1,4 @@
-package com.quew8.geng.content.parser;
+package com.quew8.geng.content.parser.xml;
 
 import com.quew8.geng.xmlparser.XMLAttributeParser;
 import com.quew8.geng.xmlparser.XMLParser;
@@ -10,7 +10,7 @@ import org.dom4j.Element;
  *
  * @author Quew8
  */
-public class ParamParser extends XMLParser {
+public class XMLParamParser extends XMLParser {
     private static final String 
             KEY = "key",
             VALUE = "val";

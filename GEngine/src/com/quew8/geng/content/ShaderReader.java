@@ -1,6 +1,8 @@
 package com.quew8.geng.content;
 
 import com.quew8.geng.glslparser.GLSLProgramParser;
+import com.quew8.gutils.FileUtils;
+import com.quew8.gutils.GeneralUtils;
 import com.quew8.gutils.content.ContentReader;
 import com.quew8.gutils.content.Source;
 import com.quew8.gutils.opengl.OpenGL;
@@ -15,12 +17,28 @@ import java.util.Map.Entry;
  */
 public class ShaderReader implements ContentReader<ShaderProgram> {
     private static final String 
+            TYPE = "type",
+            SOURCE_FILE_TYPE = "source_files",
+            GEN_FILE_TYPE = "gen_file",
             ATRIBS = "attribs",
             REPLACEMENTS = "replacements",
             UNIFORMS = "uniforms";
             
     @Override
     public ShaderProgram read(Source in) {
+        String type;
+        if(in.hasParam(TYPE)) {
+            type = in.getParam(TYPE);
+        } else {
+            String extension = FileUtils.getExtension(in.getSource(0));
+            switch(extension) {
+                case "program": type = GEN_FILE_TYPE; break;
+                case "txt":
+                case "frag":
+                case "vert": type = SOURCE_FILE_TYPE; break;
+                default: throw new IllegalArgumentException("Unrecognized shader program file extension: \"" + extension + "\"");
+            }
+        }
         String[] attribs = in.getParams().get(ATRIBS).split("[\\s]+");
         HashMap<String, String> constants = new HashMap<String, String>();
         if(in.getParamLists().containsKey(REPLACEMENTS)) {
@@ -30,9 +48,22 @@ public class ShaderReader implements ContentReader<ShaderProgram> {
             }
         }
         
-        GLSLProgramParser parser = new GLSLProgramParser();
-        parser.read(in.getSource());
-        ShaderProgram program = parser.getProgram(100, OpenGL.getGLSLVersion(), constants, attribs);
+        ShaderProgram program;
+        switch(type) {
+            case GEN_FILE_TYPE: {
+                GLSLProgramParser parser = new GLSLProgramParser();
+                parser.read(in.getSource());
+                program = parser.getProgram(100, OpenGL.getGLSLVersion(), constants, attribs);
+                break;
+            }
+            case SOURCE_FILE_TYPE: {
+                String vertex = GeneralUtils.readTextIntoDefaultFormatter(in.getStream(0)).getText();
+                String fragment = GeneralUtils.readTextIntoDefaultFormatter(in.getStream(1)).getText();
+                program = new ShaderProgram(vertex, fragment, attribs);
+                break;
+            }
+            default: throw new IllegalArgumentException("Unrecognized type to read shader program: \"" + type + "\"");
+        }
         if(in.getParamLists().containsKey(UNIFORMS)) {
             program.use();
             Entry<String, String>[] entries = in.getParamLists().get(UNIFORMS);

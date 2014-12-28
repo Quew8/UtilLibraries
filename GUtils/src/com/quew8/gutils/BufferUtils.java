@@ -15,6 +15,13 @@ public class BufferUtils {
         
     }
     
+    public static ByteBuffer getSlice(ByteBuffer bb, int offset, int length) {
+        ByteBuffer bb2 = bb.slice();
+        bb2.position(offset);
+        bb2.limit(offset + length);
+        return bb2;
+    }
+    
     public static ByteBuffer createByteBuffer(int size) {
         ByteBuffer bb = ByteBuffer.allocateDirect(size);
         bb.order(ByteOrder.nativeOrder());

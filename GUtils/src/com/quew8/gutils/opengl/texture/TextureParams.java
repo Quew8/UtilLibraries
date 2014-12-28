@@ -1,6 +1,9 @@
 package com.quew8.gutils.opengl.texture;
 
+import com.quew8.gutils.opengl.OpenGL;
 import static com.quew8.gutils.opengl.OpenGL.*;
+import com.quew8.gutils.opengl.OpenGLUtils;
+import java.nio.IntBuffer;
 
 public class TextureParams {
     private final int[] pnames, params;

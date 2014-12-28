@@ -57,35 +57,10 @@ public class DesktopBackend extends PlatformBackend<DesktopLoadedImage> {
                 }
             };
     
-    private final int openGLVersion, glslVersion;
-    private final ShaderServiceImpl shaderService;
-    private final FramebufferServiceImpl framebufferService;
+    private DesktopContextBackend contextBackend;
     
-    public DesktopBackend(int openGLVersion, int glslVersion, ShaderServiceImpl shaderService, 
-            FramebufferServiceImpl framebufferService) {
-        this.openGLVersion = openGLVersion;
-        this.glslVersion = glslVersion;
-        this.shaderService = shaderService;
-        this.framebufferService = framebufferService;
-    }
-    
-    public DesktopBackend(int openGLVersion, int glslVersion, URL[] urls) {
-        this(
-                openGLVersion,
-                glslVersion,
-                new ServiceImplLoader<ShaderServiceImpl>(
-                        ShaderServiceImpl.class, 
-                        urls,
-                        DefaultShaderServiceImpl.INSTANCE,
-                        NoShaderServiceImpl.INSTANCE
-                ).getImplementationNoThrow(),
-                new ServiceImplLoader<FramebufferServiceImpl>(
-                        FramebufferServiceImpl.class, 
-                        urls,
-                        DefaultFramebufferServiceImpl.INSTANCE,
-                        NoFramebufferServiceImpl.INSTANCE
-                ).getImplementationNoThrow()
-        );
+    public DesktopBackend(DesktopContextBackend contextBackend) {
+        this.contextBackend = contextBackend;
     }
 
     @Override
@@ -95,12 +70,12 @@ public class DesktopBackend extends PlatformBackend<DesktopLoadedImage> {
 
     @Override
     public void glAttachShader_P(int program, int shader) {
-        shaderService.glAttachShader_P(program, shader);
+        contextBackend.shaderService.glAttachShader_P(program, shader);
     }
 
     @Override
     public void glBindAttribLocation_P(int program, int index, String name) {
-        shaderService.glBindAttribLocation_P(program, index, name);
+        contextBackend.shaderService.glBindAttribLocation_P(program, index, name);
     }
 
     @Override
@@ -110,12 +85,12 @@ public class DesktopBackend extends PlatformBackend<DesktopLoadedImage> {
 
     @Override
     public void glBindFramebuffer_P(int target, int framebuffer) {
-        framebufferService.glBindFramebuffer_P(target, framebuffer);
+        contextBackend.framebufferService.glBindFramebuffer_P(target, framebuffer);
     }
 
     @Override
     public void glBindRenderbuffer_P(int target, int renderbuffer) {
-        framebufferService.glBindRenderbuffer_P(target, renderbuffer);
+        contextBackend.framebufferService.glBindRenderbuffer_P(target, renderbuffer);
     }
 
     @Override
@@ -170,7 +145,7 @@ public class DesktopBackend extends PlatformBackend<DesktopLoadedImage> {
 
     @Override
     public int glCheckFramebufferStatus_P(int target) {
-        return framebufferService.glCheckFramebufferStatus_P(target);
+        return contextBackend.framebufferService.glCheckFramebufferStatus_P(target);
     }
 
     @Override
@@ -200,7 +175,7 @@ public class DesktopBackend extends PlatformBackend<DesktopLoadedImage> {
 
     @Override
     public void glCompileShader_P(int shader) {
-        shaderService.glCompileShader_P(shader);
+        contextBackend.shaderService.glCompileShader_P(shader);
     }
     
     @Override
@@ -225,12 +200,12 @@ public class DesktopBackend extends PlatformBackend<DesktopLoadedImage> {
 
     @Override
     public int glCreateProgram_P() {
-        return shaderService.glCreateProgram_P(); 
+        return contextBackend.shaderService.glCreateProgram_P(); 
     }
 
     @Override
     public int glCreateShader_P(int type) {
-        return shaderService.glCreateShader_P(type);
+        return contextBackend.shaderService.glCreateShader_P(type);
     }
 
     @Override
@@ -245,22 +220,22 @@ public class DesktopBackend extends PlatformBackend<DesktopLoadedImage> {
 
     @Override
     public void glDeleteFramebuffers_P(IntBuffer buffers) {
-        framebufferService.glDeleteFramebuffers_P(buffers);
+        contextBackend.framebufferService.glDeleteFramebuffers_P(buffers);
     }
 
     @Override
     public void glDeleteProgram_P(int program) {
-        shaderService.glDeleteProgram_P(program);
+        contextBackend.shaderService.glDeleteProgram_P(program);
     }
 
     @Override
     public void glDeleteRenderbuffers_P(IntBuffer buffers) {
-        framebufferService.glDeleteRenderbuffers_P(buffers);
+        contextBackend.framebufferService.glDeleteRenderbuffers_P(buffers);
     }
 
     @Override
     public void glDeleteShader_P(int shader) {
-        shaderService.glDeleteShader_P(shader);
+        contextBackend.shaderService.glDeleteShader_P(shader);
     }
 
     @Override
@@ -285,7 +260,7 @@ public class DesktopBackend extends PlatformBackend<DesktopLoadedImage> {
 
     @Override
     public void glDetachShader_P(int program, int shader) {
-        shaderService.glDetachShader_P(program, shader);
+        contextBackend.shaderService.glDetachShader_P(program, shader);
     }
 
     @Override
@@ -295,7 +270,7 @@ public class DesktopBackend extends PlatformBackend<DesktopLoadedImage> {
 
     @Override
     public void glDisableVertexAttribArray_P(int index) {
-        shaderService.glDisableVertexAttribArray_P(index);
+        contextBackend.shaderService.glDisableVertexAttribArray_P(index);
     }
 
     @Override
@@ -325,7 +300,7 @@ public class DesktopBackend extends PlatformBackend<DesktopLoadedImage> {
 
     @Override
     public void glEnableVertexAttribArray_P(int index) {
-        shaderService.glEnableVertexAttribArray_P(index);
+        contextBackend.shaderService.glEnableVertexAttribArray_P(index);
     }
 
     @Override
@@ -340,12 +315,12 @@ public class DesktopBackend extends PlatformBackend<DesktopLoadedImage> {
 
     @Override
     public void glFramebufferRenderbuffer_P(int target, int attachment, int renderbufferTarget, int renderbuffer) {
-        framebufferService.glFramebufferRenderbuffer_P(target, attachment, renderbufferTarget, renderbuffer);
+        contextBackend.framebufferService.glFramebufferRenderbuffer_P(target, attachment, renderbufferTarget, renderbuffer);
     }
 
     @Override
     public void glFramebufferTexture2D_P(int target, int attachment, int texTarget, int texture, int level) {
-        framebufferService.glFramebufferTexture2D_P(target, attachment, texTarget, texture, level);
+        contextBackend.framebufferService.glFramebufferTexture2D_P(target, attachment, texTarget, texture, level);
     }
 
     @Override
@@ -360,11 +335,11 @@ public class DesktopBackend extends PlatformBackend<DesktopLoadedImage> {
 
     @Override
     public void glGenFramebuffers_P(IntBuffer buffers) {
-        framebufferService.glGenFramebuffers_P(buffers);
+        contextBackend.framebufferService.glGenFramebuffers_P(buffers);
     }
     @Override
     public void glGenRenderbuffers_P(IntBuffer buffers) {
-        framebufferService.glGenRenderbuffers_P(buffers);
+        contextBackend.framebufferService.glGenRenderbuffers_P(buffers);
     }
 
     @Override
@@ -374,17 +349,17 @@ public class DesktopBackend extends PlatformBackend<DesktopLoadedImage> {
 
     @Override
     public String glGetActiveAttrib_P(int program, int index, IntBuffer length, IntBuffer type) {
-        return shaderService.glGetActiveAttrib_P(program, index, length, type);
+        return contextBackend.shaderService.glGetActiveAttrib_P(program, index, length, type);
     }
 
     @Override
     public void glGetAttachedShaders_P(int program, IntBuffer count, IntBuffer shaders) {
-        shaderService.glGetAttachedShaders_P(program, count, shaders);
+        contextBackend.shaderService.glGetAttachedShaders_P(program, count, shaders);
     }
 
     @Override
     public int glGetAttribLocation_P(int program, String name) {
-        return shaderService.glGetAttribLocation_P(program, name);
+        return contextBackend.shaderService.glGetAttribLocation_P(program, name);
     }
 
     @Override
@@ -409,7 +384,7 @@ public class DesktopBackend extends PlatformBackend<DesktopLoadedImage> {
 
     @Override
     public void glGetFramebufferAttachmentParameteriv_P(int target, int attatchment, int pname, IntBuffer params) {
-        framebufferService.glGetFramebufferAttachmentParameteriv_P(target, attatchment, pname, params);
+        contextBackend.framebufferService.glGetFramebufferAttachmentParameteriv_P(target, attatchment, pname, params);
     }
 
     @Override
@@ -419,32 +394,32 @@ public class DesktopBackend extends PlatformBackend<DesktopLoadedImage> {
 
     @Override
     public void glGetProgramiv_P(int program, int pname, IntBuffer params) {
-        shaderService.glGetProgramiv_P(program, pname, params);
+        contextBackend.shaderService.glGetProgramiv_P(program, pname, params);
     }
 
     @Override
     public String glGetProgramInfoLog_P(int program) {
-        return shaderService.glGetProgramInfoLog_P(program);
+        return contextBackend.shaderService.glGetProgramInfoLog_P(program);
     }
 
     @Override
     public void glGetRenderbufferParameteriv_P(int target, int pname, IntBuffer params) {
-        framebufferService.glGetRenderbufferParameteriv_P(target, pname, params);
+        contextBackend.framebufferService.glGetRenderbufferParameteriv_P(target, pname, params);
     }
 
     @Override
     public void glGetShaderiv_P(int shader, int pname, IntBuffer params) {
-        shaderService.glGetShaderiv_P(shader, pname, params);
+        contextBackend.shaderService.glGetShaderiv_P(shader, pname, params);
     }
 
     @Override
     public String glGetShaderInfoLog_P(int shader) {
-        return shaderService.glGetShaderInfoLog_P(shader);
+        return contextBackend.shaderService.glGetShaderInfoLog_P(shader);
     }
 
     @Override
     public String glGetShaderSource_P(int shader) {
-        return shaderService.glGetShaderSource_P(shader);
+        return contextBackend.shaderService.glGetShaderSource_P(shader);
     }
 
     @Override
@@ -464,27 +439,27 @@ public class DesktopBackend extends PlatformBackend<DesktopLoadedImage> {
 
     @Override
     public void glGetUniformfv_P(int program, int location, FloatBuffer params) {
-        shaderService.glGetUniformfv_P(program, location, params);
+        contextBackend.shaderService.glGetUniformfv_P(program, location, params);
     }
 
     @Override
     public void glGetUniformiv_P(int program, int location, IntBuffer params) {
-        shaderService.glGetUniformiv_P(program, location, params);
+        contextBackend.shaderService.glGetUniformiv_P(program, location, params);
     }
     
     @Override
     public int glGetUniformLocation_P(int program, String name) {
-        return shaderService.glGetUniformLocation_P(program, name);
+        return contextBackend.shaderService.glGetUniformLocation_P(program, name);
     }
 
     @Override
     public void glGetVertexAttribfv_P(int index, int pname, FloatBuffer params) {
-        shaderService.glGetVertexAttribfv_P(index, pname, params);
+        contextBackend.shaderService.glGetVertexAttribfv_P(index, pname, params);
     }
 
     @Override
     public void glGetVertexAttribiv_P(int index, int pname, IntBuffer params) {
-        shaderService.glGetVertexAttribiv_P(index, pname, params);
+        contextBackend.shaderService.glGetVertexAttribiv_P(index, pname, params);
     }
 
     @Override
@@ -504,22 +479,22 @@ public class DesktopBackend extends PlatformBackend<DesktopLoadedImage> {
 
     @Override
     public boolean glIsFramebuffer_P(int framebuffer) {
-        return framebufferService.glIsFramebuffer_P(framebuffer);
+        return contextBackend.framebufferService.glIsFramebuffer_P(framebuffer);
     }
 
     @Override
     public boolean glIsProgram_P(int program) {
-        return shaderService.glIsProgram_P(program);
+        return contextBackend.shaderService.glIsProgram_P(program);
     }
 
     @Override
     public boolean glIsRenderbuffer_P(int renderbuffer) {
-        return framebufferService.glIsRenderbuffer_P(renderbuffer);
+        return contextBackend.framebufferService.glIsRenderbuffer_P(renderbuffer);
     }
 
     @Override
     public boolean glIsShader_P(int shader) {
-        return shaderService.glIsShader_P(shader);
+        return contextBackend.shaderService.glIsShader_P(shader);
     }
 
     @Override
@@ -534,7 +509,7 @@ public class DesktopBackend extends PlatformBackend<DesktopLoadedImage> {
 
     @Override
     public void glLinkProgram_P(int program) {
-        shaderService.glLinkProgram_P(program);
+        contextBackend.shaderService.glLinkProgram_P(program);
     }
 
     @Override
@@ -564,7 +539,7 @@ public class DesktopBackend extends PlatformBackend<DesktopLoadedImage> {
 
     @Override
     public void glRenderbufferStorage_P(int target, int internalFormat, int width, int height) {
-        framebufferService.glRenderbufferStorage_P(target, internalFormat, width, height);
+        contextBackend.framebufferService.glRenderbufferStorage_P(target, internalFormat, width, height);
     }
 
     @Override
@@ -579,7 +554,7 @@ public class DesktopBackend extends PlatformBackend<DesktopLoadedImage> {
 
     @Override
     public void glShaderSource_P(int shader, String source) {
-        shaderService.glShaderSource_P(shader, source);
+        contextBackend.shaderService.glShaderSource_P(shader, source);
     }
 
     @Override
@@ -649,147 +624,147 @@ public class DesktopBackend extends PlatformBackend<DesktopLoadedImage> {
 
     @Override
     public void glUniform1f_P(int location, float v1) {
-        shaderService.glUniform1f_P(location, v1);
+        contextBackend.shaderService.glUniform1f_P(location, v1);
     }
 
     @Override
     public void glUniform1fv_P(int location, FloatBuffer value) {
-        shaderService.glUniform1fv_P(location, value);
+        contextBackend.shaderService.glUniform1fv_P(location, value);
     }
 
     @Override
     public void glUniform1i_P(int location, int v1) {
-        shaderService.glUniform1i_P(location, v1);
+        contextBackend.shaderService.glUniform1i_P(location, v1);
     }
 
     @Override
     public void glUniform1iv_P(int location, IntBuffer value) {
-        shaderService.glUniform1iv_P(location, value);
+        contextBackend.shaderService.glUniform1iv_P(location, value);
     }
 
     @Override
     public void glUniform2f_P(int location, float v1, float v2) {
-        shaderService.glUniform2f_P(location, v1, v2);
+        contextBackend.shaderService.glUniform2f_P(location, v1, v2);
     }
 
     @Override
     public void glUniform2fv_P(int location, FloatBuffer value) {
-        shaderService.glUniform2fv_P(location, value);
+        contextBackend.shaderService.glUniform2fv_P(location, value);
     }
 
     @Override
     public void glUniform2i_P(int location, int v1, int v2) {
-        shaderService.glUniform2i_P(location, v1, v2);
+        contextBackend.shaderService.glUniform2i_P(location, v1, v2);
     }
 
     @Override
     public void glUniform2iv_P(int location, IntBuffer value) {
-        shaderService.glUniform2iv_P(location, value);
+        contextBackend.shaderService.glUniform2iv_P(location, value);
     }
 
     @Override
     public void glUniform3f_P(int location, float v1, float v2, float v3) {
-        shaderService.glUniform3f_P(location, v1, v2, v3);
+        contextBackend.shaderService.glUniform3f_P(location, v1, v2, v3);
     }
 
     @Override
     public void glUniform3fv_P(int location, FloatBuffer value) {
-        shaderService.glUniform3fv_P(location, value);
+        contextBackend.shaderService.glUniform3fv_P(location, value);
     }
 
     @Override
     public void glUniform3i_P(int location, int v1, int v2, int v3) {
-        shaderService.glUniform3i_P(location, v1, v2, v3);
+        contextBackend.shaderService.glUniform3i_P(location, v1, v2, v3);
     }
 
     @Override
     public void glUniform3iv_P(int location, IntBuffer value) {
-        shaderService.glUniform3iv_P(location, value);
+        contextBackend.shaderService.glUniform3iv_P(location, value);
     }
 
     @Override
     public void glUniform4f_P(int location, float v1, float v2, float v3, float v4) {
-        shaderService.glUniform4f_P(location, v1, v2, v3, v4);
+        contextBackend.shaderService.glUniform4f_P(location, v1, v2, v3, v4);
     } 
 
     @Override
     public void glUniform4fv_P(int location, FloatBuffer value) {
-        shaderService.glUniform4fv_P(location, value);
+        contextBackend.shaderService.glUniform4fv_P(location, value);
     }
 
     @Override
     public void glUniform4i_P(int location, int v1, int v2, int v3, int v4) {
-        shaderService.glUniform4i_P(location, v1, v2, v3, v4);
+        contextBackend.shaderService.glUniform4i_P(location, v1, v2, v3, v4);
     }
 
     @Override
     public void glUniform4iv_P(int location, IntBuffer value) {
-        shaderService.glUniform4iv_P(location, value);
+        contextBackend.shaderService.glUniform4iv_P(location, value);
     }
 
     @Override
     public void glUniformMatrix2fv_P(int location, boolean transpose, FloatBuffer value) {
-        shaderService.glUniformMatrix2fv_P(location, transpose, value);
+        contextBackend.shaderService.glUniformMatrix2fv_P(location, transpose, value);
     }
 
     @Override
     public void glUniformMatrix3fv_P(int location, boolean transpose, FloatBuffer value) {
-        shaderService.glUniformMatrix3fv_P(location, transpose, value);
+        contextBackend.shaderService.glUniformMatrix3fv_P(location, transpose, value);
     }
 
     @Override
     public void glUniformMatrix4fv_P(int location, boolean transpose, FloatBuffer value) {
-        shaderService.glUniformMatrix4fv_P(location, transpose, value);
+        contextBackend.shaderService.glUniformMatrix4fv_P(location, transpose, value);
     }
 
     @Override
     public void glUseProgram_P(int program) {
-        shaderService.glUseProgram_P(program);
+        contextBackend.shaderService.glUseProgram_P(program);
     }
 
     @Override
     public void glValidateProgram_P(int program) {
-        shaderService.glValidateProgram_P(program);
+        contextBackend.shaderService.glValidateProgram_P(program);
     }
 
     @Override
     public void glVertexAttrib1f_P(int index, float v1) {
-        shaderService.glVertexAttrib1f_P(index, v1);
+        contextBackend.shaderService.glVertexAttrib1f_P(index, v1);
     }
 
     @Override
     public void glVertexAttrib2f_P(int index, float v1, float v2) {
-        shaderService.glVertexAttrib2f_P(index, v1, v2);
+        contextBackend.shaderService.glVertexAttrib2f_P(index, v1, v2);
     }
     
     @Override
     public void glVertexAttrib3f_P(int index, float v1, float v2, float v3) {
-        shaderService.glVertexAttrib3f_P(index, v1, v2, v3);
+        contextBackend.shaderService.glVertexAttrib3f_P(index, v1, v2, v3);
     }
 
     @Override
     public void glVertexAttrib4f_P(int index, float v1, float v2, float v3, float v4) {
-        shaderService.glVertexAttrib4f_P(index, v1, v2, v3, v4);
+        contextBackend.shaderService.glVertexAttrib4f_P(index, v1, v2, v3, v4);
     }
 
     @Override
     public void glVertexAttribPointer_P(int index, int size, int type, boolean normalized, int stride, int bufferOffset) {
-        shaderService.glVertexAttribPointer_P(index, size, type, normalized, stride, bufferOffset);
+        contextBackend.shaderService.glVertexAttribPointer_P(index, size, type, normalized, stride, bufferOffset);
     }
 
     @Override
     public void glVertexAttribPointer_P(int index, int size, boolean normalized, int stride, FloatBuffer buffer) {
-        shaderService.glVertexAttribPointer_P(index, size, normalized, stride, buffer);
+        contextBackend.shaderService.glVertexAttribPointer_P(index, size, normalized, stride, buffer);
     }
 
     @Override
     public void glVertexAttribPointer_P(int index, int size, boolean signed, boolean normalized, int stride, IntBuffer buffer) {
-        shaderService.glVertexAttribPointer_P(index, size, signed, normalized, stride, buffer);
+        contextBackend.shaderService.glVertexAttribPointer_P(index, size, signed, normalized, stride, buffer);
     }
 
     @Override
     public void glVertexAttribPointer_P(int index, int size, boolean signed, boolean normalized, int stride, ByteBuffer buffer) {
-        shaderService.glVertexAttribPointer_P(index, size, signed, normalized, stride, buffer);
+        contextBackend.shaderService.glVertexAttribPointer_P(index, size, signed, normalized, stride, buffer);
     }
 
     @Override
@@ -799,12 +774,12 @@ public class DesktopBackend extends PlatformBackend<DesktopLoadedImage> {
 
     @Override
     public int getOpenGLVersion_P() {
-        return openGLVersion;
+        return contextBackend.openGLVersion;
     }
 
     @Override
     public int getGLSLVersion_P() {
-        return glslVersion;
+        return contextBackend.glslVersion;
     }
     
     @Override
@@ -863,12 +838,59 @@ public class DesktopBackend extends PlatformBackend<DesktopLoadedImage> {
         return DESKTOP_CONSTANT;
     }
     
+    public void switchContextBackend(DesktopContextBackend contextBackend) {
+        this.contextBackend = contextBackend;
+    }
+    
     @Override
     public String toString() {
-        return "Desktop Backend{ShaderService: " + shaderService + ", FramebufferService: " + framebufferService + "}";    
+        return "Desktop Backend{ShaderService: " + contextBackend.shaderService + ", FramebufferService: " + contextBackend.framebufferService + "}";    
     }
     
     public static int getGLSLVersionForOGL(int oglVersion) {
+        if(!oglToGLSLVersions.containsKey(oglVersion)) {
+            throw new IllegalArgumentException("Unknown OpenGL Version: " + oglVersion);
+        }
         return oglToGLSLVersions.get(oglVersion);
+    }
+    
+    public static DesktopContextBackend getContextBackend(int openGLVersion, int glslVersion, 
+                ShaderServiceImpl shaderService, FramebufferServiceImpl framebufferService) {
+        
+        return new DesktopContextBackend(openGLVersion, glslVersion, shaderService, framebufferService);
+    }
+    
+    public static DesktopContextBackend getContextBackend(int openGLVersion, int glslVersion, URL[] urls) {
+        return getContextBackend(
+                openGLVersion,
+                glslVersion,
+                new ServiceImplLoader<ShaderServiceImpl>(
+                        ShaderServiceImpl.class, 
+                        urls,
+                        DefaultShaderServiceImpl.INSTANCE,
+                        NoShaderServiceImpl.INSTANCE
+                ).getImplementationNoThrow(),
+                new ServiceImplLoader<FramebufferServiceImpl>(
+                        FramebufferServiceImpl.class, 
+                        urls,
+                        DefaultFramebufferServiceImpl.INSTANCE,
+                        NoFramebufferServiceImpl.INSTANCE
+                ).getImplementationNoThrow()
+        );
+    }
+    
+    public static class DesktopContextBackend {
+        private final int openGLVersion, glslVersion;
+        private final ShaderServiceImpl shaderService;
+        private final FramebufferServiceImpl framebufferService;
+
+        public DesktopContextBackend(int openGLVersion, int glslVersion, 
+                ShaderServiceImpl shaderService, FramebufferServiceImpl framebufferService) {
+            
+            this.openGLVersion = openGLVersion;
+            this.glslVersion = glslVersion;
+            this.shaderService = shaderService;
+            this.framebufferService = framebufferService;
+        }
     }
 }

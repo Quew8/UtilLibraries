@@ -44,6 +44,10 @@ public abstract class PlatformBackend<T extends LoadedImage> {
         DebugLogger.onInit();
     }
     
+    public static boolean isInitizlized() {
+        return initialized;
+    }
+    
     public abstract void glActiveTexture_P(int texture);
     
     public abstract void glAttachShader_P(int program, int shader);

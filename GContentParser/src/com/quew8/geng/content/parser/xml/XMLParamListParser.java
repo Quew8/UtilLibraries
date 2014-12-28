@@ -1,4 +1,4 @@
-package com.quew8.geng.content.parser;
+package com.quew8.geng.content.parser.xml;
 
 import com.quew8.geng.xmlparser.XMLAttributeParser;
 import com.quew8.geng.xmlparser.XMLElementParser;
@@ -15,7 +15,7 @@ import org.dom4j.Element;
  *
  * @author Quew8
  */
-public class ParamListParser extends XMLParser {
+public class XMLParamListParser extends XMLParser {
     private static final String 
             KEY = "key",
             PARAM = "param";
@@ -44,7 +44,7 @@ public class ParamListParser extends XMLParser {
             
             @Override
             public void parse(Element element) {
-                ParamParser p = ParamListParser.this.parseWith(element, new ParamParser());
+                XMLParamParser p = XMLParamListParser.this.parseWith(element, new XMLParamParser());
                 params.add(new SimpleEntry<String, String>(p.getKey(), p.getValue()));
             }
             
@@ -58,7 +58,7 @@ public class ParamListParser extends XMLParser {
     
     @SuppressWarnings("unchecked")
     public Entry<String, String>[] getParams() {
-        return params.toArray(ParamListParser.<Entry<String, String>>getArray(params.size()));
+        return params.toArray(XMLParamListParser.<Entry<String, String>>getArray(params.size()));
     }
     
     @SuppressWarnings("unchecked")

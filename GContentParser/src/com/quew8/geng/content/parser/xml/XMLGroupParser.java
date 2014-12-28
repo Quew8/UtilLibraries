@@ -1,4 +1,4 @@
-package com.quew8.geng.content.parser;
+package com.quew8.geng.content.parser.xml;
 
 import com.quew8.geng.xmlparser.XMLAttributeParser;
 import com.quew8.geng.xmlparser.XMLElementParser;
@@ -12,7 +12,7 @@ import org.dom4j.Element;
  *
  * @author Quew8
  */
-public class GroupParser extends XMLParser {
+public class XMLGroupParser extends XMLParser {
     private static final String 
             SOURCE = "source";
     private static final String
@@ -28,7 +28,7 @@ public class GroupParser extends XMLParser {
             
             @Override
             public void parse(Element element) {
-                SourceParser sourceParser = GroupParser.this.parseWith(element, new SourceParser(dir));
+                XMLSourceParser sourceParser = XMLGroupParser.this.parseWith(element, new XMLSourceParser(dir));
                 sources.add(sourceParser.getSource());
             }
             

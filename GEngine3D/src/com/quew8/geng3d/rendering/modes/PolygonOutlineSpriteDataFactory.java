@@ -1,7 +1,5 @@
 package com.quew8.geng3d.rendering.modes;
 
-import com.quew8.geng3d.rendering.modes.SpriteDataFactory3D;
-import com.quew8.geng3d.rendering.modes.SpriteDataFactory2D;
 import com.quew8.geng.geometry.Image;
 import com.quew8.geng.geometry.Plane;
 import com.quew8.geng.rendering.modes.Mode;

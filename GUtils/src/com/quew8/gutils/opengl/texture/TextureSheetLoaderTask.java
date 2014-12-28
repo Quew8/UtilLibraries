@@ -51,6 +51,7 @@ class TextureSheetLoaderTask extends WorkerTask<TextureSheetLoaderTask, TextureL
                                 ? GL_RGBA
                                 : GL_RGB
                         : input.destFormat;
+        input.texture.bind();
         input.texParams.setAll(GL_TEXTURE_2D);
         TextureUtils.fillEmptyTexture(input.texture, input.texWidth, input.texHeight, destFormat, input.texParams);
         int sx = cellWidth + borderSize;

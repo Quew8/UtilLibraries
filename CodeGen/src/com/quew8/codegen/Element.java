@@ -95,7 +95,7 @@ public class Element<T, S extends Element<T, S>> {
                     }
                 }
             }
-            default: throw new RuntimeException("Malformed Expression");
+            default: throw new RuntimeException("Malformed Expression: \"" + expression + "\" depth: " + depth);
         }
     }
     

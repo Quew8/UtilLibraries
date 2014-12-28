@@ -1,4 +1,4 @@
-package com.quew8.geng.content.parser;
+package com.quew8.geng.content.parser.xml;
 
 import com.quew8.geng.xmlparser.XMLAttributeParser;
 import com.quew8.geng.xmlparser.XMLElementParser;
@@ -16,7 +16,7 @@ import org.dom4j.Element;
  *
  * @author Quew8
  */
-public class SourceParser extends XMLParser {
+public class XMLSourceParser extends XMLParser {
     private static final String
             ID_STRING = "id",
             INPUT = "input",
@@ -30,11 +30,11 @@ public class SourceParser extends XMLParser {
     private final HashMap<String, String> params = new HashMap<String, String>();
     private final HashMap<String, Entry<String, String>[]> paramLists = new HashMap<String, Entry<String, String>[]>();
     
-    public SourceParser(String dir) {
+    public XMLSourceParser(String dir) {
         this.dir = dir;
     }
     
-    public SourceParser() {
+    public XMLSourceParser() {
         this("");
     }
 
@@ -67,7 +67,7 @@ public class SourceParser extends XMLParser {
             
             @Override
             public void parse(Element element) {
-                InputParser input = SourceParser.this.parseWith(element, new InputParser());
+                XMLInputParser input = XMLSourceParser.this.parseWith(element, new XMLInputParser());
                 if(input.getIndex() == -1) {
                     unindexedSources.add(input.getSource());
                 } else {
@@ -80,7 +80,7 @@ public class SourceParser extends XMLParser {
             
             @Override
             public void parse(Element element) {
-                ParamParser parser = SourceParser.this.parseWith(element, new ParamParser());
+                XMLParamParser parser = XMLSourceParser.this.parseWith(element, new XMLParamParser());
                 params.put(parser.getKey(), parser.getValue());
             }
             
@@ -89,7 +89,7 @@ public class SourceParser extends XMLParser {
             
             @Override
             public void parse(Element element) {
-                ParamListParser parser = SourceParser.this.parseWith(element, new ParamListParser());
+                XMLParamListParser parser = XMLSourceParser.this.parseWith(element, new XMLParamListParser());
                 paramLists.put(parser.getKey(), parser.getParams());
             }
             

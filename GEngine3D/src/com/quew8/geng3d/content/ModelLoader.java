@@ -56,7 +56,7 @@ public class ModelLoader<T> {
         return images.size() - 1;
     }
 
-    public void construct(DynamicRenderMode<T> instanceMode) throws IOException {
+    public void construct(DynamicRenderMode<T> instanceMode) {
         TextureSheet imgSheet = new TextureSheet(
                 TextureUtils.createTextureSheet(
                         TextureUtils.getImageLoaders(images.toArray(new LoadedImage[images.size()])), 

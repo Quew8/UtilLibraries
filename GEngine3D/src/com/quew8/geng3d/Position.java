@@ -1,14 +1,20 @@
 package com.quew8.geng3d;
 
+import com.quew8.geng.debug.VectorDebugInterface;
 import com.quew8.gmath.Matrix;
 import com.quew8.gmath.Vector;
+import com.quew8.gutils.debug.DebugInterface;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 
  * @author Quew8
  *
  */
-public class Position implements Bindable {
+public class Position implements Bindable, DebugInterface {
+    private Position superPosition = null;
+    private final ArrayList<Position> subPositions = new ArrayList<Position>();
     private final Vector translation;
     private final Matrix translationMatrix = new Matrix();
     private boolean needsNewTranslationMatrix = true;
@@ -70,7 +76,13 @@ public class Position implements Bindable {
 
     private void createModelMatrix() {
         if(needsNewModelMatrix) {
-            Matrix.times(modelMatrix, getRotationMatrix(), getTranslationMatrix());
+            if(superPosition == null) {
+                Matrix.times(modelMatrix, getRotationMatrix(), getTranslationMatrix());
+            } else {
+                Matrix m = new Matrix();
+                Matrix.times(m, getRotationMatrix(), getTranslationMatrix());
+                Matrix.times(modelMatrix, m, superPosition.getModelMatrix());
+            }
             needsNewModelMatrix = false;
         }
     }
@@ -102,6 +114,14 @@ public class Position implements Bindable {
         }
     }
     
+    public Position addSubPosition(Position pos) {
+        pos.superPosition = this;
+        pos.setNeedsNewTranslationMatrix();
+        pos.setNeedsNewRotationMatrix();
+        subPositions.add(pos);
+        return pos;
+    }
+    
     public void setNeedsNewTranslationMatrix() {
         needsNewTranslationMatrix = true;
         setNeedsNewModelMatrix();
@@ -114,6 +134,9 @@ public class Position implements Bindable {
 
     public void setNeedsNewModelMatrix() {
         needsNewModelMatrix = true;
+        for(int i = 0; i < subPositions.size(); i++) {
+            subPositions.get(i).setNeedsNewModelMatrix();
+        }
     }
     
     public Vector getTranslation() {
@@ -122,5 +145,38 @@ public class Position implements Bindable {
     
     public Vector getOrientation() {
         return orientation;
+    }
+
+    @Override
+    public String debugGetValue(String param) {
+        return null;
+    }
+
+    @Override
+    public DebugInterface debugGetObj(String param) {
+        switch(param) {
+            case "translation": return new VectorDebugInterface(translation);
+            case "orientation": return new VectorDebugInterface(orientation);
+        }
+        return null;
+    }
+
+    @Override
+    public String debugSetValue(String param, String... value) {
+        return "No Such Parameter";
+    }
+
+    @Override
+    public void debugOnChangeObj(String in) {
+        switch(in) {
+            case "translation": setNeedsNewTranslationMatrix(); break;
+            case "orientation": setNeedsNewRotationMatrix(); break;
+        }
+    }
+
+    @Override
+    public void debugAddAllParams(List<String> objs, List<String> vals) {
+        objs.add("translation");
+        objs.add("orientation");
     }
 }

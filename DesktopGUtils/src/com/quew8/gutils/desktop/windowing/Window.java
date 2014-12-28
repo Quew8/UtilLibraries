@@ -1,8 +1,11 @@
 package com.quew8.gutils.desktop.windowing;
 
+import com.quew8.gutils.BufferUtils;
+import com.quew8.gutils.DebugBackend;
 import com.quew8.gutils.PlatformBackend;
 import com.quew8.gutils.debug.DebugLogger;
 import com.quew8.gutils.desktop.DesktopBackend;
+import com.quew8.gutils.desktop.DesktopBackend.DesktopContextBackend;
 import com.quew8.gutils.opengl.OpenGL;
 import static com.quew8.gutils.opengl.OpenGL.GL_FALSE;
 import static com.quew8.gutils.opengl.OpenGL.GL_TRUE;
@@ -19,6 +22,7 @@ import org.lwjgl.glfw.GLFWFramebufferSizeCallback;
 import org.lwjgl.glfw.GLFWKeyCallback;
 import org.lwjgl.glfw.GLFWMouseButtonCallback;
 import org.lwjgl.glfw.GLFWvidmode;
+import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GLContext;
 import static org.lwjgl.system.MemoryUtil.NULL;
 import org.lwjgl.system.libffi.Closure;
@@ -37,68 +41,45 @@ public class Window extends Surface {
     private GLFWMouseButtonCallback mouseButtonCallback = null;
     private GLFWCursorPosCallback cursorPosCallback = null;
     private GLFWFramebufferSizeCallback framebufferSizeCallback = null;
-    private final long window;
+    private final long address;
+    private final DesktopContextBackend contextBackend;
+    private final GLContext context;
     private final boolean isFullscreen;
     
-    public Window(String title, int width, int height, int majorVersion, 
-            int minorVersion, int redBits, int greenBits, int blueBits, 
-            int alphaBits, int depthBits, int stencilBits, boolean forwardCompatible, 
-            boolean coreProfile, boolean compatibilityProfile, boolean fullscreen, 
-            boolean resizable, URL[] serviceLocations) {
+    public Window(WindowParams windowParams, URL[] serviceLocations) {
         
-        super(new Viewport(width, height), -1);
-        this.window = createWindow(
-                title, 
-                width, height, 
-                majorVersion, minorVersion,
-                redBits, greenBits, blueBits, alphaBits,
-                depthBits, stencilBits,
-                forwardCompatible, coreProfile, compatibilityProfile,
-                fullscreen, resizable
+        super(new Viewport(windowParams.width, windowParams.height), -1);
+        this.address = createWindow(
+                windowParams.title, 
+                windowParams.width, windowParams.height, 
+                windowParams.glMajorVersion, windowParams.glMinorVersion,
+                windowParams.redBits, windowParams.greenBits, windowParams.blueBits, 
+                windowParams.alphaBits, windowParams.depthBits, windowParams.stencilBits,
+                windowParams.forwardCompatible, 
+                windowParams.coreProfile, windowParams.compatibilityProfile,
+                windowParams.fullscreen, windowParams.resizable, 
+                windowParams.shareWith != null ? windowParams.shareWith.address : NULL,
+                windowParams.centreWindow, windowParams.windowX, windowParams.windowY
         );
-        this.isFullscreen = fullscreen;
+        this.isFullscreen = windowParams.fullscreen;
+        this.context = GLContext.createFromCurrent();
         setFramebufferSizeCallback(new FramebufferResizeCallback());
-        GLContext.createFromCurrent();
-        int oglVersion = ( ( majorVersion * 10) + minorVersion ) * 10;
+        int oglVersion = getOpenGLVersion(context);
         int glslVersion = DesktopBackend.getGLSLVersionForOGL(oglVersion);
-        PlatformBackend.setBackend(new DesktopBackend(oglVersion, glslVersion, serviceLocations));
+        this.contextBackend = DesktopBackend.getContextBackend(oglVersion, glslVersion, serviceLocations);
+        if(PlatformBackend.isInitizlized()) {
+            if(PlatformBackend.debug) {
+                ((DesktopBackend)((DebugBackend)PlatformBackend.backend).getImplementation()).switchContextBackend(contextBackend);
+            } else {
+                ((DesktopBackend)PlatformBackend.backend).switchContextBackend(contextBackend);
+            }
+        } else {
+            PlatformBackend.setBackend(new DesktopBackend(contextBackend));
+        }
         DebugLogger.v(INIT_LOG, "Vendor: " + OpenGL.glGetString(OpenGL.GL_VENDOR));
         DebugLogger.v(INIT_LOG, "Renderer: " + OpenGL.glGetString(OpenGL.GL_RENDERER));
         DebugLogger.v(INIT_LOG, "Version: " + OpenGL.glGetString(OpenGL.GL_VERSION));
         DebugLogger.v(INIT_LOG, "GLSL Version: " + OpenGL.glGetString(OpenGL.GL_SHADING_LANGUAGE_VERSION));
-    }
-    
-    public Window(String title, int width, int height, int majorVersion, 
-            int minorVersion, int redBits, int greenBits, int blueBits, 
-            int alphaBits, int depthBits, int stencilBits, boolean forwardCompatible, 
-            boolean coreProfile, boolean compatibilityProfile, boolean fullscreen, 
-            boolean resizable) {
-        
-        this(
-                title, 
-                width, height, 
-                majorVersion, minorVersion,
-                redBits, greenBits, blueBits, alphaBits,
-                depthBits, stencilBits,
-                forwardCompatible, coreProfile, compatibilityProfile,
-                fullscreen, resizable,
-                new URL[]{}
-        );
-    }
-    
-    public Window(WindowParams params, URL[] serviceLocations) {
-        this(
-                params.title, 
-                params.width, params.height, 
-                params.glMajorVersion, params.glMinorVersion,
-                params.redBits, params.greenBits, params.blueBits,
-                params.alphaBits, params.depthBits, params.stencilBits,
-                params.fowardCompatible, 
-                params.coreProfile, params.compatibilityProfile,
-                params.fullscreen,
-                params.resizable, 
-                serviceLocations
-        );
     }
     
     public Window(WindowParams params) {
@@ -107,10 +88,10 @@ public class Window extends Surface {
     
     @Override
     public void endOfFrame(int newFps) {
-        if(glfwWindowShouldClose(window) == GL_TRUE) {
+        if(glfwWindowShouldClose(address) == GL_TRUE) {
             requestClose();
         }
-        glfwSwapBuffers(window);
+        glfwSwapBuffers(address);
         glfwPollEvents();
     }
     
@@ -124,7 +105,7 @@ public class Window extends Surface {
 
     @Override
     public void close() {
-        glfwDestroyWindow(window);
+        glfwDestroyWindow(address);
         if(keyCallback != null) {
             keyCallback.release();
         }
@@ -143,41 +124,74 @@ public class Window extends Surface {
         unregisterWindow();
     }
     
+    public void setWindowPosRelative(int xPos, int yPos) {
+        if(isFullscreen) {
+            throw new IllegalStateException("Cannot reposition fullscreen window.");
+        } else {
+            ByteBuffer vidmode = glfwGetVideoMode(glfwGetPrimaryMonitor());
+            ByteBuffer size = BufferUtils.createByteBuffer(8);
+            glfwGetWindowSize(address, BufferUtils.getSlice(size, 0, 4), BufferUtils.getSlice(size, 4, 8));
+            glfwSetWindowPos(
+                address,
+                ((GLFWvidmode.width(vidmode) - size.getInt()) / 2) + xPos,
+                ((GLFWvidmode.height(vidmode) - size.getInt()) / 2) + yPos
+            );
+        }
+    }
+    
+    public void setWindowPos(int xpos, int ypos) {
+        if(isFullscreen) {
+            throw new IllegalStateException("Cannot reposition fullscreen window.");
+        } else {
+            glfwSetWindowPos(address, xpos, ypos);
+        }
+    }
+    
     public boolean setKeyCallback(GLFWKeyCallback keyCallback) {
         this.keyCallback = keyCallback;
-        return releaseOldCallback(glfwSetKeyCallback(window, keyCallback));
+        return releaseOldCallback(glfwSetKeyCallback(address, keyCallback));
     }
     
     public boolean setCharCallback(GLFWCharCallback charCallback) {
         this.charCallback = charCallback;
-        return releaseOldCallback(glfwSetCharCallback(window, charCallback));
+        return releaseOldCallback(glfwSetCharCallback(address, charCallback));
     }
     
     public boolean setMouseButtonCallback(GLFWMouseButtonCallback mouseButtonCallback) {
         this.mouseButtonCallback = mouseButtonCallback;
-        return releaseOldCallback(glfwSetMouseButtonCallback(window, mouseButtonCallback));
+        return releaseOldCallback(glfwSetMouseButtonCallback(address, mouseButtonCallback));
     }
     
     public boolean setCursorPosCallback(GLFWCursorPosCallback cursorPosCallback) {
         this.cursorPosCallback = cursorPosCallback;
-        return releaseOldCallback(glfwSetCursorPosCallback(window, cursorPosCallback));
+        return releaseOldCallback(glfwSetCursorPosCallback(address, cursorPosCallback));
     }
     
     private boolean setFramebufferSizeCallback(GLFWFramebufferSizeCallback framebufferSizeCallback) {
         this.framebufferSizeCallback = framebufferSizeCallback;
-        return releaseOldCallback(glfwSetFramebufferSizeCallback(window, framebufferSizeCallback));
+        return releaseOldCallback(glfwSetFramebufferSizeCallback(address, framebufferSizeCallback));
     }
     
     public int getKey(int key) {
-        return glfwGetKey(window, key);
+        return glfwGetKey(address, key);
     }
     
     public int getMouseButton(int button) {
-        return glfwGetMouseButton(window, button);
+        return glfwGetMouseButton(address, button);
     }
     
     public void getCursorPos(DoubleBuffer xPos, DoubleBuffer yPos) {
-        glfwGetCursorPos(window, xPos, yPos);
+        glfwGetCursorPos(address, xPos, yPos);
+    }
+    
+    public void makeCurrent() {
+        glfwMakeContextCurrent(address);
+	GL.setCurrent(context);
+        if(PlatformBackend.debug) {
+            ((DesktopBackend)((DebugBackend)PlatformBackend.backend).getImplementation()).switchContextBackend(contextBackend);
+        } else {
+            ((DesktopBackend)PlatformBackend.backend).switchContextBackend(contextBackend);
+        }
     }
     
     private static void registerWindow() {
@@ -211,8 +225,8 @@ public class Window extends Surface {
             int majorVersion, int minorVersion, int redBits, int greenBits, 
             int blueBits, int alphaBits, int depthBits, int stencilBits, 
             boolean forwardCompatible, boolean coreProfile, 
-            boolean compatibilityProfile, boolean fullscreen, 
-            boolean resizable) {
+            boolean compatibilityProfile, boolean fullscreen, boolean resizable, 
+            long shareWith, boolean centreWindow, int windowX, int windowY) {
         
         if(coreProfile && compatibilityProfile) {
             throw new IllegalArgumentException("Cannot be core and compatibilty profile");
@@ -226,6 +240,7 @@ public class Window extends Surface {
                         GL_TRUE : 
                         GL_FALSE
         );
+        
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, majorVersion);
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, minorVersion);
         glfwWindowHint(GLFW_RED_BITS, redBits);
@@ -251,23 +266,65 @@ public class Window extends Surface {
                 fullscreen ? 
                         glfwGetPrimaryMonitor() :
                         NULL, 
-                NULL
+                shareWith
         );
         if(window == NULL) {
             throw new IllegalStateException("Failed to create the GLFW window");
         }
         if(!fullscreen) {
-            ByteBuffer vidmode = glfwGetVideoMode(glfwGetPrimaryMonitor());
-            glfwSetWindowPos(
-                window,
-                (GLFWvidmode.width(vidmode) - width) / 2,
-                (GLFWvidmode.height(vidmode) - height) / 2
-            );
+            if(centreWindow) {
+                ByteBuffer vidmode = glfwGetVideoMode(glfwGetPrimaryMonitor());
+                glfwSetWindowPos(
+                    window,
+                    ((GLFWvidmode.width(vidmode) - width) / 2) + windowX,
+                    ((GLFWvidmode.height(vidmode) - height) / 2) + windowY
+                );
+            } else {
+                glfwSetWindowPos(window, windowX, windowY);
+            }
         }
         glfwMakeContextCurrent(window);
         glfwSwapInterval(1);
         glfwShowWindow(window);
         return window;
+    }
+    
+    public static int getOpenGLVersion(GLContext context) {
+        if(context.getCapabilities().OpenGL45)
+            return 450;
+        if(context.getCapabilities().OpenGL44)
+            return 440;
+        if(context.getCapabilities().OpenGL43)
+            return 430;
+        if(context.getCapabilities().OpenGL42)
+            return 420;
+        if(context.getCapabilities().OpenGL41)
+            return 410;
+        if(context.getCapabilities().OpenGL40)
+            return 400;
+        if(context.getCapabilities().OpenGL33)
+            return 330;
+        if(context.getCapabilities().OpenGL32)
+            return 320;
+        if(context.getCapabilities().OpenGL31)
+            return 310;
+        if(context.getCapabilities().OpenGL30)
+            return 300;
+        if(context.getCapabilities().OpenGL21)
+            return 210;
+        if(context.getCapabilities().OpenGL20)
+            return 200;
+        if(context.getCapabilities().OpenGL15)
+            return 150;
+        if(context.getCapabilities().OpenGL14)
+            return 140;
+        if(context.getCapabilities().OpenGL13)
+            return 130;
+        if(context.getCapabilities().OpenGL12)
+            return 120;
+        if(context.getCapabilities().OpenGL11)
+            return 110;
+        throw new IllegalStateException("No OpenGL Version Supported");
     }
     
     private class FramebufferResizeCallback extends GLFWFramebufferSizeCallback {
@@ -285,11 +342,14 @@ public class Window extends Surface {
         private int glMajorVersion = 1, glMinorVersion = 0;
         private int redBits = 8, greenBits = 8, blueBits = 8;
         private int alphaBits = 8, depthBits = 24, stencilBits = 8;
-        private boolean fowardCompatible = false;
+        private boolean forwardCompatible = false;
         private boolean coreProfile = false;
         private boolean compatibilityProfile = false;
         private boolean fullscreen = false;
         private boolean resizable = false;
+        private Window shareWith = null;
+        private boolean centreWindow = true;
+        private int windowX = 0, windowY = 0;
         
         public WindowParams setTitle(String title) {
             this.title = title;
@@ -330,8 +390,8 @@ public class Window extends Surface {
             return this;
         }
         
-        public WindowParams setForwardCompatbile(boolean fowardCompatible) {
-            this.fowardCompatible = fowardCompatible;
+        public WindowParams setForwardCompatbile(boolean forwardCompatible) {
+            this.forwardCompatible = forwardCompatible;
             return this;
         }
         
@@ -354,6 +414,22 @@ public class Window extends Surface {
         
         public WindowParams setResizable(boolean resizable) {
             this.resizable = resizable;
+            return this;
+        }
+        
+        public WindowParams setShareWith(Window shareWith) {
+            this.shareWith = shareWith;
+            return this;
+        }
+        
+        public WindowParams setCentreWindow(boolean centreWindow) {
+            this.centreWindow = centreWindow;
+            return this;
+        }
+        
+        public WindowParams setWindowPos(int windowX, int windowY) {
+            this.windowX = windowX;
+            this.windowY = windowY;
             return this;
         }
     }

@@ -163,9 +163,9 @@ public class TextureUtils {
         int texWidth = get2Fold(imgWidth);
         int texHeight = get2Fold(imgHeight);
         ThreadUtils.executeTask(
-        		new TextureLoaderTask(),
+                new TextureLoaderTask(),
                 new TextureLoadVariables(new ImageLoader[]{imgLoader}, texWidth, texHeight, texture, destFormat, params)
-                );
+        );
         return new int[]{texWidth, texHeight};
     }
     

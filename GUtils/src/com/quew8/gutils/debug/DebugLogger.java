@@ -8,7 +8,7 @@ import java.util.HashMap;
  */
 public class DebugLogger {
     private static final HashMap<String, Log> logs = new HashMap<String, Log>();
-    private static LogLevel streamFilter = LogLevel.VERBOSE;
+    private static LogLevel streamFilter = LogLevel.DEBUG;
     private static LogLevel fileFilter = LogLevel.VERBOSE;
     static {
         registerLog("VERBOSE", LogLevel.VERBOSE);

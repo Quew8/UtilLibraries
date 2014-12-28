@@ -152,6 +152,22 @@ public class Vector {
     public float magnitude() {
         return GMath.length(x, y, z);
     }
+    
+    public float manhattenMagnitude() {
+        return x + y + z;
+    }
+    
+    public float distance(Vector other) {
+        return Vector.subtract(new Vector(), this, other).magnitude();
+    }
+    
+    public float distanceSquared(Vector other) {
+        return Vector.subtract(new Vector(), this, other).magnitudeSquared();
+    }
+    
+    public float manhattenDistance(Vector other) {
+        return Vector.subtract(new Vector(), this, other).manhattenMagnitude();
+    }
 	
     public float normalize() {
         float magnitude = magnitude();

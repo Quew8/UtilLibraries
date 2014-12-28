@@ -21,13 +21,16 @@ public class CharsetTextureReader implements ContentReader<CharsetTexture> {
     
     @Override
     public CharsetTexture read(Source in) {
-        TextureDetails details = TextureUtils.createAlphaMaskTexture(TextureUtils.getImageLoader(in.getStream(), true), TextureParams.create(GL_LINEAR, GL_NEAREST));
+        TextureDetails details = TextureUtils.createAlphaMaskTexture(
+                TextureUtils.getImageLoader(in.getStream(), true), 
+                TextureParams.create(GL_LINEAR, GL_NEAREST)
+        );
         return new CharsetTexture(
                 details,
                 CharsetTexture.getMapping(
                         in.getParams().get(CHARS),
-                        Integer.parseInt(in.getParams().get(CHAR_WIDTH)),
-                        Integer.parseInt(in.getParams().get(CHAR_HEIGHT)),
+                        in.getParamInt(CHAR_WIDTH),
+                        in.getParamInt(CHAR_HEIGHT),
                         details
                 )
         );

@@ -1,7 +1,6 @@
 package com.quew8.geng3d.rendering.modes;
 
 import com.quew8.geng.rendering.modes.Mode;
-import com.quew8.geng3d.rendering.modes.SpriteDataFactory1D;
 import com.quew8.gutils.Colour;
 import static com.quew8.gutils.opengl.OpenGL.GL_LINES;
 import java.nio.ByteBuffer;

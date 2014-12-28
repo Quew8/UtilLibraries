@@ -73,17 +73,24 @@ public class Modifier extends JavaElement<Modifier> {
     }
     
     public Element<JavaGenData, ?> getMods() {
-        return wrap((isStatic() ? "static " : "") + (isFinal() ? "final " : "") + (isAbstract() ? "abstract" : ""));
+        String s = "";
+        if(isStatic()) {
+            s += "static";
+            if(isFinal() || isAbstract()) {
+                s += " ";
+            }
+        }
+        if(isFinal()) {
+            s += "final";
+            if(isAbstract()) {
+                s += " ";
+            }
+        }
+        if(isAbstract()) {
+            s += "abstract";
+        }
+        return wrap(s);
     }
-    
-    /*@Override
-    protected String getConstructedCode() {
-        return CodeGenUtils.getConstruction()
-                .add(isStatic(), "static")
-                .add(isFinal(), "final")
-                .add(isAbstract(), "abstract")
-                .get();
-    }*/
     
     private static int getModifierMask(boolean isStatic, boolean isFinal, boolean isAbstract) {
         int mask = 0;

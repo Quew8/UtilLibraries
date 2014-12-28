@@ -11,34 +11,34 @@ import com.quew8.gmath.Vector;
 public class VectorMapper {
     private static final Matrix 
             xMatrix = new Matrix(
-            0, 0, 1, 0,
-            0, 1, 0, 0,
-            -1, 0, 0, 0,
+            0, 0, -1, 0,
+            0, -1, 0, 0,
+            1, 0, 0, 0,
             0, 0, 0, 1),
             negXMatrix = new Matrix(
             0,  0, -1, 0,
-            0,  1, 0,  0,
-            1, 0, 0,  0,
+            0,  -1, 0,  0,
+            -1, 0, 0,  0,
             0,  0, 0,  1),
             yMatrix = new Matrix(
-            1, 0, 0,  0,
+            -1, 0, 0,  0,
             0, 0, -1, 0,
-            0, -1, 0,  0,
+            0, 1, 0,  0,
             0, 0, 0,  1),
             negYMatrix = new Matrix(
-            1, 0,  0,  0,
+            -1, 0,  0,  0,
             0, 0,  1, 0,
-            0, 1, 0,  0,
+            0, -1, 0,  0,
             0, 0,  0,  1),
             zMatrix = new Matrix(
             1, 0, 0, 0,
             0, 1, 0, 0,
-            0, 0, -1, 0,
+            0, 0, 1, 0,
             0, 0, 0, 1),
             negZMatrix = new Matrix(
             -1, 0, 0,  0,
             0,  1, 0,  0,
-            0,  0, 1, 0,
+            0,  0, -1, 0,
             0,  0, 0,  1);
     
     private final Matrix matrix;

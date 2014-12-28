@@ -79,18 +79,20 @@ public class Asset {
     }
     
     public static enum UpAxis {
-        X_UP(new Vector(0, -1, 0), new Vector(1, 0, 0), new Vector(0, 0, 1)), 
-        Y_UP(new Vector(1, 0, 0), new Vector(0, 1, 0), new Vector(0, 0, 1)), 
-        Z_UP(new Vector(1, 0, 0), new Vector(0, 0, 1), new Vector(0, -1, 0));
+        X_UP(new Vector(0, -1, 0), new Vector(1, 0, 0), new Vector(0, 0, 1), false), 
+        Y_UP(new Vector(1, 0, 0), new Vector(0, 1, 0), new Vector(0, 0, 1), false), 
+        Z_UP(new Vector(1, 0, 0), new Vector(0, 0, 1), new Vector(0, 1, 0), true);
         
-        private UpAxis(Vector left, Vector up, Vector forward) {
+        private UpAxis(Vector left, Vector up, Vector forward, boolean flip) {
             this.left = left;
             this.up = up;
             this.forward = forward;
+            this.flip = flip;
         }
         
         private final Vector left, up, forward;
-
+        private final boolean flip;
+        
         public Vector getLeft() {
             return left;
         }
@@ -110,6 +112,10 @@ public class Asset {
                     forward.getX(), forward.getY(), forward.getZ(), 0,
                     0,              0,              0,              1
             );
+        }
+
+        public boolean isFlip() {
+            return flip;
         }
     }
 }

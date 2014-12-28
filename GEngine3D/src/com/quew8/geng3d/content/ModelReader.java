@@ -58,8 +58,8 @@ public class ModelReader implements ContentReader<Model> {
                     m = scene.getGeometry()[0].getGeometry();
                 }
                 m = m.transform(
-                        Matrix.transpose(new Matrix(), scene.getAsset().getUpAxis().getMatrix()), 
-                        false
+                        /*Matrix.transpose(new Matrix(), */scene.getAsset().getUpAxis().getMatrix()/*)*/,
+                        scene.getAsset().getUpAxis().isFlip()
                 );
                 break;
             }

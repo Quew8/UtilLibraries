@@ -12,11 +12,11 @@ import static com.quew8.gutils.opengl.OpenGL.*;
  * @param <S> 
  */
 class TextureLoaderTask extends WorkerTask<TextureLoaderTask, TextureLoadVariables, Void, TextureLoadVariables> {
-	private LoadedImage loadedImage;
+    private LoadedImage loadedImage;
 	
-	@Override
+    @Override
     public TextureLoadVariables work(TextureLoadVariables input) {
-		loadedImage = input.imageLoaders[0].getLoadedImage();
+        loadedImage = input.imageLoaders[0].getLoadedImage();
         return input;
     }
 

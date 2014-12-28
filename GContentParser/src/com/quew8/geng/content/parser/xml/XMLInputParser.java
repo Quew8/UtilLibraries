@@ -1,4 +1,4 @@
-package com.quew8.geng.content.parser;
+package com.quew8.geng.content.parser.xml;
 
 import com.quew8.geng.xmlparser.XMLAttributeParser;
 import com.quew8.geng.xmlparser.XMLIntAttributeParser;
@@ -10,7 +10,7 @@ import org.dom4j.Element;
  *
  * @author Quew8
  */
-class InputParser extends XMLParser {
+class XMLInputParser extends XMLParser {
     public static final String INDEX = "index";
     
     private int index = -1;

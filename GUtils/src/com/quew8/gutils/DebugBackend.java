@@ -1184,6 +1184,10 @@ public class DebugBackend<T extends LoadedImage> extends PlatformBackend<T> {
         return "Debug Backend of " + impl.toString();
     }
     
+    public PlatformBackend<?> getImplementation() {
+        return impl;
+    }
+    
     private static String toString(int glEnum) {
         return OpenGLUtils.toOpenGLString(glEnum);
     }

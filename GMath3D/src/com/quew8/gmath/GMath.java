@@ -187,6 +187,10 @@ public class GMath {
         return 1 / f;
     }
     
+    public static int sign(float f) {
+        return f == 0 ? 0 : f > 0 ? 1 : -1;
+    }
+    
     /**
      * 
      * @param i
