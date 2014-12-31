@@ -72,7 +72,7 @@ public class Viewport {
         return 1f / height;
     }
     
-    public Viewport getSubViewport(float left, float bottom, float right, float top) {
+    public Viewport getSubViewport(float left, float right, float bottom, float top) {
         int x0 = (int) ( xPos + ( width * left ) );
         int y0 = (int) ( yPos + ( height * bottom ) );
         int x1 = (int) ( xPos + ( width * right ) );

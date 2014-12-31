@@ -13,7 +13,7 @@ import com.quew8.gutils.Colour;
  *
  * @author Quew8
  */
-public class SpriteBatcher2D extends SpriteBatcher<SpriteDataFactory2D> {
+final public class SpriteBatcher2D extends SpriteBatcher<SpriteDataFactory2D> {
 
     public SpriteBatcher2D(Texture tex, StaticRenderMode renderMode, SpriteDataFactory2D dataFactory, int size) {
         super(tex, renderMode, dataFactory, size);

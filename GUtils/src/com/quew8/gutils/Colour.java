@@ -218,9 +218,13 @@ public class Colour {
         return result;
     }
     
-    /**
-     * 
-     */
+    public static Colour getComplimentRGB(Colour result, Colour c) {
+        result.setRed(1 - c.getRed());
+        result.setGreen(1 - c.getGreen());
+        result.setBlue(1 - c.getBlue());
+        return result;
+    }
+    
     public class ByteColour {
         private final byte red, green, blue, alpha;
         
@@ -245,6 +249,10 @@ public class Colour {
         
         public byte getAlpha() {
             return alpha;
+        }
+        
+        public int getRGBA() {
+            return (red << 3) | (green << 2) | (blue << 1) | alpha;
         }
         
         @Override
