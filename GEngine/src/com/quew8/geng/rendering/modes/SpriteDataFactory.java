@@ -5,30 +5,23 @@ package com.quew8.geng.rendering.modes;
  * @author Quew8
  */
 public abstract class SpriteDataFactory {
-    private final int mode, bytesPerSprite, verticesPerSprite, indicesPerSprite;
+    private final int bytesPerSprite, bytesPerVertex, verticesPerSprite;
     
-    public SpriteDataFactory(int mode, int bytesPerSprite, int verticesPerSprite, int indicesPerSprite) {
-        this.mode = mode;
+    public SpriteDataFactory(int bytesPerSprite, int bytesPerVertex, int verticesPerSprite) {
         this.bytesPerSprite = bytesPerSprite;
+        this.bytesPerVertex = bytesPerVertex;
         this.verticesPerSprite = verticesPerSprite;
-        this.indicesPerSprite = indicesPerSprite;
-    }
-    
-    public int getMode() {
-        return mode;
     }
     
     public int getBytesPerSprite() {
         return bytesPerSprite;
     }
+
+    public int getBytesPerVertex() {
+        return bytesPerVertex;
+    }
     
     public int getVerticesPerSprite() {
         return verticesPerSprite;
     }
-    
-    public int getIndicesPerSprite() {
-        return indicesPerSprite;
-    }
-    
-    public abstract int[] getIndices();
 }

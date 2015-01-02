@@ -10,8 +10,8 @@ import java.nio.ByteBuffer;
  */
 public abstract class SpriteDataFactory1D extends SpriteDataFactory {
 
-    public SpriteDataFactory1D(int mode, int bytesPerSprite, int verticesPerSprite, int indicesPerSprite) {
-        super(mode, bytesPerSprite, verticesPerSprite, indicesPerSprite);
+    public SpriteDataFactory1D(int bytesPerSprite, int bytesPerVertex, int verticesPerSprite) {
+        super(bytesPerSprite, bytesPerVertex, verticesPerSprite);
     }
     
     public void addData(ByteBuffer to, Colour colour, float x, float y, float z, float width, float height, float depth) {

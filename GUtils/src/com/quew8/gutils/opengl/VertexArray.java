@@ -21,7 +21,7 @@ public class VertexArray implements VertexData {
     @Override
     public void vertexAttribPointer(int index, int size, int type, boolean normalized, int stride, int offset) {
         int oldPos = buffer.position();
-        buffer.position(offset);
+        buffer.position(oldPos + offset);
         switch(type) {
         case GL_FLOAT: {
             glVertexAttribPointer(index, size, normalized, stride, buffer.asFloatBuffer());

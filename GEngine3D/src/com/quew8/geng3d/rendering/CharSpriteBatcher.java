@@ -4,9 +4,13 @@ import com.quew8.geng.geometry.CharsetTexture;
 import com.quew8.geng.geometry.Image;
 import com.quew8.geng.geometry.Plane;
 import com.quew8.geng.rendering.SpriteBatcher;
+import com.quew8.geng.rendering.SpriteBatcherData;
 import com.quew8.geng.rendering.modes.CharsetRenderMode;
-import com.quew8.geng3d.rendering.modes.PolygonSpriteDataFactory;
+import com.quew8.geng.rendering.modes.SpriteIndexDataFactory;
+import com.quew8.geng3d.rendering.modes.PolygonSpriteIndexDataFactory;
+import com.quew8.geng3d.rendering.modes.QuadSpriteDataFactory;
 import com.quew8.geng3d.rendering.modes.SpriteDataFactory2D;
+import com.quew8.geng3d.rendering.modes.UVQuadSpriteDataFactory;
 import com.quew8.gmath.Vector;
 import com.quew8.gutils.Colour;
 import java.util.HashMap;
@@ -19,15 +23,21 @@ public class CharSpriteBatcher extends SpriteBatcher<SpriteDataFactory2D> {
     public static final float CHAR_SIZE_RATIO = 8f / 5f, CHAR_GAP_RATIO = 0.1f / 5f;
     private final HashMap<Character, Image> mapping;
     private final CharsetRenderMode renderMode;
-    
-    public CharSpriteBatcher(CharsetTexture tex, CharsetRenderMode renderMode, SpriteDataFactory2D dataFactory, int size) {
-        super(tex, renderMode, dataFactory, size);
-        this.renderMode = renderMode;
+
+    public CharSpriteBatcher(CharsetTexture tex, CharsetRenderMode renderMode, SpriteBatcherData<SpriteDataFactory2D> data, SpriteIndexDataFactory indexFactory) {
+        super(tex, renderMode, data, indexFactory);
         this.mapping = tex.getMapping();
+        this.renderMode = renderMode;
     }
 
-    public CharSpriteBatcher(CharsetTexture tex, CharsetRenderMode renderMode, int size) {
-        this(tex, renderMode, PolygonSpriteDataFactory.TEXTURED_QUAD_INSTANCE, size);
+    public CharSpriteBatcher(CharsetTexture tex, CharsetRenderMode renderMode, SpriteBatcherData<SpriteDataFactory2D> data) {
+        this(tex, renderMode, data, PolygonSpriteIndexDataFactory.QUAD_INSTANCE);
+    }
+
+    public CharSpriteBatcher(CharsetTexture tex, CharsetRenderMode renderMode, int n) {
+        this(tex, renderMode, new SpriteBatcherData<SpriteDataFactory2D>(
+                n, QuadSpriteDataFactory.INSTANCE, UVQuadSpriteDataFactory.INSTANCE
+        ));
     }
     
     public void setCharColour(Colour colour) {
@@ -36,7 +46,9 @@ public class CharSpriteBatcher extends SpriteBatcher<SpriteDataFactory2D> {
     
     public void drawNoColour(char c, float x, float y, float z, float width, float height, Plane plane) {
         predraw();
-        getFactory().addData(getBuffer(), mapping.get(c), x, y, z, width, height, plane);
+        for(int i = 0; i < getAllAttribs().length; i++) {
+            getAllAttribs()[i].getFactory().addData(getAllAttribs()[i].getBuffer(), mapping.get(c), x, y, z, width, height, plane);
+        }
     }
     
     public void drawNoColour(char c, float x, float y, float z, float width, Plane plane) {

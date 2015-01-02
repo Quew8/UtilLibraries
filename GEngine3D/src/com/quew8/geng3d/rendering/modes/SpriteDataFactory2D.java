@@ -12,8 +12,8 @@ import java.nio.ByteBuffer;
  */
 public abstract class SpriteDataFactory2D extends SpriteDataFactory {
 
-    public SpriteDataFactory2D(int mode, int bytesPerSprite, int verticesPerSprite, int indicesPerSprite) {
-        super(mode, bytesPerSprite, verticesPerSprite, indicesPerSprite);
+    public SpriteDataFactory2D(int bytesPerSprite, int bytesPerVertex, int verticesPerSprite) {
+        super(bytesPerSprite, bytesPerVertex, verticesPerSprite);
     }
     
     public void addData(ByteBuffer to, Image texture, float x, float y, float z, float width, float height, Plane plane) {
