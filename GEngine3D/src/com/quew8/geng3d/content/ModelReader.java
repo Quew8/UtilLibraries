@@ -44,17 +44,17 @@ public class ModelReader implements ContentReader<Model> {
                 ColladaParser parser = new ColladaParser();
                 parser.read(in.getSource(0), in.getLoader());
                 Scene<Mesh, Skin> scene = parser.getScene(MeshSkinDataFactory.INSTANCE, Image.WHOLE);
-                System.out.println(scene.toString());
+                //System.out.println(scene.toString());
                 if(in.hasParam(NAME)) {
                     String modelName = in.getParam(NAME);
-                    System.out.println("Looking for: \"" + modelName + "\"");
+                    //System.out.println("Looking for: \"" + modelName + "\"");
                     InstanceGeometry<Mesh> ig = scene.findGeometry(modelName);
                     if(ig == null) {
                         throw new RuntimeException("No geometry with name: \"" + modelName + "\"");
                     }
                     m = ig.getGeometry();
                 } else {
-                    System.out.println("Looking for 0th geometry");
+                    //System.out.println("Looking for 0th geometry");
                     m = scene.getGeometry()[0].getGeometry();
                 }
                 m = m.transform(

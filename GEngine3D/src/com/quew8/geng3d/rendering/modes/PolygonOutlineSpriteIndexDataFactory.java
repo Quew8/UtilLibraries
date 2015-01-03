@@ -12,7 +12,7 @@ public class PolygonOutlineSpriteIndexDataFactory extends SpriteIndexDataFactory
     
     private final int nVertices;
     
-    private PolygonOutlineSpriteIndexDataFactory(int nVertices) {
+    public PolygonOutlineSpriteIndexDataFactory(int nVertices) {
         super(OpenGL.GL_LINES, nVertices, nVertices * 2);
         this.nVertices = nVertices;
     }

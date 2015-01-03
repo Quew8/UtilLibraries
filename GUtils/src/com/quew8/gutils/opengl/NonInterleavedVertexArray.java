@@ -20,9 +20,9 @@ public class NonInterleavedVertexArray implements VertexData {
             }
             
         });
-        for(int i = 0; i < arrays.length; i++) {
+        /*for(int i = 0; i < arrays.length; i++) {
             System.out.println(i + " :: " + arrays[i].vertexArray.getClass().getSimpleName() + " " + arrays[i].offset);
-        }
+        }*/
         this.arrays = arrays;
     }
     

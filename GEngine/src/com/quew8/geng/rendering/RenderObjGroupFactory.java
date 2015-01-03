@@ -52,7 +52,6 @@ public class RenderObjGroupFactory<T> {
         for (int i = 0; i < sectionFactories.size(); i++) {
             sections[i] = sectionFactories.get(i).contructSection();
         }
-        System.out.println("Mesh lengths s/d : " + ta[0].length + " / " + ta[1].length);
         return new RenderObjGroup<T>(ArrayUtils.concatVariableLengthArrays(ta), interpreter, sections);
     }
     

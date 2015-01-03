@@ -124,12 +124,12 @@ public abstract class AbstractNode<T, S> {
     public AbstractNode<T, S> getNode(String path) {
         int i = path.indexOf('/');
         if(i == -1) {
-            System.out.println("Getting: " + path);
+            //System.out.println("Getting: " + path);
             return getChildNode(path);
         } else {
             String thisPath = path.substring(0, i);
             String restPath = path.substring(i + 1);
-            System.out.println("Split Path: " + thisPath + " " + restPath);
+            //System.out.println("Split Path: " + thisPath + " " + restPath);
             return getChildNode(thisPath).getNode(restPath);
         }
     }
