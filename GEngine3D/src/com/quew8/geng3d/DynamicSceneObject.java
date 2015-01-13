@@ -34,8 +34,12 @@ public class DynamicSceneObject extends SceneObject<DynamicHandleInstance<?>> im
     public void translate(Vector dv) {
         position.translate(dv);
     }
-
+    
     @Override
+    public void rotateAbout(Vector da, Vector about) {
+        throw new UnsupportedOperationException("TODO");
+    }
+    
     public void rotate(Vector da) {
         position.rotate(da);
     }

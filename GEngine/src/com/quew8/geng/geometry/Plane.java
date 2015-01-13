@@ -10,6 +10,8 @@ import com.quew8.gmath.Vector2;
  */
 public class Plane {
     public static final Plane 
+            POS_Y = new Plane(new Vector(1, 0, 0), new Vector(0, 0, 1), new Vector(0, 1, 0)),
+            NEG_Y = new Plane(new Vector(1, 0, 0), new Vector(0, 0, -1), new Vector(0, -1, 0)),
             NEG_Z = Plane.getPlane(new Vector(0, 0, -1)),
             POS_Z = Plane.getPlane(new Vector(0, 0, 1));
     public static Plane BILLBOARD_PLANE = NEG_Z;
@@ -49,6 +51,10 @@ public class Plane {
         );
     }
 
+    public Vector getNormal() {
+        return forward;
+    }
+    
     @Override
     public String toString() {
         return "Plane{" + "right=" + right + ", up=" + up + ", forward=" + forward + '}';

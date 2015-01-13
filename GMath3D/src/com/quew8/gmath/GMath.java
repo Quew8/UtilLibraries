@@ -446,6 +446,19 @@ public class GMath {
         return result;
     }
     
+    /*public static Vector[] rotateAbout(Vector da, Vector about, Vector position) {
+        Vector relativeAbout = new Vector(position, about);
+        Matrix m = Matrix.makeTranslation(relativeAbout);
+        m = Matrix.rotateY(new Matrix(), m, da.getY());
+        m = Matrix.rotateX(new Matrix(), m, da.getX());
+        m = Matrix.rotateZ(new Matrix(), m, da.getZ());
+        m = Matrix.translate(new Matrix(), m, new Vector(relativeAbout, Vector.NEGATE_BIT));
+        return new Vector[]{
+            m.getTranslation(),
+            
+        }
+    }*/
+    
     /*public static boolean isPointOnSurface(Vector point, Vector[] vertices) {
         Vector pv1 = new Vector(point, vertices[0], Vector.NORMALIZE_BIT);
         Vector intermediate1 = new Vector(point, vertices[1], Vector.NORMALIZE_BIT);

@@ -30,12 +30,12 @@ public class Viewport {
         glScissor(getX(), getY(), getWidth(), getHeight());
     }
     
-    public boolean getIsLandscape() {
+    public boolean isLandscape() {
     	return width > height;
     }
     
     public float getCurrentOrientationAspectRatio() {
-    	return getIsLandscape() ?
+    	return isLandscape() ?
     			getLandscapeAspectRatio() :
     				getPortraitAspectRatio();
     }

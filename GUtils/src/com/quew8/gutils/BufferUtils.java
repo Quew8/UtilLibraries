@@ -16,9 +16,13 @@ public class BufferUtils {
     }
     
     public static ByteBuffer getSlice(ByteBuffer bb, int offset, int length) {
+        int oldpos = bb.position();
+        int oldlim = bb.limit();
+        bb.position(oldpos + offset);
+        bb.limit(oldpos + offset + length);
         ByteBuffer bb2 = bb.slice();
-        bb2.position(offset);
-        bb2.limit(offset + length);
+        bb.limit(oldlim);
+        bb.position(oldpos);
         return bb2;
     }
     

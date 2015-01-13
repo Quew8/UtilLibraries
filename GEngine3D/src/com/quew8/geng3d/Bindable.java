@@ -8,5 +8,5 @@ import com.quew8.gmath.Vector;
  */
 public interface Bindable {
     public void translate(Vector dv);
-    public void rotate(Vector da);
+    public void rotateAbout(Vector da, Vector about);
 }

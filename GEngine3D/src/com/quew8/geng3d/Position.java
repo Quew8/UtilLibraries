@@ -1,10 +1,11 @@
 package com.quew8.geng3d;
 
 import com.quew8.geng.debug.VectorDebugInterface;
+import com.quew8.gmath.Axis;
 import com.quew8.gmath.Matrix;
 import com.quew8.gmath.Vector;
+import com.quew8.gutils.collections.Bag;
 import com.quew8.gutils.debug.DebugInterface;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -14,7 +15,8 @@ import java.util.List;
  */
 public class Position implements Bindable, DebugInterface {
     private Position superPosition = null;
-    private final ArrayList<Position> subPositions = new ArrayList<Position>();
+    private final Bag<Position> subPositions = new Bag<Position>(Position.class, 0);
+    private final Bag<Bindable> bound = new Bag<Bindable>(Bindable.class, 0);
     private final Vector translation;
     private final Matrix translationMatrix = new Matrix();
     private boolean needsNewTranslationMatrix = true;
@@ -47,24 +49,46 @@ public class Position implements Bindable, DebugInterface {
     	this(x, y, z, 0, 0);
     }
     
-    public void setPosition(Vector p) {
+    public void setTranslation(Vector p) {
+        for(int i = 0; i < bound.size(); i++) {
+            bound.get(i).translate(new Vector(getTranslation(), p));
+        }
     	translation.setXYZ(p.getX(), p.getY(), p.getZ());
         setNeedsNewTranslationMatrix();
     }
     
     @Override
     public void translate(Vector dv) {
+        for(int i = 0; i < bound.size(); i++) {
+            bound.get(i).translate(dv);
+        }
         translation.add(dv);
         setNeedsNewTranslationMatrix();
     }
-	
-    public void setOrientation(Vector a) {
+    
+    public void setRotation(Vector a) {
+        for(int i = 0; i < bound.size(); i++) {
+            bound.get(i).rotateAbout(new Vector(getOrientation(), a), getTranslation());
+        }
     	orientation.setXYZ(a.getX(), a.getY(), a.getZ());
         setNeedsNewRotationMatrix();
     }
     
     @Override
+    public void rotateAbout(Vector da, Vector about) {
+        throw new UnsupportedOperationException("TODO");
+        /*Vector relativeAbout = new Vector(getTranslation(), about);
+        for(int i = 0; i < bound.size(); i++) {
+            bound.get(i).rotateAbout(da, about);
+        }
+        orientation.add(da);
+        setNeedsNewRotationMatrix();*/
+    }
+    
     public void rotate(Vector da) {
+        for(int i = 0; i < bound.size(); i++) {
+            bound.get(i).rotateAbout(da, getTranslation());
+        }
         orientation.add(da);
         setNeedsNewRotationMatrix();
     }
@@ -112,6 +136,10 @@ public class Position implements Bindable, DebugInterface {
             Matrix.rotateZ(rotationMatrix, m, orientation.getZ());
             needsNewRotationMatrix = false;
         }
+    }
+    
+    public void bind(Bindable b) {
+        bound.add(b);
     }
     
     public Position addSubPosition(Position pos) {

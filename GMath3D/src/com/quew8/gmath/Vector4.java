@@ -74,6 +74,13 @@ public class Vector4 {
         this.w = w;
     }
 	
+    public void setXYZW(float x, float y, float z, float w) {
+        this.x = x;
+        this.y = y;
+        this.z = z;
+        this.w = w;
+    }
+    
     public boolean equals(Vector v) {
         return (this.x == v.getX() && this.y == v.getY() && this.z == v.getZ());
     }

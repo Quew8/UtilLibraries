@@ -47,8 +47,12 @@ public abstract class SpriteBatcher<T extends SpriteDataFactory> {
     }
     
     public void begin() {
+        begin(tex);
+    }
+    
+    public void begin(Texture texture) {
         RenderState.setRenderMode(true, renderMode);
-        tex.bind();
+        texture.bind();
         ibo.bind();
     }
     
