@@ -1,6 +1,5 @@
 package com.quew8.geng.rendering.modes;
 
-import com.quew8.geng.rendering.modes.interfaces.TextureFetchable;
 import com.quew8.geng.geometry.Texture;
 import com.quew8.gutils.opengl.VertexData;
 import java.nio.FloatBuffer;

@@ -113,7 +113,7 @@ public class GLSLPipelineParser extends GLSLParser<GLSLPipelineParser> {
             if(effects.get(i).getNOutVars() != effects.get(i + 1).getNInVars()) {
                 return new XMLParseException("Number of effect inputs does not match effect outputs: " + i + " " + (i + 1));
             }
-            for(int j = 0; j < effects.get(i).getNInVars(); j++) {
+            for(int j = 0; j < effects.get(i).getNOutVars(); j++) {
                 if(!effects.get(i).getOutVar(j).compatible(effects.get(i+1).getInVar(j))) {
                     return new XMLParseException("Incompatible effects: " + i + ":" + j + " and " + (i+1) + ":" + j);
                 }

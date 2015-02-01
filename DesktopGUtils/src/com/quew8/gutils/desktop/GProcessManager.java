@@ -23,14 +23,16 @@ public class GProcessManager {
     
     public final void play() {
         for(GProcess p: processes) {
-            p.getWindow().makeCurrent();
+            p.onMadeCurrent();
             p.init();
+            p.onUnmadeCurrent();
         }
         Clock.begin();
         loop();
         for(GProcess p: processes) {
-            p.getWindow().makeCurrent();
+            p.onMadeCurrent();
             p.deinit();
+            p.onUnmadeCurrent();
         }
     }
     
@@ -38,13 +40,14 @@ public class GProcessManager {
         while(!shouldEndProcesses()) {
             Clock.makeDelta();
             for(int i = 0; i < processes.size(); i++) {
-                processes.get(i).getWindow().makeCurrent();
+                processes.get(i).onMadeCurrent();
                 if(processes.get(i).getWindow().isResized()) {
                     processes.get(i).resize(processes.get(i).getViewport());
                 }
                 processes.get(i).update();
                 processes.get(i).render();
                 processes.get(i).getWindow().endOfFrame();
+                processes.get(i).onUnmadeCurrent();
             }
         }
     }

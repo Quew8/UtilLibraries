@@ -1,14 +1,13 @@
 package com.quew8.geng3d.content;
 
 import com.quew8.geng.geometry.Image;
-import com.quew8.geng.geometry.Mesh;
-import com.quew8.geng.geometry.Skin;
-import com.quew8.geng3d.collada.InstanceGeometry;
-import com.quew8.geng3d.collada.MeshSkinDataFactory;
-import com.quew8.geng3d.collada.Scene;
-import com.quew8.geng3d.collada.parser.ColladaParser;
-import com.quew8.geng3d.objparser.ObjParser;
-import com.quew8.gmath.Matrix;
+import com.quew8.geng3d.geometry.Mesh3D;
+import com.quew8.geng3d.models.collada.InstanceGeometry;
+import com.quew8.geng3d.models.MeshDataFactoryImpl;
+import com.quew8.geng3d.models.collada.Scene;
+import com.quew8.geng3d.models.collada.parser.ColladaParser;
+import com.quew8.geng3d.models.obj.parser.WavefrontObject;
+import com.quew8.geng3d.models.obj.parser.WavefrontParser;
 import com.quew8.gutils.FileUtils;
 import com.quew8.gutils.content.ContentReader;
 import com.quew8.gutils.content.Source;
@@ -38,24 +37,24 @@ public class ModelReader implements ContentReader<Model> {
                 default: throw new IllegalArgumentException("Unrecognized model file extension: \"" + extension + "\"");
             }
         }
-        Mesh m;
+        Mesh3D m;
         switch(type) {
             case COLLADA_TYPE: {
                 ColladaParser parser = new ColladaParser();
                 parser.read(in.getSource(0), in.getLoader());
-                Scene<Mesh, Skin> scene = parser.getScene(MeshSkinDataFactory.INSTANCE, Image.WHOLE);
+                Scene scene = parser.getScene();
                 //System.out.println(scene.toString());
                 if(in.hasParam(NAME)) {
                     String modelName = in.getParam(NAME);
                     //System.out.println("Looking for: \"" + modelName + "\"");
-                    InstanceGeometry<Mesh> ig = scene.findGeometry(modelName);
+                    InstanceGeometry ig = scene.findGeometry(modelName);
                     if(ig == null) {
                         throw new RuntimeException("No geometry with name: \"" + modelName + "\"");
                     }
-                    m = ig.getGeometry();
+                    m = ig.getGeometry(MeshDataFactoryImpl.INSTANCE, Image.WHOLE);
                 } else {
                     //System.out.println("Looking for 0th geometry");
-                    m = scene.getGeometry()[0].getGeometry();
+                    m = scene.getGeometry()[0].getGeometry(MeshDataFactoryImpl.INSTANCE, Image.WHOLE);
                 }
                 m = m.transform(
                         /*Matrix.transpose(new Matrix(), */scene.getAsset().getUpAxis().getMatrix()/*)*/,
@@ -64,9 +63,15 @@ public class ModelReader implements ContentReader<Model> {
                 break;
             }
             case WAVEFRONT_TYPE: {
-                ObjParser parser = new ObjParser(in.getStream(0));
-                parser.parse();
-                m = parser.getMesh(Image.WHOLE)[0];
+                WavefrontParser parser = new WavefrontParser();
+                parser.parse(in.getStream(0));
+                WavefrontObject obj;
+                if(in.hasParam(NAME)) {
+                    obj = parser.getObject(in.getParam(NAME));
+                } else {
+                    obj = parser.getObject();
+                }
+                m = obj.getGeometry(MeshDataFactoryImpl.INSTANCE, Image.WHOLE);
                 break;
             }
             default: throw new IllegalArgumentException("Unrecognized model type: \"" + type + "\"");

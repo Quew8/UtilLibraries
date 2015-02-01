@@ -1,20 +1,10 @@
 package com.quew8.geng3d.rendering;
 
-import com.quew8.geng.geometry.Image;
-import com.quew8.geng.geometry.Plane;
-import com.quew8.geng.geometry.Texture;
-import com.quew8.geng.rendering.SpriteBatcher;
-import com.quew8.geng.rendering.SpriteBatcherData;
-import com.quew8.geng.rendering.modes.SpriteIndexDataFactory;
-import com.quew8.geng3d.rendering.modes.SpriteDataFactory3D;
-import com.quew8.geng.rendering.modes.StaticRenderMode;
-import com.quew8.gutils.Colour;
-
 /**
  *
  * @author Quew8
  */
-public class SpriteBatcher3D extends SpriteBatcher<SpriteDataFactory3D> {
+/*public class SpriteBatcher3D extends SpriteBatcher<SpriteDataFactory3D> {
 
     public SpriteBatcher3D(Texture tex, StaticRenderMode renderMode, SpriteBatcherData<SpriteDataFactory3D> data, SpriteIndexDataFactory indexFactory) {
         super(tex, renderMode, data, indexFactory);
@@ -40,4 +30,4 @@ public class SpriteBatcher3D extends SpriteBatcher<SpriteDataFactory3D> {
             getAllAttribs()[i].getFactory().addData(getAllAttribs()[i].getBuffer(), x, y, z, width, height, depth, plane);
         }
     }
-}
+}*/

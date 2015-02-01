@@ -14,7 +14,6 @@ import java.net.URL;
  */
 public abstract class GProcess {
     private final boolean debug;
-    private DebugView debugView = null;
     private final Window window;
     
     public GProcess(boolean debug, WindowParams params, URL[] services) {
@@ -38,6 +37,7 @@ public abstract class GProcess {
         if(debug) {
             DebugLogger.broadcast(LogLevel.VERBOSE, "Init Beginning");
         }
+        onMadeCurrent();
         init();
         Clock.begin();
         if(debug) {
@@ -47,6 +47,7 @@ public abstract class GProcess {
             loop();
         }
         deinit();
+        onUnmadeCurrent();
     }
     
     private void loop() {
@@ -67,25 +68,22 @@ public abstract class GProcess {
             Clock.makeDelta();
             if(window.isResized()) {
                 DebugLogger.broadcast(LogLevel.VERBOSE, "Resize Beginning");
-                if(debugView != null) {
-                    debugView.resize(window.getViewport());
-                }
                 resize(window.getViewport());
             }
             DebugLogger.broadcast(LogLevel.VERBOSE, "Update Beginning");
-            if(debugView != null) {
-                debugView.update();
-            } else {
-                update();
-            }
+            update();
             DebugLogger.broadcast(LogLevel.VERBOSE, "Render Beginning");
-            if(debugView != null) {
-                debugView.render();
-            } else {
-                render();
-            }
+            render();
             window.endOfFrame();
         }
+    }
+    
+    protected void onMadeCurrent() {
+        window.makeCurrent();
+    }
+    
+    protected void onUnmadeCurrent() {
+        
     }
     
     protected abstract void init();
@@ -112,24 +110,5 @@ public abstract class GProcess {
     
     public void requestClose() {
         window.requestClose();
-    }
-    
-    public void setDebugView(DebugView debugView) {
-        if(this.debugView != null) {
-            this.debugView.deinit();
-        }
-        this.debugView = debugView;
-        if(debugView != null) {
-            debugView.init();
-            debugView.resize(window.getViewport());
-        }
-    }
-    
-    public static interface DebugView {
-        void init();
-        void resize(Viewport viewport);
-        void update();
-        void render();
-        void deinit();
     }
 }

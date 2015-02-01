@@ -10,6 +10,13 @@ import com.quew8.gmath.Vector2;
 public class Image {
     public static final Image WHOLE = new Image();
     
+    public final Vector2 transformCoords(Vector2 result, Vector2 coords) {
+        float[] transformedCoords = transformCoords(coords.getX(), coords.getY());
+        result.setX(transformedCoords[0]);
+        result.setY(transformedCoords[1]);
+        return result;
+    }
+    
     public final float[] transformCoords(float x, float y) {
         float[] fa = new float[]{x, y};
         transformCoords(fa, 0);

@@ -1,11 +1,12 @@
 package com.quew8.geng3d.content;
 
 import com.quew8.geng.geometry.Image;
-import com.quew8.geng.geometry.Mesh;
+import com.quew8.geng3d.geometry.Mesh3D;
 import com.quew8.geng.geometry.TextureSheet;
 import com.quew8.geng.rendering.DynamicHandleList;
 import com.quew8.geng.rendering.RenderObjGroupFactory;
 import com.quew8.geng.rendering.modes.DynamicRenderMode;
+import com.quew8.geng3d.geometry.Vertex3D;
 import com.quew8.gmath.Matrix;
 import com.quew8.gmath.Vector;
 import com.quew8.gutils.opengl.texture.LoadedImage;
@@ -21,14 +22,14 @@ import java.util.Arrays;
  * @param <T>
  */
 public class ModelLoader<T> {
-    protected final RenderObjGroupFactory<Mesh> factory;
-    private RenderObjGroupFactory<Mesh>.RenderObjSectionFactory<T> section;
+    protected final RenderObjGroupFactory<Mesh3D, Vertex3D> factory;
+    private RenderObjGroupFactory<Mesh3D, Vertex3D>.RenderObjSectionFactory<T> section;
 
     private final ArrayList<LoadedImage> images = new ArrayList<LoadedImage>();
     private final ArrayList<ModelFactory> models = new ArrayList<ModelFactory>();
     private Image[] texOuts;
 
-    protected ModelLoader(RenderObjGroupFactory<Mesh> factory) {
+    protected ModelLoader(RenderObjGroupFactory<Mesh3D, Vertex3D> factory) {
         this.factory = factory;
     }
 
@@ -75,7 +76,7 @@ public class ModelLoader<T> {
         }
     }
     
-    public Vector[] addPortionToSection(DynamicHandleList<T> dhl, Mesh mesh, boolean dynamicImage) {
+    public Vertex3D[] addPortionToSection(DynamicHandleList<T> dhl, Mesh3D mesh, boolean dynamicImage) {
         if(dynamicImage) {
             throw new UnsupportedOperationException("No support for dynamic images in this ModelLoader");
         }
@@ -88,7 +89,7 @@ public class ModelLoader<T> {
     public class ModelFactory {
         private final DynamicHandleList<T> dhl;
         private final ArrayList<ModelPortion> sections = new ArrayList<ModelPortion>();
-        private Vector[][] vectors;
+        private Vertex3D[][] vectors;
 
         private ModelFactory(DynamicHandleList<T> dhl) {
             this.dhl = dhl;
@@ -98,7 +99,7 @@ public class ModelLoader<T> {
             this(new DynamicHandleList<T>());
         }
 
-        public void addPortions(Mesh[] meshes, int[] texIndexs, boolean[] dynamicImgs, Matrix transform, boolean flip) {
+        public void addPortions(Mesh3D[] meshes, int[] texIndexs, boolean[] dynamicImgs, Matrix transform, boolean flip) {
             if(meshes.length != texIndexs.length || meshes.length != dynamicImgs.length) {
                 throw new IllegalArgumentException("Ill Matching Arrays");
             }
@@ -107,28 +108,28 @@ public class ModelLoader<T> {
             }
         }
 
-        public void addPortions(Mesh[] meshes, int[] texIndexs, boolean dynamicImg, Matrix transform, boolean flip) {
+        public void addPortions(Mesh3D[] meshes, int[] texIndexs, boolean dynamicImg, Matrix transform, boolean flip) {
             boolean[] dynamicImgs = new boolean[meshes.length];
             Arrays.fill(dynamicImgs, dynamicImg);
             addPortions(meshes, texIndexs, dynamicImgs, transform, flip);
         }
 
-        public void addPortions(Mesh[] meshes, int[] texIndexs, boolean dynamicImg) {
+        public void addPortions(Mesh3D[] meshes, int[] texIndexs, boolean dynamicImg) {
             addPortions(meshes, texIndexs, dynamicImg, null, false);
         }
 
-        public void addPortion(Mesh mesh, int texIndex, boolean dynamicImg, Matrix transform, boolean flip) {
+        public void addPortion(Mesh3D mesh, int texIndex, boolean dynamicImg, Matrix transform, boolean flip) {
             sections.add(new ModelPortion(mesh, texIndex, dynamicImg, transform, flip));
         }
 
-        public void addPortion(Mesh mesh, int texIndex, boolean dynamicImg) {
+        public void addPortion(Mesh3D mesh, int texIndex, boolean dynamicImg) {
             addPortion(mesh, texIndex, dynamicImg, null, false);
         }
 
         public void construct() {
-            vectors = new Vector[sections.size()][];
+            vectors = new Vertex3D[sections.size()][];
             for(int i = 0; i < sections.size(); i++) {
-                Mesh m = sections.get(i).mesh;
+                Mesh3D m = sections.get(i).mesh;
                 if(sections.get(i).texIndex != -1) {
                     m = m.transform(texOuts[sections.get(i).texIndex]);
                 }
@@ -143,7 +144,7 @@ public class ModelLoader<T> {
             return dhl;
         }
 
-        public Vector[][] getVectors() {
+        public Vertex3D[][] getVectors() {
             return vectors;
         }
     }
@@ -180,13 +181,13 @@ public class ModelLoader<T> {
      * 
      */
     private static class ModelPortion {
-        final Mesh mesh;
+        final Mesh3D mesh;
         final int texIndex;
         final boolean dynamicImg;
         final Matrix transform;
         final boolean flip;
         
-        ModelPortion(Mesh mesh, int texIndex, boolean dynamicImg, Matrix transform, boolean flip) {
+        ModelPortion(Mesh3D mesh, int texIndex, boolean dynamicImg, Matrix transform, boolean flip) {
             this.mesh = mesh;
             this.texIndex = texIndex;
             this.dynamicImg = dynamicImg;
@@ -196,7 +197,7 @@ public class ModelLoader<T> {
 
     }
 
-    public static <T> ModelLoader<T> getModelLoader(RenderObjGroupFactory<Mesh> factory) {
+    public static <T> ModelLoader<T> getModelLoader(RenderObjGroupFactory<Mesh3D, Vertex3D> factory) {
         return new ModelLoader<T>(factory);
     }
 

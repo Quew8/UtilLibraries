@@ -2,15 +2,11 @@ package com.quew8.geng3d.rendering;
 
 import com.quew8.geng.geometry.CharsetTexture;
 import com.quew8.geng.geometry.Image;
-import com.quew8.geng.geometry.Plane;
+import com.quew8.geng3d.geometry.Plane;
 import com.quew8.geng.rendering.SpriteBatcher;
-import com.quew8.geng.rendering.SpriteBatcherData;
 import com.quew8.geng.rendering.modes.CharsetRenderMode;
-import com.quew8.geng.rendering.modes.SpriteIndexDataFactory;
-import com.quew8.geng3d.rendering.modes.PolygonSpriteIndexDataFactory;
-import com.quew8.geng3d.rendering.modes.QuadSpriteDataFactory;
-import com.quew8.geng3d.rendering.modes.SpriteDataFactory2D;
-import com.quew8.geng3d.rendering.modes.UVQuadSpriteDataFactory;
+import com.quew8.geng.rendering.modes.FixedSizeDataInterpreter;
+import com.quew8.geng3d.geometry.DataFactory2D;
 import com.quew8.gmath.Vector;
 import com.quew8.gutils.Colour;
 import java.util.HashMap;
@@ -18,13 +14,22 @@ import java.util.HashMap;
 /**
  *
  * @author Quew8
+ * @param <T>
  */
-public class CharSpriteBatcher extends SpriteBatcher<SpriteDataFactory2D> {
+public class CharSpriteBatcher<T> extends SpriteBatcher<T> {
     public static final float CHAR_SIZE_RATIO = 8f / 5f, CHAR_GAP_RATIO = 0.1f / 5f;
     private final HashMap<Character, Image> mapping;
     private final CharsetRenderMode renderMode;
+    private final DataFactory2D<T> dataFactory;
 
-    public CharSpriteBatcher(CharsetTexture tex, CharsetRenderMode renderMode, SpriteBatcherData<SpriteDataFactory2D> data, SpriteIndexDataFactory indexFactory) {
+    public CharSpriteBatcher(CharsetTexture tex, CharsetRenderMode renderMode, DataFactory2D<T> dataFactory, FixedSizeDataInterpreter<T, ?> dataInterpreter, int maxN) {
+        super(tex, renderMode, dataInterpreter, maxN);
+        this.mapping = tex.getMapping();
+        this.renderMode = renderMode;
+        this.dataFactory = dataFactory;
+    }
+    
+    /*public CharSpriteBatcher(CharsetTexture tex, CharsetRenderMode renderMode, SpriteBatcherData<SpriteDataFactory2D> data, SpriteIndexDataFactory indexFactory) {
         super(tex, renderMode, data, indexFactory);
         this.mapping = tex.getMapping();
         this.renderMode = renderMode;
@@ -38,17 +43,14 @@ public class CharSpriteBatcher extends SpriteBatcher<SpriteDataFactory2D> {
         this(tex, renderMode, new SpriteBatcherData<SpriteDataFactory2D>(
                 n, QuadSpriteDataFactory.INSTANCE, UVQuadSpriteDataFactory.INSTANCE
         ));
-    }
+    }*/
     
     public void setCharColour(Colour colour) {
         renderMode.setCharColour(colour);
     }
     
     public void drawNoColour(char c, float x, float y, float z, float width, float height, Plane plane) {
-        predraw();
-        for(int i = 0; i < getAllAttribs().length; i++) {
-            getAllAttribs()[i].getFactory().addData(getAllAttribs()[i].getBuffer(), mapping.get(c), x, y, z, width, height, plane);
-        }
+        batch(dataFactory.construct(mapping.get(c), x, y, z, width, height, plane));
     }
     
     public void drawNoColour(char c, float x, float y, float z, float width, Plane plane) {

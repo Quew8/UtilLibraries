@@ -1,7 +1,7 @@
 package com.quew8.geng.rendering;
 
 import com.quew8.geng.interfaces.Updateable;
-import com.quew8.geng.rendering.modes.interfaces.ParticleGenerator;
+import com.quew8.geng.rendering.modes.ParticleGenerator;
 
 /**
  *

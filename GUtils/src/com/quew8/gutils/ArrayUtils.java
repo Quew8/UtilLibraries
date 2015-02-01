@@ -400,7 +400,6 @@ public class ArrayUtils {
         return arrayOfLengthsTo(array, array.length);
     }
     
-    
     /**
      * 
      * @param to
@@ -844,6 +843,17 @@ public class ArrayUtils {
     @SuppressWarnings("unchecked")
     public static <T> Class<T> getClass(T t) {
         return (Class<T>) t.getClass();
+    }
+    
+    /**
+     * 
+     * @param <T>
+     * @param length
+     * @param arr
+     * @return 
+     */
+    public static <T> T[] createArray(int length, T... arr) {
+        return Arrays.copyOf(arr, length);
     }
     
     /**
