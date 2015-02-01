@@ -1,16 +1,14 @@
-package com.quew8.geng3d.collada;
+package com.quew8.geng3d.models.collada;
 
 /**
  *
  * @author Quew8
- * @param <T>
- * @param <S>
  */
-public class Scene<T, S> {
+public class Scene {
     private final Asset asset;
-    private final InstanceVisualScene<T, S> visualScene;
+    private final InstanceVisualScene visualScene;
     
-    public Scene(Asset asset, InstanceVisualScene<T, S> visualScene) {
+    public Scene(Asset asset, InstanceVisualScene visualScene) {
         this.asset = asset;
         this.visualScene = visualScene;
     }
@@ -19,37 +17,37 @@ public class Scene<T, S> {
         return asset;
     }
     
-    public InstanceVisualScene<T, S> getVisualScene() {
+    public InstanceVisualScene getVisualScene() {
         return visualScene;
     }
     
-    public InstanceController<S> findController(String name) {
+    public InstanceController findController(String name) {
         if(name.startsWith("#")) {
             return getVisualScene().getController(name.substring(1));
         }
         return getVisualScene().findController(name);
     }
     
-    public InstanceGeometry<T> findGeometry(String name) {
+    public InstanceGeometry findGeometry(String name) {
         if(name.startsWith("#")) {
             return getVisualScene().getGeometry(name.substring(1));
         }
         return getVisualScene().findGeometry(name);
     }
     
-    public InstanceController<S> getController(String path) {
+    public InstanceController getController(String path) {
         return getVisualScene().getController(path);
     }
     
-    public InstanceGeometry<T> getGeometry(String path) {
+    public InstanceGeometry getGeometry(String path) {
         return getVisualScene().getGeometry(path);
     }
     
-    public InstanceController<S>[] getControllers() {
+    public InstanceController[] getControllers() {
         return getVisualScene().getAllControllers();
     }
     
-    public InstanceGeometry<T>[] getGeometry() {
+    public InstanceGeometry[] getGeometry() {
         return getVisualScene().getAllGeometry();
     }
     

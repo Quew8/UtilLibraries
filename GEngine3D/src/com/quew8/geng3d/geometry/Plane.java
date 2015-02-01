@@ -1,4 +1,4 @@
-package com.quew8.geng.geometry;
+package com.quew8.geng3d.geometry;
 
 import com.quew8.gmath.GMath;
 import com.quew8.gmath.Vector;
@@ -49,6 +49,10 @@ public class Plane {
         );
     }
 
+    public Vector getNormal() {
+        return forward;
+    }
+    
     @Override
     public String toString() {
         return "Plane{" + "right=" + right + ", up=" + up + ", forward=" + forward + '}';

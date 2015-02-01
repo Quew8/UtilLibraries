@@ -1,10 +1,10 @@
-package com.quew8.geng3d.collada.parser;
+package com.quew8.geng3d.models.collada.parser;
 
-import com.quew8.geng3d.collada.DataFactory;
-import com.quew8.geng3d.collada.DataInput;
+import com.quew8.geng3d.models.DataInput;
 import com.quew8.geng.geometry.Image;
 import com.quew8.geng.xmlparser.XMLElementParser;
 import com.quew8.geng.xmlparser.XMLParser;
+import com.quew8.geng3d.models.MeshDataFactory;
 import java.util.HashMap;
 import org.dom4j.Element;
 
@@ -18,7 +18,7 @@ class MeshParser extends XMLParser{
 
     private PolylistParser polylistParser;
     
-    public MeshParser() {
+    MeshParser() {
         super(false, false);
     }
     
@@ -40,7 +40,7 @@ class MeshParser extends XMLParser{
         return polylistParser;
     }
     
-    public <T> T getGeometry(DataFactory<?, ?, T, ?> factory, Image texture) {
+    public <T> T getGeometry(MeshDataFactory<T, ?> factory, Image texture) {
         return polylistParser.getGeometry(factory, texture);
     }
 }

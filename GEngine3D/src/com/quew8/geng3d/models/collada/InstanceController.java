@@ -1,16 +1,21 @@
-package com.quew8.geng3d.collada;
+package com.quew8.geng3d.models.collada;
+
+import com.quew8.geng.geometry.Image;
+import com.quew8.geng3d.models.DataFactory;
+import com.quew8.geng3d.models.collada.parser.ControllerParser;
 
 /**
  *
  * @author Quew8
- * @param <T>
  */
-public class InstanceController<T> extends AbstractNode<Void, T> {
+public class InstanceController extends AbstractNode {
     private final String name;
-    private final T skin;
+    private final Node[] joints;
+    private final ControllerParser skin;
     
-    public InstanceController(String name, T skin) {
+    public InstanceController(String name, Node[] joints, ControllerParser skin) {
         this.name = name;
+        this.joints = joints;
         this.skin = skin;
     }
     
@@ -18,9 +23,9 @@ public class InstanceController<T> extends AbstractNode<Void, T> {
     public String getName() {
         return name;
     }
-    
-    public T getSkin() {
-        return skin;
+
+    public <T> T getSkin(DataFactory<?, ?, ?, T> factory, Image texture) {
+        return skin.getSkin(joints, factory, texture);
     }
 
     @Override

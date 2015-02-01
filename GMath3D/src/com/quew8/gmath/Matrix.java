@@ -702,6 +702,16 @@ public class Matrix {
         return result;
     }
     
+    public static Vector2 times(Vector2 result, Matrix m, Vector2 v) {
+        return times(result, m.data, v);
+    }
+    
+    public static Vector2 times(Vector2 result, float[] m, Vector2 v) {
+        result.setX(( v.getX() * m[0] ) + ( v.getY() * m[4] ) + m[12]);
+        result.setY(( v.getX() * m[1] ) + ( v.getY() * m[5] ) + m[13]);
+        return result;
+    }
+    
     public static Vector timesRotation(Vector result, Matrix m, Vector v) {
         return timesRotation(result, m.data, v);
     }

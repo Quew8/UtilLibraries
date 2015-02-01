@@ -1,15 +1,18 @@
-package com.quew8.geng3d.collada;
+package com.quew8.geng3d.models.collada;
+
+import com.quew8.geng.geometry.Image;
+import com.quew8.geng3d.models.MeshDataFactory;
+import com.quew8.geng3d.models.collada.parser.GeometryParser;
 
 /**
  *
  * @author Quew8
- * @param <T>
  */
-public class InstanceGeometry<T> extends AbstractNode<T, Void> {
+public class InstanceGeometry extends AbstractNode {
     private final String name;
-    private final T geometry;
+    private final GeometryParser geometry;
     
-    public InstanceGeometry(String name, T geometry) {
+    public InstanceGeometry(String name, GeometryParser geometry) {
         this.name = name;
         this.geometry = geometry;
     }
@@ -18,9 +21,9 @@ public class InstanceGeometry<T> extends AbstractNode<T, Void> {
     public String getName() {
         return name;
     }
-    
-    public T getGeometry() {
-        return geometry;
+
+    public <T> T getGeometry(MeshDataFactory<T, ?> factory, Image texture) {
+        return geometry.getGeometry(factory, texture);
     }
 
     @Override

@@ -1,7 +1,7 @@
-package com.quew8.geng3d.collada.parser;
+package com.quew8.geng3d.models.collada.parser;
 
-import com.quew8.geng3d.collada.DataFactory;
-import com.quew8.geng3d.collada.Scene;
+import com.quew8.geng3d.models.DataFactory;
+import com.quew8.geng3d.models.collada.Scene;
 import com.quew8.geng.geometry.Image;
 import com.quew8.geng.xmlparser.XMLElementParser;
 import com.quew8.geng.xmlparser.XMLParseException;
@@ -58,8 +58,8 @@ public class ColladaParser extends XMLParser {
         return super.onParsingDone();
     }
     
-    public <T, S> Scene<T, S> getScene(DataFactory<?, ?, T, S> factory, Image texture) {
-        return scene.getScene(asset.getAsset(), factory, texture);
+    public Scene getScene() {
+        return scene.getScene(asset.getAsset());
     }
     
 }

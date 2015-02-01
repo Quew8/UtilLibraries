@@ -1,4 +1,4 @@
-package com.quew8.geng.rendering.modes.interfaces;
+package com.quew8.geng.rendering.modes;
 
 import com.quew8.geng.rendering.Particle;
 import com.quew8.geng.rendering.SpriteBatcher;

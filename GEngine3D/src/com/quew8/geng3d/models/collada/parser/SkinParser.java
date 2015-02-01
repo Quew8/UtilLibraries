@@ -1,8 +1,8 @@
-package com.quew8.geng3d.collada.parser;
+package com.quew8.geng3d.models.collada.parser;
 
-import com.quew8.geng3d.collada.ColladaSkeleton;
-import com.quew8.geng3d.collada.DataFactory;
-import com.quew8.geng3d.collada.Node;
+import com.quew8.geng3d.models.collada.ColladaSkeleton;
+import com.quew8.geng3d.models.DataFactory;
+import com.quew8.geng3d.models.collada.Node;
 import com.quew8.geng.geometry.Image;
 import com.quew8.geng.xmlparser.XMLAttributeParser;
 import com.quew8.geng.xmlparser.XMLElementParser;
@@ -16,7 +16,7 @@ import org.dom4j.Element;
  *
  * @author Quew8
  */
-class SkinParser extends XMLParser {
+public class SkinParser extends XMLParser {
     private static final String
             SOURCE = "source";
     private static final String
@@ -29,7 +29,7 @@ class SkinParser extends XMLParser {
     private JointsParser joints;
     private VertexWeightsParser vertexWeights;
     
-    public SkinParser() {
+    SkinParser() {
         super(false, true);
     }
     
@@ -77,7 +77,7 @@ class SkinParser extends XMLParser {
         return to;
     }
     
-    public <T> T getSkin(Node<Void, Void>[] nodes, DataFactory<?, ?, ?, T> factory, Image texture) {
+    public <T> T getSkin(Node[] nodes, DataFactory<?, ?, ?, T> factory, Image texture) {
         return factory.constructSkin(
                 geometry.getVertexData(), 
                 vertexWeights, 

@@ -1,6 +1,5 @@
 package com.quew8.geng.rendering;
 
-import com.quew8.geng.geometry.Plane;
 import com.quew8.gutils.Clock;
 
 /**

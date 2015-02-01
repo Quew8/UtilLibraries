@@ -5,11 +5,6 @@ package com.quew8.gutils;
  * @author Will
  */
 public class Colour {
-    private float red;
-    private float green;
-    private float blue;
-    private float alpha;
-    
     public static final Colour BLACK = new Colour(0f, 0f, 0f);
     public static final Colour WHITE = new Colour(1f, 1f, 1f);
     public static final Colour RED = new Colour(1f, 0f, 0f);
@@ -22,6 +17,11 @@ public class Colour {
     public static final Colour BROWN = new Colour(0.6f, 0.3f, 0.1f);
     public static final Colour PINK = new Colour(1f, 0.4f, 0.8f);
     public static final Colour ORANGE = new Colour(1f, 0.5f, 0f);
+    
+    private float red;
+    private float green;
+    private float blue;
+    private float alpha;
     
     /**
      * 
@@ -47,17 +47,21 @@ public class Colour {
         this(red, green, blue, 1);
     }
     
-    public Colour() {
-        this(1, 1, 1, 1);
-    }
-    
     /**
      * 
-     * @param color
+     * @param colour
      * @param alpha
      */
-    public Colour(Colour color, float alpha) {
-        this(color.getRed(), color.getGreen(), color.getBlue(), alpha);
+    public Colour(Colour colour, float alpha) {
+        this(colour.getRed(), colour.getGreen(), colour.getBlue(), alpha);
+    }
+    
+    public Colour(Colour colour) {
+        this(colour.getRed(), colour.getGreen(), colour.getBlue(), colour.getAlpha());
+    }
+    
+    public Colour() {
+        this(1, 1, 1, 1);
     }
     
     public float[] getRGB() {

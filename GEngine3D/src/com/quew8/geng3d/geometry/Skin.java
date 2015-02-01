@@ -1,4 +1,6 @@
-package com.quew8.geng.geometry;
+package com.quew8.geng3d.geometry;
+
+import com.quew8.geng.geometry.GeometricObject;
 
 /**
  *
@@ -7,22 +9,17 @@ package com.quew8.geng.geometry;
 public class Skin extends GeometricObject<Skin, WeightedVertex> {
     private final Skeleton skeleton;
     
-    public Skin(WeightedVertex[] vertices, int[] indices, Skeleton skeleton, Image texture) {
-        super(vertices, indices, texture);
-        this.skeleton = skeleton;
-    }
-    
-    private Skin(WeightedVertex[] vertices, int[] indices, Skeleton skeleton) {
-        super(vertices, indices);
+    public Skin(WeightedVertex[] vertices, int[] indices, int mode, Skeleton skeleton) {
+        super(vertices, indices, mode);
         this.skeleton = skeleton;
     }
 
     public Skeleton getSkeleton() {
         return skeleton;
     }
-    
+
     @Override
-    protected Skin construct(Skin old, WeightedVertex[] vertices, int[] indices) {
-        return new Skin(vertices, indices, old.skeleton);
+    protected Skin construct(Skin old, WeightedVertex[] vertices, int[] indices, int mode) {
+        return new Skin(vertices, indices, mode, old.skeleton);
     }
 }

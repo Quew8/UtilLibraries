@@ -9,27 +9,22 @@ import java.util.Arrays;
  * @param <T>
  * @param <S>
  */
-public abstract class GeometricObject<T extends GeometricObject<T, S>, S extends AbstractVertex<S>> {
+public abstract class GeometricObject<T extends GeometricObject<T, S>, S extends IVertex<S>> {
     private final S[] vertices;
     private final int[] indices;
+    private final int mode;
     
-    public GeometricObject(S[] vertices, int[] indices, Image texture) {
-        for(int i = 0; i < vertices.length; i++) {
-            vertices[i].transformTextureCoords(texture);
-        }
+    protected GeometricObject(S[] vertices, int[] indices, int mode) {
         this.vertices = vertices;
         this.indices = indices;
-    }
-    
-    protected GeometricObject(S[] vertices, int[] indices) {
-        this(vertices, indices, Image.WHOLE);
+        this.mode = mode;
     }
 
     public S[] getVertices() {
         return vertices;
     }
 
-    public int getVerticesLength() {
+    public int getNVertices() {
         return vertices.length;
     }
     
@@ -37,8 +32,12 @@ public abstract class GeometricObject<T extends GeometricObject<T, S>, S extends
         return indices;
     }
 
-    public int getIndicesLength() {
+    public int getNIndices() {
         return indices.length;
+    }
+    
+    public int getMode() {
+        return mode;
     }
     
     public int getMaxIndex() {
@@ -61,7 +60,7 @@ public abstract class GeometricObject<T extends GeometricObject<T, S>, S extends
                 i++;
             }
         }
-        return construct(self(), newVertices, cpyIndices);
+        return construct(self(), newVertices, cpyIndices, mode);
     }
     
     public T transform(Image img) {
@@ -70,7 +69,7 @@ public abstract class GeometricObject<T extends GeometricObject<T, S>, S extends
         for(int i = 0; i < newVertices.length; i++) {
             newVertices[i].transformTextureCoords(img);
         }
-        return construct(self(), newVertices, cpyIndices);
+        return construct(self(), newVertices, cpyIndices, mode);
     }
     
     @SuppressWarnings("unchecked")
@@ -78,5 +77,5 @@ public abstract class GeometricObject<T extends GeometricObject<T, S>, S extends
         return (T) this;
     }
     
-    protected abstract T construct(T old, S[] vertices, int[] indices);
+    protected abstract T construct(T old, S[] vertices, int[] indices, int mode);
 }

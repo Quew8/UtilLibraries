@@ -1,6 +1,6 @@
 package com.quew8.geng3d.rendering.modes;
 
-import com.quew8.geng.rendering.modes.interfaces.ParticleGenerator;
+import com.quew8.geng.rendering.modes.ParticleGenerator;
 import com.quew8.geng3d.rendering.Particle3D;
 import com.quew8.gmath.Vector;
 import com.quew8.gutils.Colour;
@@ -9,8 +9,9 @@ import java.util.function.Function;
 /**
  *
  * @author Quew8
+ * @param <T>
  */
-public class FunctionParticleGenerator implements ParticleGenerator<Particle3D> {
+public class FunctionParticleGenerator<T> implements ParticleGenerator<Particle3D<T>> {
     private final Function<Float, Vector> func;
     private final float size;
     private final int lifeSpan;

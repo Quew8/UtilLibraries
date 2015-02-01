@@ -1,6 +1,6 @@
-package com.quew8.geng3d.collada.parser;
+package com.quew8.geng3d.models.collada.parser;
 
-import com.quew8.geng3d.collada.Node;
+import com.quew8.geng3d.models.collada.Node;
 import com.quew8.geng.xmlparser.XMLParser;
 import org.dom4j.Element;
 
@@ -17,7 +17,7 @@ class SkeletonParser extends XMLParser {
         node = SkeletonParser.this.parseWith(element.getText(), new NodeParser(null));
     }
     
-    public Node<Void, Void> getJoint() {
+    public Node getJoint() {
         return node.getJoint();
     }
 }

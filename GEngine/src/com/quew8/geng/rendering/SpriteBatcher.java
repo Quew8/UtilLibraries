@@ -2,12 +2,11 @@ package com.quew8.geng.rendering;
 
 import com.quew8.geng.geometry.EmptyTexture;
 import com.quew8.geng.geometry.Texture;
+import com.quew8.geng.rendering.modes.FixedSizeDataInterpreter;
 import com.quew8.geng.rendering.modes.StaticRenderMode;
-import com.quew8.geng.rendering.modes.SpriteDataFactory;
-import com.quew8.geng.rendering.modes.SpriteIndexDataFactory;
 import com.quew8.gutils.BufferUtils;
-import com.quew8.gutils.debug.DebugLogger;
 import static com.quew8.gutils.opengl.OpenGL.*;
+import com.quew8.gutils.opengl.VertexArray;
 import com.quew8.gutils.opengl.VertexBuffer;
 
 /**
@@ -15,26 +14,29 @@ import com.quew8.gutils.opengl.VertexBuffer;
  * @author Quew8
  * @param <T>
  */
-public abstract class SpriteBatcher<T extends SpriteDataFactory> {
+public abstract class SpriteBatcher<T> {
     //public static SpriteBatcher<?> DEBUG;
     private final Texture tex;
     private final StaticRenderMode renderMode;
-    private final SpriteBatcherData data;
-    private SpriteIndexDataFactory indexFactory;
+    private final FixedSizeDataInterpreter<T, ?>  dataInterpreter;
+    //private SpriteIndexDataFactory indexFactory;
+    private final VertexArray va;
     private final VertexBuffer ibo;
+    private final int maxN;
     private int n = 0;
     
-    public SpriteBatcher(Texture tex, StaticRenderMode renderMode, SpriteBatcherData<T> data, SpriteIndexDataFactory indexFactory) {
-        if(indexFactory.getRequiredVerticesPerSprite() != data.getNVerticesPerSprite()) {
+    public SpriteBatcher(Texture tex, StaticRenderMode renderMode, FixedSizeDataInterpreter<T, ?>  dataInterpreter, int maxN) {
+        /*if(indexFactory.getRequiredVerticesPerSprite() != data.getNVerticesPerSprite()) {
             throw new IllegalArgumentException("Number of required vertices in indexFactory doesn't match number in data");
-        }
+        }*/
         this.tex = tex != null ? tex : EmptyTexture.INSTANCE;
         this.renderMode = renderMode;
-        this.data = data;
-        this.indexFactory = indexFactory;
-        int[] indices = new int[data.getNBatchable() * indexFactory.getIndicesPerSprite()];
-        int[] perSpriteIndices = indexFactory.getIndices();
-        for(int i = 0, j = 0; i < indices.length; j += data.getNVerticesPerSprite()) {
+        this.dataInterpreter = dataInterpreter;
+        this.va = new VertexArray(BufferUtils.createByteBuffer(maxN * dataInterpreter.getNBytes()));
+        this.maxN = maxN;
+        int[] perSpriteIndices = dataInterpreter.getIndices();
+        int[] indices = new int[maxN * perSpriteIndices.length];
+        for(int i = 0, j = 0; i < indices.length; j += dataInterpreter.getNVertices()) {
             for(int k = 0; k < perSpriteIndices.length; k++) {
                 indices[i++] = j + perSpriteIndices[k];
             }
@@ -52,24 +54,21 @@ public abstract class SpriteBatcher<T extends SpriteDataFactory> {
         ibo.bind();
     }
     
-    protected void predraw() {
-        if(n >= data.getNBatchable()) {
+    protected void batch(T t) {
+        if(n >= maxN) {
             flush();
         }
+        dataInterpreter.addVertexData(va.getBuffer(), t);
         n++;
-    }
-    
-    protected SpriteBatcherData.Attribute<T>[] getAllAttribs() {
-        return data.getAllAttribs();
     }
     
     public void flush() {
         /*if(this == DEBUG) {
             DebugLogger.broadcast("BEGGINING DEBUG SPRITEBATCHER---------------------");
         }*/
-        data.rewindAllBuffers();
-        renderMode.onPreRendering(data.getVertexData());
-        glDrawElements(indexFactory.getMode(), n * indexFactory.getIndicesPerSprite(), GL_UNSIGNED_INT, 0);
+        va.getBuffer().rewind();
+        renderMode.onPreRendering(va);
+        glDrawElements(dataInterpreter.getMode(), n * dataInterpreter.getNIndices(), GL_UNSIGNED_INT, 0);
         renderMode.onPostRendering();
         n = 0;
         /*if(this == DEBUG) {

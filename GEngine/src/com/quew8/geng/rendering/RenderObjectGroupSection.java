@@ -13,7 +13,7 @@ abstract class RenderObjectGroupSection<T, S> {
     protected final T[] handles;
     protected RenderObjGroup<?> outer;
 
-    public RenderObjectGroupSection(S instanceRenderMode, Texture tex, T[] handles) {
+    RenderObjectGroupSection(S instanceRenderMode, Texture tex, T[] handles) {
         this.instanceRenderMode = instanceRenderMode;
         this.tex = tex;
         this.handles = handles;

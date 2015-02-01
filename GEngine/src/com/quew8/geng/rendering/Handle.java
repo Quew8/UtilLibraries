@@ -12,7 +12,7 @@ abstract class Handle {
     private final int start;
     private final int end;
 
-    public Handle(int start, int end) {
+    Handle(int start, int end) {
         this.start = start;
         this.end = end;
     }

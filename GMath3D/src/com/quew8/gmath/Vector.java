@@ -1,12 +1,12 @@
 package com.quew8.gmath;
 
 public class Vector {
-    private float x, y, z;
-	
     public static final byte 
             NORMALIZE_BIT = 1,
             ABSOLUTE_BIT = 2,
             NEGATE_BIT = 4;
+    
+    private float x, y, z;
 			
     public Vector(float x, float y, float z, byte op) {
         this.x = x;
@@ -35,6 +35,14 @@ public class Vector {
 	
     public Vector(Vector v) {
         this(v.x, v.y, v.z);
+    }
+	
+    public Vector(Vector2 v, byte op) {
+        this(v.getX(), v.getY(), 0, op);
+    }
+	
+    public Vector(Vector2 v) {
+        this(v.getX(), v.getY(), 0);
     }
 	
     public Vector() {

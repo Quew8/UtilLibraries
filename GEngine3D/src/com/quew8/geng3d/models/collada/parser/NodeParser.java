@@ -1,10 +1,8 @@
-package com.quew8.geng3d.collada.parser;
+package com.quew8.geng3d.models.collada.parser;
 
-import com.quew8.geng3d.collada.DataFactory;
-import com.quew8.geng3d.collada.InstanceController;
-import com.quew8.geng3d.collada.InstanceGeometry;
-import com.quew8.geng3d.collada.Node;
-import com.quew8.geng.geometry.Image;
+import com.quew8.geng3d.models.collada.InstanceController;
+import com.quew8.geng3d.models.collada.InstanceGeometry;
+import com.quew8.geng3d.models.collada.Node;
 import com.quew8.geng.xmlparser.XMLAttributeParser;
 import com.quew8.geng.xmlparser.XMLElementParser;
 import com.quew8.geng.xmlparser.XMLParser;
@@ -12,7 +10,6 @@ import com.quew8.gmath.GMath;
 import com.quew8.gmath.Matrix;
 import com.quew8.gmath.Vector;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import org.dom4j.Attribute;
 import org.dom4j.Element;
@@ -157,16 +154,15 @@ class NodeParser extends XMLParser {
         return to;
     }
     
-    @SuppressWarnings("unchecked")
-    public Node<Void, Void> getJoint() {
+    public Node getJoint() {
         if(!type.matches("JOINT")) {
             throw new RuntimeException("Node is not a joint");
         }
-        Node<Void, Void>[] children = getArray(nodes.size());
+        Node[] children = new Node[nodes.size()];
         for(int i = 0; i < children.length; i++) {
             children[i] = nodes.get(i).getJoint();
         }
-        return new Node<Void, Void>(
+        return new Node(
                 name,
                 sid,
                 Node.Type.JOINT, 
@@ -175,21 +171,20 @@ class NodeParser extends XMLParser {
         );
     }
     
-    @SuppressWarnings("unchecked")
-    public <T, S> Node<T, S> getNode(DataFactory<?, ?, T, S> factory, Image texture) {
-        Node<T, S>[] children = getArray(nodes.size());
+    public Node getNode() {
+        Node[] children = new Node[nodes.size()];
         for(int i = 0; i < children.length; i++) {
-            children[i] = nodes.get(i).getNode(factory, texture);
+            children[i] = nodes.get(i).getNode();
         }
-        InstanceGeometry<T>[] childrenGeometry = getArray(geometry.size());
+        InstanceGeometry[] childrenGeometry = new InstanceGeometry[geometry.size()];
         for(int i = 0; i < childrenGeometry.length; i++) {
-            childrenGeometry[i] = geometry.get(i).getGeometry(factory, texture);
+            childrenGeometry[i] = geometry.get(i).getGeometry();
         }
-        InstanceController<S>[] childrenControllers = getArray(controllers.size());
+        InstanceController[] childrenControllers = new InstanceController[controllers.size()];
         for(int i = 0; i < childrenControllers.length; i++) {
-            childrenControllers[i] = controllers.get(i).getInstanceController(factory, texture);
+            childrenControllers[i] = controllers.get(i).getInstanceController();
         }
-        return new Node<T, S>(
+        return new Node(
                 name,
                 sid,
                 Node.Type.valueOf(type),
@@ -198,10 +193,5 @@ class NodeParser extends XMLParser {
                 childrenGeometry,
                 childrenControllers
         );
-    }
-    
-    @SuppressWarnings("unchecked")
-    private static <T> T[] getArray(int length, T... array) {
-        return Arrays.copyOf(array, length);
     }
 }

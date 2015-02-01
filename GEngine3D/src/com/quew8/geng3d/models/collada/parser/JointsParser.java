@@ -1,8 +1,8 @@
-package com.quew8.geng3d.collada.parser;
+package com.quew8.geng3d.models.collada.parser;
 
-import com.quew8.geng3d.collada.ColladaJoint;
-import com.quew8.geng3d.collada.Node;
-import com.quew8.geng3d.collada.Semantic;
+import com.quew8.geng3d.models.collada.ColladaJoint;
+import com.quew8.geng3d.models.collada.Node;
+import com.quew8.geng3d.models.Semantic;
 import com.quew8.geng.xmlparser.XMLElementParser;
 import com.quew8.geng.xmlparser.XMLParser;
 import com.quew8.gmath.Matrix;
@@ -39,7 +39,7 @@ class JointsParser extends XMLParser {
         return to;
     }
     
-    public ColladaJoint[] getJoints(Node<Void, Void>[] nodes) {
+    public ColladaJoint[] getJoints(Node[] nodes) {
         String[] names = new String[jointInput.getCount()];
         jointInput.getSource().putData(names, 0, names.length);
         Matrix[] ibms = new Matrix[matrixInput.getCount()];
@@ -51,7 +51,7 @@ class JointsParser extends XMLParser {
         return getJoints(nodes, sidToMatrix);
     }
     
-    private ColladaJoint[] getJoints(Node<Void, Void>[] nodes, HashMap<String, Matrix> sidToMatrix) {
+    private ColladaJoint[] getJoints(Node[] nodes, HashMap<String, Matrix> sidToMatrix) {
         ColladaJoint[] joints = new ColladaJoint[nodes.length];
         for(int i = 0; i < nodes.length; i++) {
             joints[i] = new ColladaJoint(

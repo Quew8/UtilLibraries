@@ -10,7 +10,7 @@ import com.quew8.gutils.opengl.VertexData;
  */
 class DynamicRenderObjSection<T> extends RenderObjectGroupSection<DynamicHandleList<T>.DynamicHandle, DynamicRenderMode<T>> {
     
-    public DynamicRenderObjSection(DynamicRenderMode<T> instanceRenderMode, Texture image, DynamicHandleList<T>.DynamicHandle[] handles) {
+    DynamicRenderObjSection(DynamicRenderMode<T> instanceRenderMode, Texture image, DynamicHandleList<T>.DynamicHandle[] handles) {
         super(instanceRenderMode, image, handles);
     }
 

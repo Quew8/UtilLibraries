@@ -1,14 +1,13 @@
-package com.quew8.geng3d.rendering.modes.interfaces;
+package com.quew8.geng3d.geometry;
 
-import com.quew8.geng.rendering.modes.interfaces.DataFactory;
 import com.quew8.gutils.Colour;
-import java.nio.ByteBuffer;
 
 /**
  *
  * @author Quew8
+ * @param <T>
  */
-public interface DataFactory1D extends DataFactory {
-    public void addData(ByteBuffer to, Colour colour, float x, float y, float z, float width, float height, float depth);
-    public void addData(ByteBuffer to, float x, float y, float z, float width, float height, float depth);
+public interface DataFactory1D<T> {
+    public T construct(Colour colour, float x, float y, float z, float width, float height, float depth);
+    public T construct(float x, float y, float z, float width, float height, float depth);
 }

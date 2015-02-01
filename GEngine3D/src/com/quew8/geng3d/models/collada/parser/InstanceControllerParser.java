@@ -1,10 +1,7 @@
-package com.quew8.geng3d.collada.parser;
+package com.quew8.geng3d.models.collada.parser;
 
-import com.quew8.geng3d.collada.ColladaSkeleton;
-import com.quew8.geng3d.collada.DataFactory;
-import com.quew8.geng3d.collada.InstanceController;
-import com.quew8.geng3d.collada.Node;
-import com.quew8.geng.geometry.Image;
+import com.quew8.geng3d.models.collada.InstanceController;
+import com.quew8.geng3d.models.collada.Node;
 import com.quew8.geng.xmlparser.XMLAttributeParser;
 import com.quew8.geng.xmlparser.XMLElementParser;
 import com.quew8.geng.xmlparser.XMLParser;
@@ -65,15 +62,15 @@ class InstanceControllerParser extends XMLParser {
         return to;
     }
     
-    @SuppressWarnings("unchecked")
-    public <T> InstanceController<T> getInstanceController(DataFactory<?, ?, ?, T> factory, Image texture) {
-        Node<Void, Void>[] joints = getArray(skeletons.size());
+    public InstanceController getInstanceController() {
+        Node[] joints = getArray(skeletons.size());
         for(int i = 0; i < joints.length; i++) {
             joints[i] = skeletons.get(i).getJoint();
         }
-        return new InstanceController<T>(
+        return new InstanceController(
                 controller.getName(),
-                controller.getSkin(joints, factory, texture)
+                joints,
+                controller
         );
     }
     

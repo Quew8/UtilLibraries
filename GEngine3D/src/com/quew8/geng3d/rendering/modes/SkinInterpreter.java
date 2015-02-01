@@ -1,38 +1,41 @@
-package com.quew8.geng.rendering.modes;
+package com.quew8.geng3d.rendering.modes;
 
-import com.quew8.geng.geometry.Skin;
-import com.quew8.geng.geometry.WeightedVertex;
-import com.quew8.gutils.BufferUtils;
-import java.nio.ByteBuffer;
+import com.quew8.geng.geometry.Param;
+import com.quew8.geng.rendering.modes.GeometricObjectInterpreter;
+import com.quew8.geng3d.geometry.Skin;
+import com.quew8.geng3d.geometry.WeightedVertex;
 
 /**
  *
  * @author Quew8
  */
 public class SkinInterpreter extends GeometricObjectInterpreter<Skin, WeightedVertex> {
-    public static SkinInterpreter INSTANCE = new SkinInterpreter();
+    public static SkinInterpreter 
+            NORMAL_TEXTURED_4W_INSTANCE = new SkinInterpreter(
+                    Param.POS_X, Param.POS_Y, Param.POS_Z, 
+                    Param.NORMAL_X, Param.NORMAL_Y, Param.NORMAL_Z,
+                    Param.TEX_U, Param.TEX_V,
+                    Param.WEIGHT_0, Param.WEIGHT_1, Param.WEIGHT_2, Param.WEIGHT_3
+            ),
+            NORMAL_COLOUR_4W_INSTANCE = new SkinInterpreter(
+                    Param.POS_X, Param.POS_Y, Param.POS_Z, 
+                    Param.NORMAL_X, Param.NORMAL_Y, Param.NORMAL_Z,
+                    Param.COLOUR_R, Param.COLOUR_G, Param.COLOUR_B, Param.COLOUR_A,
+                    Param.WEIGHT_0, Param.WEIGHT_1, Param.WEIGHT_2, Param.WEIGHT_3
+            ),
+            TEXTURED_4W_INSTANCE = new SkinInterpreter(
+                    Param.POS_X, Param.POS_Y, Param.POS_Z,
+                    Param.TEX_U, Param.TEX_V,
+                    Param.WEIGHT_0, Param.WEIGHT_1, Param.WEIGHT_2, Param.WEIGHT_3
+            ),
+            COLOUR_4W_INSTANCE = new SkinInterpreter(
+                    Param.POS_X, Param.POS_Y, Param.POS_Z,
+                    Param.COLOUR_R, Param.COLOUR_G, Param.COLOUR_B, Param.COLOUR_A,
+                    Param.WEIGHT_0, Param.WEIGHT_1, Param.WEIGHT_2, Param.WEIGHT_3
+            );
     
-    private SkinInterpreter() {
-        
-    }
-    
-    @Override
-    public ByteBuffer toVertexData(Skin[] skins) {
-        int length = 0;
-        WeightedVertex[][] vertices = new WeightedVertex[skins.length][];
-        for(int i = 0; i < vertices.length; i++) {
-            vertices[i] = skins[i].getVertices();
-            length += skins[i].getVerticesLength();
-        }
-        length *= WeightedVertex.WEIGHTED_VERTEX_BYTE_SIZE;
-        ByteBuffer bb = BufferUtils.createByteBuffer(length);
-        for(int i = 0; i < vertices.length; i++) {
-            for(int j = 0; j < vertices[i].length; j++) {
-                vertices[i][j].appendData(bb);
-            }
-        }
-        bb.flip();
-        return bb;
+    public SkinInterpreter(Param... params) {
+        super(params);
     }
     
 }

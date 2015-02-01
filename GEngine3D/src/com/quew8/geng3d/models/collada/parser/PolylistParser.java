@@ -1,13 +1,14 @@
-package com.quew8.geng3d.collada.parser;
+package com.quew8.geng3d.models.collada.parser;
 
-import com.quew8.geng3d.collada.DataFactory;
-import com.quew8.geng3d.collada.DataInput;
-import com.quew8.geng3d.collada.SemanticSet;
+import com.quew8.geng3d.models.DataFactory;
+import com.quew8.geng3d.models.DataInput;
+import com.quew8.geng3d.models.SemanticSet;
 import com.quew8.geng.geometry.Image;
 import com.quew8.geng.xmlparser.XMLAttributeParser;
 import com.quew8.geng.xmlparser.XMLElementParser;
 import com.quew8.geng.xmlparser.XMLIntAttributeParser;
 import com.quew8.geng.xmlparser.XMLParser;
+import com.quew8.geng3d.models.MeshDataFactory;
 import com.quew8.gmath.Matrix;
 import com.quew8.gutils.ArrayUtils;
 import java.util.ArrayList;
@@ -147,7 +148,7 @@ class PolylistParser extends XMLParser implements DataInput {
         }
     }
     
-    public <T> T getGeometry(DataFactory<?, ?, T, ?> factory, Image texture) {
+    public <T> T getGeometry(MeshDataFactory<T, ?> factory, Image texture) {
         return factory.constructMesh(this, texture);
     }
 }

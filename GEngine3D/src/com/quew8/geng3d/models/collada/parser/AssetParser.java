@@ -1,4 +1,4 @@
-package com.quew8.geng3d.collada.parser;
+package com.quew8.geng3d.models.collada.parser;
 
 import com.quew8.geng.xmlparser.XMLAttributeParser;
 import com.quew8.geng.xmlparser.XMLElementParser;
@@ -6,10 +6,10 @@ import com.quew8.geng.xmlparser.XMLFloatAttributeParser;
 import com.quew8.geng.xmlparser.XMLParseException;
 import com.quew8.geng.xmlparser.XMLParser;
 import com.quew8.geng.xmlparser.XMLTextParser;
-import com.quew8.geng3d.collada.Asset;
-import com.quew8.geng3d.collada.Asset.Contributor;
-import com.quew8.geng3d.collada.Asset.Unit;
-import com.quew8.geng3d.collada.Asset.UpAxis;
+import com.quew8.geng3d.models.collada.Asset;
+import com.quew8.geng3d.models.collada.Asset.Contributor;
+import com.quew8.geng3d.models.collada.Asset.Unit;
+import com.quew8.geng3d.models.collada.Asset.UpAxis;
 import java.util.ArrayList;
 import java.util.HashMap;
 import org.dom4j.Attribute;

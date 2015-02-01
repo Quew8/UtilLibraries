@@ -1,6 +1,7 @@
-package com.quew8.geng3d.collada;
+package com.quew8.geng3d.models;
 
 import com.quew8.geng.geometry.Image;
+import com.quew8.geng3d.models.collada.ColladaSkeleton;
 import com.quew8.gmath.Matrix;
 import com.quew8.gutils.ArrayUtils;
 import java.util.ArrayList;

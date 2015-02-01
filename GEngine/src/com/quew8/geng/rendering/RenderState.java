@@ -6,7 +6,6 @@ import com.quew8.gmath.Matrix;
 import com.quew8.gutils.ArrayUtils;
 import com.quew8.gutils.BufferUtils;
 import static com.quew8.gutils.opengl.OpenGL.GL_ARRAY_BUFFER;
-import static com.quew8.gutils.opengl.OpenGL.GL_ELEMENT_ARRAY_BUFFER;
 import com.quew8.gutils.opengl.VertexBuffer;
 import com.quew8.gutils.opengl.shaders.ShaderUtils;
 import java.nio.FloatBuffer;
@@ -16,15 +15,16 @@ import java.nio.FloatBuffer;
  * @author Quew8
  */
 public class RenderState {
-    private static final FloatBuffer matrixFB;
-    private static final FloatBuffer idMatrixFB;
-    private static final FloatBuffer modelMatrixFB;
-    private static final FloatBuffer projectionMatrixFB;
-    private static boolean immediateMode = false;
-    private static StaticRenderMode currentRenderMode = new StaticDoNothingRenderMode();
-    private static DynamicRenderMode<?> currentDynamicRenderMode = new DynamicDoNothingRenderMode();
-    
-    static {
+    private static RenderState CURRENT_RENDER_STATE = new RenderState();
+    private final FloatBuffer matrixFB;
+    private final FloatBuffer idMatrixFB;
+    private final FloatBuffer modelMatrixFB;
+    private final FloatBuffer projectionMatrixFB;
+    private boolean immediateMode = false;
+    private StaticRenderMode currentRenderMode = new StaticDoNothingRenderMode();
+    private DynamicRenderMode<?> currentDynamicRenderMode = new DynamicDoNothingRenderMode();
+
+    public RenderState() {
         idMatrixFB = BufferUtils.createFloatBuffer(16);
         new Matrix().putIn(idMatrixFB);
         matrixFB = BufferUtils.createFloatBuffer(16);
@@ -32,75 +32,75 @@ public class RenderState {
         projectionMatrixFB = BufferUtils.createFloatBuffer(16);
         new Matrix().putIn(projectionMatrixFB);
     }
-
-    private RenderState() {
-        
+    
+    public void makeCurrent() {
+        RenderState.CURRENT_RENDER_STATE = this;
     }
     
-    public static void setRenderMode(boolean immediateMode, StaticRenderMode renderMode) {
-        if(immediateMode && !RenderState.immediateMode) {
+    private void instanceSetRenderMode(boolean immediateMode, StaticRenderMode renderMode) {
+        if(immediateMode && !this.immediateMode) {
             VertexBuffer.unbind(GL_ARRAY_BUFFER);
         }
-        RenderState.immediateMode = immediateMode;
+        this.immediateMode = immediateMode;
         setCurrentStaticRenderMode(renderMode);
         currentRenderMode.updateProjectionMatrix(projectionMatrixFB);
     }
 
-    public static void setRenderMode(DynamicRenderMode<?> renderMode) {
-        RenderState.immediateMode = false;
+    private void instanceSetRenderMode(DynamicRenderMode<?> renderMode) {
+        this.immediateMode = false;
         setCurrentDynamicRenderMode(renderMode);
         currentRenderMode.updateProjectionMatrix(projectionMatrixFB);
     }
     
-    public static void setModelMatrixIdentity() {
+    private void instanceSetModelMatrixIdentity() {
         currentDynamicRenderMode.updateModelMatrix(idMatrixFB);
     }
     
-    public static void setModelMatrix(Matrix matrix) {
+    private void instanceSetModelMatrix(Matrix matrix) {
         matrix.putIn(modelMatrixFB);
         currentDynamicRenderMode.updateModelMatrix(modelMatrixFB);
     }
     
-    public static FloatBuffer getIdentityMatrix() {
+    public FloatBuffer getIdentityMatrix() {
         return idMatrixFB;
     }
     
-    public static FloatBuffer getMatrix() {
+    public FloatBuffer getMatrix() {
         return matrixFB;
     }
     
-    public static void setNextProjectionMatrix(Matrix matrix) {
+    private void instanceSetNextProjectionMatrix(Matrix matrix) {
         matrix.putIn(projectionMatrixFB);
     }
     
-    public static void setProjectionMatrix(Matrix matrix) {
-        setNextProjectionMatrix(matrix);
+    private void instanceSetProjectionMatrix(Matrix matrix) {
+        instanceSetNextProjectionMatrix(matrix);
         currentRenderMode.updateProjectionMatrix(projectionMatrixFB);
     }
     
-    private static void setCurrentStaticRenderMode(StaticRenderMode renderMode) {
-        RenderState.currentRenderMode.onMadeNonCurrent();
+    private void setCurrentStaticRenderMode(StaticRenderMode renderMode) {
+        this.currentRenderMode.onMadeNonCurrent();
         setCurrentAttribs(renderMode);
-        RenderState.currentRenderMode = renderMode;
-        RenderState.currentRenderMode.onMadeCurrent();
+        this.currentRenderMode = renderMode;
+        this.currentRenderMode.onMadeCurrent();
     }
     
-    private static void setCurrentDynamicRenderMode(DynamicRenderMode<?> renderMode) {
-        RenderState.currentRenderMode.onMadeNonCurrent();
+    private void setCurrentDynamicRenderMode(DynamicRenderMode<?> renderMode) {
+        this.currentRenderMode.onMadeNonCurrent();
         setCurrentAttribs(renderMode);
-        RenderState.currentRenderMode = renderMode;
-        RenderState.currentDynamicRenderMode = renderMode;
-        RenderState.currentRenderMode.onMadeCurrent();
+        this.currentRenderMode = renderMode;
+        this.currentDynamicRenderMode = renderMode;
+        this.currentRenderMode.onMadeCurrent();
     }
     
-    private static void setCurrentAttribs(StaticRenderMode renderMode) {
-        if(renderMode.getNAttribs() != RenderState.currentRenderMode.getNAttribs()) {
-            if(renderMode.getNAttribs() < RenderState.currentRenderMode.getNAttribs()) {
+    private void setCurrentAttribs(StaticRenderMode renderMode) {
+        if(renderMode.getNAttribs() != this.currentRenderMode.getNAttribs()) {
+            if(renderMode.getNAttribs() < this.currentRenderMode.getNAttribs()) {
                 ShaderUtils.setAttribIndicesEnabled(
                         false, 
                         ArrayUtils.list(
                                 renderMode.getNAttribs(),
-                                RenderState.currentRenderMode.getNAttribs(),
+                                this.currentRenderMode.getNAttribs(),
                                 1
                         )
                 );
@@ -108,13 +108,37 @@ public class RenderState {
                 ShaderUtils.setAttribIndicesEnabled(
                         true, 
                         ArrayUtils.list(
-                                RenderState.currentRenderMode.getNAttribs(),
+                                this.currentRenderMode.getNAttribs(),
                                 renderMode.getNAttribs(),
                                 1
                         )
                 );
             }
         } 
+    }
+    
+    public static void setRenderMode(boolean immediateMode, StaticRenderMode renderMode) {
+        CURRENT_RENDER_STATE.instanceSetRenderMode(immediateMode, renderMode);
+    }
+
+    public static void setRenderMode(DynamicRenderMode<?> renderMode) {
+        CURRENT_RENDER_STATE.instanceSetRenderMode(renderMode);
+    }
+    
+    public static void setModelMatrixIdentity() {
+        CURRENT_RENDER_STATE.instanceSetModelMatrixIdentity();
+    }
+    
+    public static void setModelMatrix(Matrix matrix) {
+        CURRENT_RENDER_STATE.instanceSetModelMatrix(matrix);
+    }
+    
+    public static void setNextProjectionMatrix(Matrix matrix) {
+        CURRENT_RENDER_STATE.instanceSetNextProjectionMatrix(matrix);
+    }
+    
+    public static void setProjectionMatrix(Matrix matrix) {
+        CURRENT_RENDER_STATE.instanceSetProjectionMatrix(matrix);
     }
     
     private static class StaticDoNothingRenderMode extends StaticRenderMode {

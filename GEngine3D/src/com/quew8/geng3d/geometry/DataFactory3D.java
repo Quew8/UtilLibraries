@@ -1,8 +1,8 @@
-package com.quew8.geng3d.rendering.modes.interfaces;
+package com.quew8.geng3d.geometry;
 
 import com.quew8.geng.geometry.Image;
-import com.quew8.geng.geometry.Plane;
-import com.quew8.geng.rendering.modes.interfaces.DataFactory;
+import com.quew8.geng3d.geometry.Plane;
+import com.quew8.geng.rendering.modes.DataFactory;
 import com.quew8.gutils.Colour;
 import java.nio.ByteBuffer;
 

@@ -1197,24 +1197,7 @@ public class DebugBackend<T extends LoadedImage> extends PlatformBackend<T> {
     }
 
     private static String toString(FloatBuffer fb) {
-        String s = "FB{pos = " + fb.position() + ", lim = " + fb.limit() + ", cap = " + fb.capacity() + "}[";
-        if(maximumViewableBufferLength > 0) {
-            if(fb.limit() > 0) {
-                s += fb.get(0);
-                for (int i = 1; i < fb.limit(); i++) {
-                    if(i >= maximumViewableBufferLength) {
-                        s += "...";
-                        break;
-                    } else {
-                        s += ", " + fb.get(i);
-                    }
-                }
-            }
-        } else {
-            s += "...";
-        }
-        s += "]";
-        return s;
+        return BufferUtils.toString(fb, maximumViewableBufferLength);
     }
 
     private static String toString(IntBuffer ib) {
@@ -1222,45 +1205,11 @@ public class DebugBackend<T extends LoadedImage> extends PlatformBackend<T> {
     }
     
     private static String toString(IntBuffer ib, boolean b) {
-        String s = "IB{pos = " + ib.position() + ", lim = " + ib.limit() + ", cap = " + ib.capacity() + "}[";
-        if(maximumViewableBufferLength > 0) {
-            if(ib.limit() > 0) {
-                s += ib.get(0);
-                for (int i = 1; i < ib.limit(); i++) {
-                    if(i >= maximumViewableBufferLength) {
-                        s += "...";
-                        break;
-                    } else {
-                        s += ", " + ib.get(i);
-                    }
-                }
-            }
-        } else {
-            s += "...";
-        }
-        s += "]";
-        return s;
+        return BufferUtils.toString(ib, b, maximumViewableBufferLength);
     }
 
     private static String toString(ByteBuffer bb) {
-        String s = "BB{pos = " + bb.position() + ", lim = " + bb.limit() + ", cap = " + bb.capacity() + "}[";
-        if(maximumViewableBufferLength > 0) {
-            if(bb.limit() > 0) {
-                s += bb.get(0);
-                for (int i = 1; i < bb.limit(); i++) {
-                    if(i >= maximumViewableBufferLength) {
-                        s += "...";
-                        break;
-                    } else {
-                        s += ", " + bb.get(i);
-                    }
-                }
-            }
-        } else {
-            s += "...";
-        }
-        s += "]";
-        return s;
+        return BufferUtils.toString(bb, maximumViewableBufferLength);
     }
 
     public static <T extends LoadedImage> DebugBackend<?> getDebugBackend(PlatformBackend<T> impl) {

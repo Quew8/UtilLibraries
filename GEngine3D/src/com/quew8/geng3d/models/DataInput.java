@@ -1,4 +1,4 @@
-package com.quew8.geng3d.collada;
+package com.quew8.geng3d.models;
 
 import com.quew8.gmath.Matrix;
 

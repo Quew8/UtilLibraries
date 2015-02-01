@@ -1,15 +1,13 @@
-package com.quew8.geng3d.collada;
+package com.quew8.geng3d.models.collada;
 
 /**
  *
  * @author Quew8
- * @param <T>
- * @param <S>
  */
-public class InstanceVisualScene<T, S> extends AbstractNode<T, S> {
+public class InstanceVisualScene extends AbstractNode {
     private final String name;
 
-    public InstanceVisualScene(String name, Node<T, S>[] nodes) {
+    public InstanceVisualScene(String name, Node[] nodes) {
         super(nodes);
         this.name = name;
     }
@@ -31,38 +29,38 @@ public class InstanceVisualScene<T, S> extends AbstractNode<T, S> {
     }
     
     @Override
-    public AbstractNode<T, S>[] findAllNodes(String name) {
+    public AbstractNode[] findAllNodes(String name) {
         if(name.startsWith("#")) {
             return new AbstractNode[]{getNode(name.substring(1))};
         }
         return super.findAllNodes(name);
     }
     
-    public InstanceController<S> findController(String name) {
-        AbstractNode<T, S>[] matched = findAllNodes(name);
-        for(AbstractNode<T, S> node: matched) {
+    public InstanceController findController(String name) {
+        AbstractNode[] matched = findAllNodes(name);
+        for(AbstractNode node: matched) {
             if(node instanceof InstanceController) {
-                return (InstanceController<S>) node;
+                return (InstanceController) node;
             }
         }
         throw new RuntimeException("No controller found with name: " + name);
     }
     
-    public InstanceGeometry<T> findGeometry(String name) {
-        AbstractNode<T, S>[] matched = findAllNodes(name);
-        for(AbstractNode<T, S> node: matched) {
+    public InstanceGeometry findGeometry(String name) {
+        AbstractNode[] matched = findAllNodes(name);
+        for(AbstractNode node: matched) {
             if(node instanceof InstanceGeometry) {
-                return (InstanceGeometry<T>) node;
+                return (InstanceGeometry) node;
             }
         }
         throw new RuntimeException("No controller found with name: " + name);
     }
     
-    public InstanceController<S> getController(String path) {
-        return (InstanceController<S>) getNode(path);
+    public InstanceController getController(String path) {
+        return (InstanceController) getNode(path);
     }
     
-    public InstanceGeometry<T> getGeometry(String path) {
-        return (InstanceGeometry<T>) getNode(path);
+    public InstanceGeometry getGeometry(String path) {
+        return (InstanceGeometry) getNode(path);
     }
 }

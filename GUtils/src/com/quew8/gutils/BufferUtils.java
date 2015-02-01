@@ -106,4 +106,79 @@ public class BufferUtils {
         fb.flip();
         return fb;
     }
+    
+    public static String toString(FloatBuffer fb) {
+        return toString(fb, 10);
+    }
+
+    public static String toString(FloatBuffer fb, int maxViewableLength) {
+        String s = "FB{pos = " + fb.position() + ", lim = " + fb.limit() + ", cap = " + fb.capacity() + "}[";
+        if(maxViewableLength > 0) {
+            if(fb.limit() > 0) {
+                s += fb.get(0);
+                for (int i = 1; i < fb.limit(); i++) {
+                    if(i >= maxViewableLength) {
+                        s += "...";
+                        break;
+                    } else {
+                        s += ", " + fb.get(i);
+                    }
+                }
+            }
+        } else {
+            s += "...";
+        }
+        s += "]";
+        return s;
+    }
+
+    public static String toString(IntBuffer ib) {
+        return toString(ib, false, 20);
+    }
+    
+    public static String toString(IntBuffer ib, boolean b, int maxViewableLength) {
+        String s = "IB{pos = " + ib.position() + ", lim = " + ib.limit() + ", cap = " + ib.capacity() + "}[";
+        if(maxViewableLength > 0) {
+            if(ib.limit() > 0) {
+                s += ib.get(0);
+                for (int i = 1; i < ib.limit(); i++) {
+                    if(i >= maxViewableLength) {
+                        s += "...";
+                        break;
+                    } else {
+                        s += ", " + ib.get(i);
+                    }
+                }
+            }
+        } else {
+            s += "...";
+        }
+        s += "]";
+        return s;
+    }
+    
+    public static String toString(ByteBuffer bb) {
+        return toString(bb, 20);
+    }
+
+    public static String toString(ByteBuffer bb, int maxViewableLength) {
+        String s = "BB{pos = " + bb.position() + ", lim = " + bb.limit() + ", cap = " + bb.capacity() + "}[";
+        if(maxViewableLength > 0) {
+            if(bb.limit() > 0) {
+                s += bb.get(0);
+                for (int i = 1; i < bb.limit(); i++) {
+                    if(i >= maxViewableLength) {
+                        s += "...";
+                        break;
+                    } else {
+                        s += ", " + bb.get(i);
+                    }
+                }
+            }
+        } else {
+            s += "...";
+        }
+        s += "]";
+        return s;
+    }
 }

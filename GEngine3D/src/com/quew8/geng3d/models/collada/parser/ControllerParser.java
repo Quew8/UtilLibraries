@@ -1,11 +1,11 @@
-package com.quew8.geng3d.collada.parser;
+package com.quew8.geng3d.models.collada.parser;
 
-import com.quew8.geng3d.collada.DataFactory;
-import com.quew8.geng3d.collada.Node;
 import com.quew8.geng.geometry.Image;
+import com.quew8.geng3d.models.collada.Node;
 import com.quew8.geng.xmlparser.XMLAttributeParser;
 import com.quew8.geng.xmlparser.XMLElementParser;
 import com.quew8.geng.xmlparser.XMLParser;
+import com.quew8.geng3d.models.DataFactory;
 import java.util.HashMap;
 import org.dom4j.Attribute;
 import org.dom4j.Element;
@@ -14,7 +14,7 @@ import org.dom4j.Element;
  *
  * @author Quew8
  */
-class ControllerParser extends XMLParser {
+public class ControllerParser extends XMLParser {
     private static final String
             NAME = "name";
     private static final String
@@ -55,7 +55,7 @@ class ControllerParser extends XMLParser {
         return name;
     }
     
-    public <T> T getSkin(Node<Void, Void>[] joints, DataFactory<?, ?, ?, T> factory, Image texture) {
-        return skin.getSkin(joints, factory, texture);
+    public <T> T getSkin(Node[] joints, DataFactory<?, ?, ?, T> factory, Image img) {
+        return skin.getSkin(joints, factory, img);
     } 
 }

@@ -1,4 +1,4 @@
-package com.quew8.geng3d.collada;
+package com.quew8.geng3d.models.collada;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -7,14 +7,12 @@ import java.util.Iterator;
 /**
  *
  * @author Quew8
- * @param <T>
- * @param <S>
  */
-public abstract class AbstractNode<T, S> {
-    private final AbstractNode<T, S>[] children;
-    private AbstractNode<T, S> parent = null;
+public abstract class AbstractNode {
+    private final AbstractNode[] children;
+    private AbstractNode parent = null;
     
-    AbstractNode(AbstractNode<T, S>[] children) {
+    AbstractNode(AbstractNode[] children) {
         this.children = removeEmpties(children);
     }
     
@@ -22,35 +20,35 @@ public abstract class AbstractNode<T, S> {
         this(new AbstractNode[]{});
     }
     
-    public AbstractNode<T, S>[] getChildren() {
+    public AbstractNode[] getChildren() {
         return children;
     }
     
-    public Node<T, S>[] getAllChildNodes() {
-        ArrayList<Node<T, S>> elements = new ArrayList<Node<T, S>>();
-        for(AbstractNode<T, S> node: children) {
+    public Node[] getAllChildNodes() {
+        ArrayList<Node> elements = new ArrayList<Node>();
+        for(AbstractNode node: children) {
             if(node instanceof Node) {
-                elements.add((Node<T, S>)node);
+                elements.add((Node)node);
             }
         }
         return elements.toArray(new Node[elements.size()]);
     }
     
-    public InstanceGeometry<T>[] getAllGeometry() {
-        ArrayList<InstanceGeometry<T>> elements = new ArrayList<InstanceGeometry<T>>();
-        for(AbstractNode<T, S> node: children) {
+    public InstanceGeometry[] getAllGeometry() {
+        ArrayList<InstanceGeometry> elements = new ArrayList<InstanceGeometry>();
+        for(AbstractNode node: children) {
             if(node instanceof InstanceGeometry) {
-                elements.add((InstanceGeometry<T>)node);
+                elements.add((InstanceGeometry)node);
             }
         }
         return elements.toArray(new InstanceGeometry[elements.size()]);
     }
     
-    public InstanceController<S>[] getAllControllers() {
-        ArrayList<InstanceController<S>> elements = new ArrayList<InstanceController<S>>();
-        for(AbstractNode<T, S> node: children) {
+    public InstanceController[] getAllControllers() {
+        ArrayList<InstanceController> elements = new ArrayList<InstanceController>();
+        for(AbstractNode node: children) {
             if(node instanceof InstanceController) {
-                elements.add((InstanceController<S>)node);
+                elements.add((InstanceController)node);
             }
         }
         return elements.toArray(new InstanceController[elements.size()]);
@@ -60,20 +58,20 @@ public abstract class AbstractNode<T, S> {
         return null;
     }
     
-    public void setParent(AbstractNode<T, S> parent) {
+    public void setParent(AbstractNode parent) {
         if(this.parent != null) {
-            throw new RuntimeException("Cannot set parent multiple times");
+            throw new IllegalStateException("Cannot set parent multiple times");
         }
         this.parent = parent;
     }
     
-    public AbstractNode<T, S> getParent() {
+    public AbstractNode getParent() {
         return parent;
     }
     
     public int getNLeaves() {
         int n = children.length;
-        for(AbstractNode<T, S> node: children) {
+        for(AbstractNode node: children) {
             if(node.isLeaf()) {
                 n++;
             } else {
@@ -84,7 +82,7 @@ public abstract class AbstractNode<T, S> {
     }
     
     public boolean hasLeaves() {
-        for(AbstractNode<T, S> node: children) {
+        for(AbstractNode node: children) {
             if(node.isLeaf() || node.hasLeaves()) {
                 return true;
             }
@@ -92,14 +90,14 @@ public abstract class AbstractNode<T, S> {
         return false;
     }
     
-    public AbstractNode<T, S>[] findAllNodes(String name) {
-        ArrayList<AbstractNode<T, S>> list = new ArrayList<AbstractNode<T, S>>();
+    public AbstractNode[] findAllNodes(String name) {
+        ArrayList<AbstractNode> list = new ArrayList<AbstractNode>();
         findAllNodes(name, list);
         return list.toArray(new AbstractNode[list.size()]);
     }
     
-    public void findAllNodes(String name, ArrayList<AbstractNode<T, S>> list) {
-        for(AbstractNode<T, S> node: children) {
+    public void findAllNodes(String name, ArrayList<AbstractNode> list) {
+        for(AbstractNode node: children) {
             if(node.getName().equals(name)) {
                 list.add(node);
             }
@@ -107,12 +105,12 @@ public abstract class AbstractNode<T, S> {
         }
     }
     
-    public AbstractNode<T, S> findNode(String name) {
-        for(AbstractNode<T, S> node: children) {
+    public AbstractNode findNode(String name) {
+        for(AbstractNode node: children) {
             if(node.getName().equals(name)) {
                 return node;
             } else {
-                AbstractNode<T, S> node2 = node.findNode(name);
+                AbstractNode node2 = node.findNode(name);
                 if(node2 != null) {
                     return node2;
                 }
@@ -121,7 +119,7 @@ public abstract class AbstractNode<T, S> {
         return null;
     }
     
-    public AbstractNode<T, S> getNode(String path) {
+    public AbstractNode getNode(String path) {
         int i = path.indexOf('/');
         if(i == -1) {
             //System.out.println("Getting: " + path);
@@ -134,7 +132,7 @@ public abstract class AbstractNode<T, S> {
         }
     }
     
-    public AbstractNode<T, S> getChildNode(String name) {
+    public AbstractNode getChildNode(String name) {
         if(name.matches("\\[([\\d]+)\\]")) {
             int index = Integer.parseInt(name.substring(1, name.length() - 1));
             if(index >= children.length) {
@@ -142,7 +140,7 @@ public abstract class AbstractNode<T, S> {
             }
             return children[index];
         } else {
-            for(AbstractNode<T, S> node: children) {
+            for(AbstractNode node: children) {
                 if(node.getName().equals(name)) {
                     return node;
                 }
@@ -153,7 +151,7 @@ public abstract class AbstractNode<T, S> {
     
     public String getString(String prefix) {
         String s = prefix + "Node {\n" + getDesc(prefix + "    ");
-        for(AbstractNode<T, S> node : children) {
+        for(AbstractNode node : children) {
             s += node.getString(prefix + "    ") + "\n";
         }
         s += prefix + "}";
@@ -163,12 +161,12 @@ public abstract class AbstractNode<T, S> {
     public abstract String getDesc(String prefix);
     public abstract boolean isLeaf();
     
-    private static <T, S> AbstractNode<T, S>[] removeEmpties(AbstractNode<T, S>[] arrays) {
-        ArrayList<AbstractNode<T, S>> al = new ArrayList<AbstractNode<T, S>>();
+    private static AbstractNode[] removeEmpties(AbstractNode[] arrays) {
+        ArrayList<AbstractNode> al = new ArrayList<AbstractNode>();
         al.addAll(Arrays.asList(arrays));
-        Iterator<AbstractNode<T, S>> iter = al.iterator();
+        Iterator<AbstractNode> iter = al.iterator();
         while(iter.hasNext()) {
-            AbstractNode<T, S> n = iter.next();
+            AbstractNode n = iter.next();
             if(!(n.isLeaf() || n.hasLeaves())) {
                 iter.remove();
             }

@@ -1,4 +1,4 @@
-package com.quew8.geng3d.collada;
+package com.quew8.geng3d.models.collada;
 
 import com.quew8.gmath.Matrix;
 import com.quew8.gutils.ArrayUtils;
@@ -7,16 +7,14 @@ import java.util.Arrays;
 /**
  *
  * @author Quew8
- * @param <T>
- * @param <S>
  */
-public class Node<T, S> extends AbstractNode<T, S> {
+public class Node extends AbstractNode {
     private final String name;
     private final String sid;
     private final Type type;
     private final Matrix transform;
     
-    public Node(String name, String sid, Type type, Matrix transform, AbstractNode<T, S>[] leaves) {
+    public Node(String name, String sid, Type type, Matrix transform, AbstractNode[] leaves) {
         super(leaves);
         this.name = name;
         this.sid = sid;
@@ -24,8 +22,8 @@ public class Node<T, S> extends AbstractNode<T, S> {
         this.transform = transform;
     }
     
-    public Node(String name, String sid, Type type, Matrix transform, AbstractNode<T, S>[] leaves, 
-            InstanceGeometry<T>[] geometry, InstanceController<S>[] controllers) {
+    public Node(String name, String sid, Type type, Matrix transform, AbstractNode[] leaves, 
+            InstanceGeometry[] geometry, InstanceController[] controllers) {
         
         this(
                 name, 
@@ -34,15 +32,15 @@ public class Node<T, S> extends AbstractNode<T, S> {
                 transform, 
                 ArrayUtils.concatVariableLengthArrays(
                         new AbstractNode[][]{
-                            geometry != null ? geometry : Node.<InstanceGeometry<T>>getArray(0), 
-                            controllers != null ? controllers : Node.<InstanceController<S>>getArray(0)
+                            geometry != null ? geometry : new InstanceGeometry[0], 
+                            controllers != null ? controllers : new InstanceController[0]
                         }
                 )
         );
     }
     
-    public Node<T, S> asAbsoluteNode() {
-        return new Node<T, S>(name, sid, type, getAbsoluteTransform(), getChildren());
+    public Node asAbsoluteNode() {
+        return new Node(name, sid, type, getAbsoluteTransform(), getChildren());
     }
     
     @Override

@@ -1,5 +1,6 @@
-package com.quew8.geng.geometry;
+package com.quew8.geng3d.geometry;
 
+import com.quew8.geng.geometry.Joint;
 import com.quew8.gmath.Matrix;
 import com.quew8.gutils.BufferUtils;
 import com.quew8.gutils.opengl.shaders.ShaderUtils;

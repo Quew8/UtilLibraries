@@ -1,11 +1,11 @@
-package com.quew8.geng3d.collada.parser;
+package com.quew8.geng3d.models.collada.parser;
 
-import com.quew8.geng3d.collada.DataFactory;
-import com.quew8.geng3d.collada.Scene;
+import com.quew8.geng3d.models.DataFactory;
+import com.quew8.geng3d.models.collada.Scene;
 import com.quew8.geng.geometry.Image;
 import com.quew8.geng.xmlparser.XMLElementParser;
 import com.quew8.geng.xmlparser.XMLParser;
-import com.quew8.geng3d.collada.Asset;
+import com.quew8.geng3d.models.collada.Asset;
 import java.util.HashMap;
 import org.dom4j.Element;
 
@@ -33,7 +33,7 @@ class SceneParser extends XMLParser {
         return to;
     }
     
-    public <T, S> Scene<T, S> getScene(Asset asset, DataFactory<?, ?, T, S> factory, Image texture) {
-        return new Scene<T, S>(asset, visualScene.getVisualScene(factory, texture));
+    public Scene getScene(Asset asset) {
+        return new Scene(asset, visualScene.getVisualScene());
     }
 }

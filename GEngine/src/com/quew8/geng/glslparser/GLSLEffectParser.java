@@ -101,7 +101,7 @@ public class GLSLEffectParser extends GLSLElementStructure<GLSLEffectParser> {
     
     protected GLSLVariableParser getOutVar(int index) {
         for(GLSLVariableParser outVar: outVars) {
-            if (outVar.getIndex() == index) {
+            if(outVar.getIndex() == index) {
                 return outVar;
             }
         }

@@ -1,14 +1,11 @@
-package com.quew8.geng3d.collada.parser;
+package com.quew8.geng3d.models.collada.parser;
 
-import com.quew8.geng3d.collada.DataFactory;
-import com.quew8.geng3d.collada.InstanceVisualScene;
-import com.quew8.geng3d.collada.Node;
-import com.quew8.geng.geometry.Image;
+import com.quew8.geng3d.models.collada.InstanceVisualScene;
+import com.quew8.geng3d.models.collada.Node;
 import com.quew8.geng.xmlparser.XMLAttributeParser;
 import com.quew8.geng.xmlparser.XMLElementParser;
 import com.quew8.geng.xmlparser.XMLParser;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import org.dom4j.Attribute;
 import org.dom4j.Element;
@@ -54,16 +51,12 @@ class VisualSceneParser extends XMLParser {
         return to;
     }
     
-    public <T, S> InstanceVisualScene<T, S> getVisualScene(DataFactory<?, ?, T, S> factory, Image texture) {
+    public InstanceVisualScene getVisualScene() {
         @SuppressWarnings("unchecked")
-        Node<T, S>[] children = getNodeArray(nodes.size());
+        Node[] children = new Node[nodes.size()];
         for(int i = 0; i < children.length; i++) {
-            children[i] = nodes.get(i).getNode(factory, texture);
+            children[i] = nodes.get(i).getNode();
         }
-        return new InstanceVisualScene<T, S>(name, children);
-    }
-    
-    private static <T, S> Node<T, S>[] getNodeArray(int length, Node<T, S>... array) {
-        return Arrays.copyOf(array, length);
+        return new InstanceVisualScene(name, children);
     }
 }

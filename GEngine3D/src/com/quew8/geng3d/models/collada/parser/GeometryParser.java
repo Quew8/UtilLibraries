@@ -1,11 +1,11 @@
-package com.quew8.geng3d.collada.parser;
+package com.quew8.geng3d.models.collada.parser;
 
-import com.quew8.geng3d.collada.DataFactory;
-import com.quew8.geng3d.collada.DataInput;
+import com.quew8.geng3d.models.DataInput;
 import com.quew8.geng.geometry.Image;
 import com.quew8.geng.xmlparser.XMLAttributeParser;
 import com.quew8.geng.xmlparser.XMLElementParser;
 import com.quew8.geng.xmlparser.XMLParser;
+import com.quew8.geng3d.models.MeshDataFactory;
 import java.util.HashMap;
 import org.dom4j.Attribute;
 import org.dom4j.Element;
@@ -14,7 +14,7 @@ import org.dom4j.Element;
  *
  * @author Quew8
  */
-class GeometryParser extends XMLParser {
+public class GeometryParser extends XMLParser {
     private final static String 
             NAME = "name";
     private final static String
@@ -63,7 +63,7 @@ class GeometryParser extends XMLParser {
         return mesh.getVertexData();
     }
     
-    public <T> T getGeometry(DataFactory<?, ?, T, ?> factory, Image texture) {
+    public <T> T getGeometry(MeshDataFactory<T, ?> factory, Image texture) {
         return mesh.getGeometry(factory, texture);
     }
 }

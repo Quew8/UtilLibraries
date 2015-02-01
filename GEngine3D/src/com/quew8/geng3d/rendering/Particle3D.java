@@ -1,6 +1,6 @@
 package com.quew8.geng3d.rendering;
 
-import com.quew8.geng.geometry.Plane;
+import com.quew8.geng3d.geometry.Plane;
 import com.quew8.geng.rendering.Particle;
 import com.quew8.gmath.Vector;
 import com.quew8.gutils.Colour;
@@ -8,8 +8,9 @@ import com.quew8.gutils.Colour;
 /**
  *
  * @author Quew8
+ * @param <T>
  */
-public class Particle3D extends Particle<SpriteBatcher2D> {
+public class Particle3D<T> extends Particle<SpriteBatcher2D<T>> {
     private Vector position;
     private Colour colour;
     private float size;

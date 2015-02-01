@@ -1,7 +1,7 @@
-package com.quew8.geng3d.collada.parser;
+package com.quew8.geng3d.models.collada.parser;
 
-import com.quew8.geng3d.collada.DataInput;
-import com.quew8.geng3d.collada.SemanticSet;
+import com.quew8.geng3d.models.DataInput;
+import com.quew8.geng3d.models.SemanticSet;
 import com.quew8.geng.xmlparser.XMLAttributeParser;
 import com.quew8.geng.xmlparser.XMLElementParser;
 import com.quew8.geng.xmlparser.XMLIntAttributeParser;
