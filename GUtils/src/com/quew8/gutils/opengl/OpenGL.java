@@ -312,6 +312,10 @@ public abstract class OpenGL {
     public static void glBindTexture(int target, int texture) {
         PlatformBackend.backend.glBindTexture_P(target, texture);
     }
+    
+    public static void glBindVertexArray(int array) {
+        PlatformBackend.backend.glBindVertexArray_P(array);
+    }
 
     public static void glBlendColor(float red, float green, float blue, float alpha) {
         PlatformBackend.backend.glBlendColor_P(red, green, blue, alpha);
@@ -425,8 +429,12 @@ public abstract class OpenGL {
         PlatformBackend.backend.glDeleteShader_P(shader);
     }
 
-    public static void glDeleteTextures(IntBuffer arg1) {
-        PlatformBackend.backend.glDeleteTextures_P(arg1);
+    public static void glDeleteTextures(IntBuffer textures) {
+        PlatformBackend.backend.glDeleteTextures_P(textures);
+    }
+
+    public static void glDeleteVertexArrays(IntBuffer arrays) {
+        PlatformBackend.backend.glDeleteVertexArrays_P(arrays);
     }
 
     public static void glDepthFunc(int func) {
@@ -509,8 +517,12 @@ public abstract class OpenGL {
         PlatformBackend.backend.glGenRenderbuffers_P(buffers);
     }
 
-    public static void glGenTextures(IntBuffer buffers) {
-        PlatformBackend.backend.glGenTextures_P(buffers);
+    public static void glGenTextures(IntBuffer textures) {
+        PlatformBackend.backend.glGenTextures_P(textures);
+    }
+
+    public static void glGenVertexArrays(IntBuffer arrays) {
+        PlatformBackend.backend.glGenVertexArrays_P(arrays);
     }
 
     public static String glGetActiveAttrib(int program, int index, IntBuffer length, IntBuffer type) {

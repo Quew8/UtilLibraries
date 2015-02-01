@@ -23,6 +23,7 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL13;
 import org.lwjgl.opengl.GL14;
 import org.lwjgl.opengl.GL15;
+import org.lwjgl.opengl.GL30;
 
 /**
  *
@@ -98,6 +99,11 @@ public class DesktopBackend extends PlatformBackend<DesktopLoadedImage> {
         GL11.glBindTexture(target, texture);
     }
 
+    @Override
+    public void glBindVertexArray_P(int array) {
+        GL30.glBindVertexArray(array);
+    }
+    
     @Override
     public void glBlendColor_P(float red, float green, float blue, float alpha) {
         GL14.glBlendColor(red, green, blue, alpha);
@@ -239,8 +245,13 @@ public class DesktopBackend extends PlatformBackend<DesktopLoadedImage> {
     }
 
     @Override
-    public void glDeleteTextures_P(IntBuffer arg1) {
-        GL11.glDeleteTextures(arg1);
+    public void glDeleteTextures_P(IntBuffer textures) {
+        GL11.glDeleteTextures(textures);
+    }
+
+    @Override
+    public void glDeleteVertexArrays_P(IntBuffer arrays) {
+        GL30.glDeleteVertexArrays(arrays);
     }
 
     @Override
@@ -345,6 +356,11 @@ public class DesktopBackend extends PlatformBackend<DesktopLoadedImage> {
     @Override
     public void glGenTextures_P(IntBuffer buffers) {
         GL11.glGenTextures(buffers);
+    }
+
+    @Override
+    public void glGenVertexArrays_P(IntBuffer arrays) {
+        GL30.glGenVertexArrays(arrays);
     }
 
     @Override

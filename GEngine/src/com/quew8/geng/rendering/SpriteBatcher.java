@@ -5,6 +5,7 @@ import com.quew8.geng.geometry.Texture;
 import com.quew8.geng.rendering.modes.FixedSizeDataInterpreter;
 import com.quew8.geng.rendering.modes.StaticRenderMode;
 import com.quew8.gutils.BufferUtils;
+import com.quew8.gutils.opengl.GLException;
 import static com.quew8.gutils.opengl.OpenGL.*;
 import com.quew8.gutils.opengl.VertexArray;
 import com.quew8.gutils.opengl.VertexBuffer;

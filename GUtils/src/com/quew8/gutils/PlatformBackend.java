@@ -62,6 +62,8 @@ public abstract class PlatformBackend<T extends LoadedImage> {
     
     public abstract void glBindTexture_P(int target, int texture);
     
+    public abstract void glBindVertexArray_P(int array);
+    
     public abstract void glBlendColor_P(float red, float green, float blue, float alpha);
     
     public abstract void glBlendEquation_P(int mode);
@@ -118,7 +120,9 @@ public abstract class PlatformBackend<T extends LoadedImage> {
     
     public abstract void glDeleteShader_P(int shader);
     
-    public abstract void glDeleteTextures_P(IntBuffer arg1);
+    public abstract void glDeleteTextures_P(IntBuffer textures);
+    
+    public abstract void glDeleteVertexArrays_P(IntBuffer arrays);
     
     public abstract void glDepthFunc_P(int func);
     
@@ -161,6 +165,8 @@ public abstract class PlatformBackend<T extends LoadedImage> {
     public abstract void glGenRenderbuffers_P(IntBuffer buffers);
     
     public abstract void glGenTextures_P(IntBuffer buffers);
+    
+    public abstract void glGenVertexArrays_P(IntBuffer arrays);
     
     public abstract String glGetActiveAttrib_P(int program, int index, IntBuffer length, IntBuffer type);
     

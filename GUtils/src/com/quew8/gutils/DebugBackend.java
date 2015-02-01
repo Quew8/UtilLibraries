@@ -79,6 +79,13 @@ public class DebugBackend<T extends LoadedImage> extends PlatformBackend<T> {
     }
 
     @Override
+    public void glBindVertexArray_P(int array) {
+        DebugLogger.d("Backend Debug", "glBindVertexArray_P() {array = " + array + "}");
+        impl.glBindVertexArray_P(array);
+        GLException.checkGLError();
+    }
+
+    @Override
     public void glBlendColor_P(float red, float green, float blue, float alpha) {
         DebugLogger.d("Backend Debug", "glBlendColor_P() {red = " + red + ", green = " + green + ", blue = " + blue + ", alpha = " + alpha + "}");
         impl.glBlendColor_P(red, green, blue, alpha);
@@ -293,8 +300,15 @@ public class DebugBackend<T extends LoadedImage> extends PlatformBackend<T> {
 
     @Override
     public void glDeleteTextures_P(IntBuffer textures) {
-        DebugLogger.d("Backend Debug", "glDeleteTextures_P() {textures = " + textures + "}");
+        DebugLogger.d("Backend Debug", "glDeleteTextures_P() {textures = " + toString(textures) + "}");
         impl.glDeleteTextures_P(textures);
+        GLException.checkGLError();
+    }
+
+    @Override
+    public void glDeleteVertexArrays_P(IntBuffer arrays) {
+        DebugLogger.d("Backend Debug", "glDeleteVertexArrays_P() {arrays = " + toString(arrays) + "}");
+        impl.glDeleteVertexArrays_P(arrays);
         GLException.checkGLError();
     }
 
@@ -448,6 +462,13 @@ public class DebugBackend<T extends LoadedImage> extends PlatformBackend<T> {
     public void glGenTextures_P(IntBuffer textures) {
         impl.glGenTextures_P(textures);
         DebugLogger.d("Backend Debug", "glGenTextures_P() {textures = " + toString(textures) + "}");
+        GLException.checkGLError();
+    }
+
+    @Override
+    public void glGenVertexArrays_P(IntBuffer arrays) {
+        impl.glGenVertexArrays_P(arrays);
+        DebugLogger.d("Backend Debug", "glGenVertexArrays_P() {arrays = " + toString(arrays) + "}");
         GLException.checkGLError();
     }
 
