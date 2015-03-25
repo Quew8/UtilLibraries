@@ -1,8 +1,13 @@
 package com.quew8.geng.debug;
 
 import com.quew8.gmath.Vector;
+import com.quew8.gutils.debug.DebugException;
 import com.quew8.gutils.debug.DebugInterface;
-import java.util.List;
+import static com.quew8.gutils.debug.DebugInterface.debugEnsureLength;
+import static com.quew8.gutils.debug.DebugInterface.debugGetFloat;
+import com.quew8.gutils.debug.DebugObjectNotFoundException;
+import com.quew8.gutils.debug.DebugParamNotFoundException;
+import com.quew8.gutils.debug.DebugSettingFinalParamException;
 
 /**
  *
@@ -16,7 +21,12 @@ public class VectorDebugInterface implements DebugInterface {
     }
 
     @Override
-    public String debugGetValue(String param) {
+    public String debugGetName() {
+        return "vector";
+    }
+
+    @Override
+    public String debugGetValue(String param) throws DebugParamNotFoundException {
         switch(param) {
             case "x":
                 return Float.toString(v.getX());
@@ -29,51 +39,43 @@ public class VectorDebugInterface implements DebugInterface {
             case "mag":
                 return Float.toString(v.magnitude());
             default:
-                return null;
+                throw new DebugParamNotFoundException(this, param);
         }
     }
 
     @Override
-    public DebugInterface debugGetObj(String param) {
-        return null;
+    public DebugInterface debugGetObj(String obj) throws DebugObjectNotFoundException {
+        throw new DebugObjectNotFoundException(this, obj);
     }
 
     @Override
-    public String debugSetValue(String param, String... value) {
+    public void debugSetValue(String param, String... values) throws DebugException {
         switch(param) {
             case "x": {
-                if(value.length != 1) {
-                    return "Requires one element";
-                }
-                v.setX(Float.parseFloat(value[0]));
-                return null;
+                debugEnsureLength(values, 1);
+                v.setX(debugGetFloat(values[0]));
+                break;
             }
             case "y": {
-                if(value.length != 1) {
-                    return "Requires one element";
-                }
-                v.setY(Float.parseFloat(value[0]));
-                return null;
+                debugEnsureLength(values, 1);
+                v.setY(debugGetFloat(values[0]));
+                break;
             }
             case "z": {
-                if(value.length != 1) {
-                    return "Requires one element";
-                }
-                v.setZ(Float.parseFloat(value[0]));
-                return null;
+                debugEnsureLength(values, 1);
+                v.setZ(debugGetFloat(values[0]));
+                break;
             }
             case "xyz": {
-                if(value.length != 3) {
-                    return "Requires three element";
-                }
-                v.setX(Float.parseFloat(value[0]));
-                v.setY(Float.parseFloat(value[1]));
-                v.setZ(Float.parseFloat(value[2]));
-                return null;
+                debugEnsureLength(values, 3);
+                v.setX(debugGetFloat(values[0]));
+                v.setY(debugGetFloat(values[1]));
+                v.setZ(debugGetFloat(values[2]));
+                break;
             }
-            case "mag": return "mag cannot be set";
+            case "mag": throw new DebugSettingFinalParamException(param);
+            default: throw new DebugParamNotFoundException(this, param);
         }
-        return "No Such Param";
     }
     
     @Override
@@ -82,11 +84,14 @@ public class VectorDebugInterface implements DebugInterface {
     }
 
     @Override
-    public void debugAddAllParams(List<String> objs, List<String> vals) {
-        vals.add("x");
-        vals.add("y");
-        vals.add("z");
-        vals.add("xyz");
-        vals.add("mag");
+    public String[] debugGetParams() {
+        return new String[]{
+            "x", "y", "z", "xyz", "mag"
+        };
+    }
+
+    @Override
+    public String[] debugGetObjects() {
+        return new String[]{};
     }
 }

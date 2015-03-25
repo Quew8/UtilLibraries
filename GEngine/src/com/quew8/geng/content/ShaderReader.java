@@ -1,6 +1,6 @@
 package com.quew8.geng.content;
 
-import com.quew8.geng.glslparser.GLSLProgramParser;
+import com.quew8.geng.glslparser.constructor.GLSLProgramParser;
 import com.quew8.gutils.FileUtils;
 import com.quew8.gutils.GeneralUtils;
 import com.quew8.gutils.content.ContentReader;

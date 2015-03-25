@@ -29,22 +29,6 @@ public class CharSpriteBatcher<T> extends SpriteBatcher<T> {
         this.dataFactory = dataFactory;
     }
     
-    /*public CharSpriteBatcher(CharsetTexture tex, CharsetRenderMode renderMode, SpriteBatcherData<SpriteDataFactory2D> data, SpriteIndexDataFactory indexFactory) {
-        super(tex, renderMode, data, indexFactory);
-        this.mapping = tex.getMapping();
-        this.renderMode = renderMode;
-    }
-
-    public CharSpriteBatcher(CharsetTexture tex, CharsetRenderMode renderMode, SpriteBatcherData<SpriteDataFactory2D> data) {
-        this(tex, renderMode, data, PolygonSpriteIndexDataFactory.QUAD_INSTANCE);
-    }
-
-    public CharSpriteBatcher(CharsetTexture tex, CharsetRenderMode renderMode, int n) {
-        this(tex, renderMode, new SpriteBatcherData<SpriteDataFactory2D>(
-                n, QuadSpriteDataFactory.INSTANCE, UVQuadSpriteDataFactory.INSTANCE
-        ));
-    }*/
-    
     public void setCharColour(Colour colour) {
         renderMode.setCharColour(colour);
     }

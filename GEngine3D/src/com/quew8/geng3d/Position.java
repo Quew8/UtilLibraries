@@ -1,12 +1,12 @@
 package com.quew8.geng3d;
 
 import com.quew8.geng.debug.VectorDebugInterface;
-import com.quew8.gmath.Axis;
 import com.quew8.gmath.Matrix;
 import com.quew8.gmath.Vector;
 import com.quew8.gutils.collections.Bag;
 import com.quew8.gutils.debug.DebugInterface;
-import java.util.List;
+import com.quew8.gutils.debug.DebugObjectNotFoundException;
+import com.quew8.gutils.debug.DebugParamNotFoundException;
 
 /**
  * 
@@ -176,22 +176,27 @@ public class Position implements Bindable, DebugInterface {
     }
 
     @Override
-    public String debugGetValue(String param) {
-        return null;
+    public String debugGetName() {
+        return "position";
     }
 
     @Override
-    public DebugInterface debugGetObj(String param) {
-        switch(param) {
+    public String debugGetValue(String param) throws DebugParamNotFoundException {
+        throw new DebugParamNotFoundException(this, param);
+    }
+
+    @Override
+    public DebugInterface debugGetObj(String obj) throws DebugObjectNotFoundException {
+        switch(obj) {
             case "translation": return new VectorDebugInterface(translation);
             case "orientation": return new VectorDebugInterface(orientation);
         }
-        return null;
+        throw new DebugObjectNotFoundException(this, obj);
     }
 
     @Override
-    public String debugSetValue(String param, String... value) {
-        return "No Such Parameter";
+    public void debugSetValue(String param, String... values) throws DebugParamNotFoundException {
+        throw new DebugParamNotFoundException(this, param);
     }
 
     @Override
@@ -203,8 +208,14 @@ public class Position implements Bindable, DebugInterface {
     }
 
     @Override
-    public void debugAddAllParams(List<String> objs, List<String> vals) {
-        objs.add("translation");
-        objs.add("orientation");
+    public String[] debugGetParams() {
+        return new String[]{};
+    }
+
+    @Override
+    public String[] debugGetObjects() {
+        return new String[]{
+            "translation", "orientation"
+        };
     }
 }

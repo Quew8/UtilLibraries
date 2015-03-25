@@ -23,20 +23,12 @@ public class SpriteBatcher2D<T> extends SpriteBatcher<T> {
         super(tex, renderMode, dataInterpreter, maxN);
         this.dataFactory = dataFactory;
     }
-
-    /*public SpriteBatcher2D(Texture tex, StaticRenderMode renderMode, int size) {
-        this(tex, renderMode, PolygonSpriteDataFactory.TEXTURED_QUAD_INSTANCE, size);
-    }*/
     
     public SpriteBatcher2D(StaticRenderMode renderMode, DataFactory2D<T> dataFactory, 
             FixedSizeDataInterpreter<T, ?> dataInterpreter, int maxN) {
         
         this(null, renderMode, dataFactory, dataInterpreter, maxN);
     }
-
-    /*public SpriteBatcher2D(StaticRenderMode renderMode, int size) {
-    this(null, renderMode, PolygonSpriteDataFactory.BARE_QUAD_INSTANCE, size);
-    }*/
     
     public void draw(Image image, float x, float y, float z, float width, float height, Plane m) {
         batch(dataFactory.construct(image, x, y, z, width, height, m));

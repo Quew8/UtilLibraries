@@ -595,6 +595,31 @@ public class Matrix {
         return makeRotation(new Matrix(), theta, axis);
     }
     
+    public static Matrix makeLookAt(Matrix result, Vector pos, Vector at) {
+        Vector forward = new Vector(pos, at);
+        Vector left = GMath.cross(forward, new Vector(0, 1, 0));
+        Vector up = GMath.cross(forward, left);
+        forward.normalizeIfNot();
+        left.normalizeIfNot();
+        up.normalizeIfNot();
+        Matrix t = Matrix.makeTranslation(pos);
+        Matrix r = new Matrix(
+                left.getX(),    left.getY(),    left.getZ(),    0,
+                up.getX(),      up.getY(),      up.getZ(),      0,
+                forward.getX(), forward.getY(), forward.getZ(), 0,
+                0,              0,              0,              1
+        );
+        return Matrix.times(
+                result, 
+                t, 
+                r
+        );
+    }
+    
+    public static Matrix makeLookAt(Vector pos, Vector at) {
+        return makeLookAt(new Matrix(), pos, at);
+    }
+    
     public static Matrix scale(Matrix result, Matrix m, float xScale, float yScale, float zScale) {
         result.setData(
                 ( m.get(0) * xScale ), 

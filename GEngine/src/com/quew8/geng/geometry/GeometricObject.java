@@ -67,7 +67,7 @@ public abstract class GeometricObject<T extends GeometricObject<T, S>, S extends
         int[] cpyIndices = Arrays.copyOf(indices, indices.length);
         S[] newVertices = Arrays.copyOf(vertices, vertices.length);
         for(int i = 0; i < newVertices.length; i++) {
-            newVertices[i].transformTextureCoords(img);
+            newVertices[i] = newVertices[i].transformTextureCoords(img);
         }
         return construct(self(), newVertices, cpyIndices, mode);
     }
@@ -78,4 +78,17 @@ public abstract class GeometricObject<T extends GeometricObject<T, S>, S extends
     }
     
     protected abstract T construct(T old, S[] vertices, int[] indices, int mode);
+    
+    @Override
+    public String toString() {
+        String s = getClass().getSimpleName() + "\nVertices:\n";
+        for(int i = 0; i < vertices.length; i++) {
+            s += Integer.toString(i) + " - " + vertices[i] + "\n";
+        }
+        s += "Indices:\n";
+        for(int i = 0; i < indices.length; i++) {
+            s += Integer.toString(i) + " - " + Integer.toString(indices[i]) + "\n";
+        }
+        return s;
+    }
 }

@@ -19,11 +19,11 @@ class XMLMemory {
     private static final HashMap<String, XMLElementMemory> roots = new HashMap<String, XMLElementMemory>();
     private final ResourceLoader resourceLoader;
 
-    public XMLMemory(ResourceLoader resourceLoader) {
+    XMLMemory(ResourceLoader resourceLoader) {
         this.resourceLoader = resourceLoader;
     }
     
-    public XMLMemory() {
+    XMLMemory() {
         this(ResourceLoader.INTERNAL);
     }
     
@@ -52,12 +52,12 @@ class XMLMemory {
         private XMLParser parsedElement = null;
         private final HashMap<String, XMLElementMemory> elements = new HashMap<String, XMLElementMemory>();
         
-        public XMLElementMemory(Element element, String directory) {
+        XMLElementMemory(Element element, String directory) {
             this.directory = directory;
             this.element = element;
         }
         
-        public XMLElementMemory(Element element) {
+        XMLElementMemory(Element element) {
             this(element, null);
         }
         

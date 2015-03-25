@@ -3,7 +3,8 @@ package com.quew8.geng;
 import com.quew8.geng.interfaces.Identifiable;
 import com.quew8.geng.interfaces.Parent;
 import com.quew8.gutils.debug.DebugInterface;
-import java.util.List;
+import com.quew8.gutils.debug.DebugObjectNotFoundException;
+import com.quew8.gutils.debug.DebugParamNotFoundException;
 
 /**
  *
@@ -30,18 +31,23 @@ public class NoParent implements Parent {
     }
 
     @Override
-    public String debugGetValue(String param) {
-        return null;
+    public String debugGetName() {
+        return "no_parent";
     }
 
     @Override
-    public String debugSetValue(String param, String... value) {
-        return "No Such Param";
+    public String debugGetValue(String param) throws DebugParamNotFoundException {
+        throw new DebugParamNotFoundException(this, param);
     }
 
     @Override
-    public DebugInterface debugGetObj(String param) {
-        return null;
+    public void debugSetValue(String param, String... values) throws DebugParamNotFoundException {
+        throw new DebugParamNotFoundException(this, param);
+    }
+
+    @Override
+    public DebugInterface debugGetObj(String param) throws DebugObjectNotFoundException {
+        throw new DebugObjectNotFoundException(this, param);
     }
 
     @Override
@@ -50,8 +56,13 @@ public class NoParent implements Parent {
     }
 
     @Override
-    public void debugAddAllParams(List<String> objs, List<String> vals) {
-        
+    public String[] debugGetParams() {
+        return new String[]{};
+    }
+
+    @Override
+    public String[] debugGetObjects() {
+        return new String[]{};
     }
     
 }

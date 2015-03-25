@@ -4,6 +4,7 @@ import com.quew8.geng.GameObject;
 import com.quew8.geng.interfaces.Disposable;
 import com.quew8.geng.interfaces.FinalDrawable;
 import com.quew8.geng.rendering.modes.GeometricDataInterpreter;
+import com.quew8.gutils.ArrayUtils;
 import com.quew8.gutils.BufferUtils;
 import static com.quew8.gutils.opengl.OpenGL.*;
 import com.quew8.gutils.opengl.VertexBuffer;
@@ -23,7 +24,6 @@ public class RenderObjGroup<T> extends GameObject implements Disposable, FinalDr
     
     RenderObjGroup(T[] ta, GeometricDataInterpreter<T, ?> interpreter, RenderObjectGroupSection<?, ?>[] sections) {
         ByteBuffer bb = createDataBuffer(ta, interpreter);
-        System.out.println("Creating Buffer: " + BufferUtils.toString(bb.asFloatBuffer(), 40));
         this.data = new VertexBuffer(
                 bb, GL_ARRAY_BUFFER, GL_STATIC_DRAW
                 );
@@ -87,8 +87,10 @@ public class RenderObjGroup<T> extends GameObject implements Disposable, FinalDr
             throw new IllegalArgumentException("");
         }
         int[][] indices = new int[objs.length][];
+        int offset = 0;
         for(int i = 0; i < objs.length; i++) {
-            indices[i] = interpreter.getIndices(objs[i]);
+            indices[i] = ArrayUtils.add(interpreter.getIndices(objs[i]), offset);
+            offset += interpreter.getNVertices(objs[i]);
         }
         return indices;
     }
