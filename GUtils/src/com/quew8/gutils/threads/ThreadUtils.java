@@ -8,7 +8,7 @@ import com.quew8.gutils.GeneralUtils.ExceptionHandler;
  *
  */
 public class ThreadUtils {
-    private static boolean waitForExecution = false;
+    private static boolean waitForExecution = true;
     private static final ExceptionHandler<TaskExecutionException> taskExecutionHandler = new ExceptionHandler<>();
     private static int numberTasksActive = 0;
     private static final IMessageListener<SelfHandlingMessage> defaultMessageListener = MessageQueue.createMessageQueue();

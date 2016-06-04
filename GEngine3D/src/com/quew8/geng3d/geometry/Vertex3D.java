@@ -4,15 +4,13 @@ import com.quew8.geng.geometry.IVertex;
 import com.quew8.geng.geometry.Image;
 import com.quew8.geng.geometry.Param;
 import com.quew8.gmath.Matrix;
-
+import com.quew8.gmath.Matrix3;
 import com.quew8.gmath.Vector;
 import com.quew8.gmath.Vector2;
 import com.quew8.gutils.Colour;
 import java.nio.ByteBuffer;
 import java.util.Arrays;
 import java.util.Objects;
-import java.util.function.Function;
-import java.util.function.IntFunction;
 
 /**
  * 
@@ -24,7 +22,7 @@ public class Vertex3D implements IVertex<Vertex3D> {
     private final Vector2 texCoords;
     private final Colour colour;
 
-    private Vertex3D(Vector position, Vector normal, Vector2 texCoords, Colour colour) {
+    public Vertex3D(Vector position, Vector normal, Vector2 texCoords, Colour colour) {
         if(position == null) {
             throw new IllegalArgumentException("Cannot have null position");
         }
@@ -90,22 +88,22 @@ public class Vertex3D implements IVertex<Vertex3D> {
     }
     
     @Override
-    public Vertex3D transform(Matrix transform, Matrix normalMatrix) {
+    public Vertex3D transform(Matrix transform, Matrix3 normalMatrix) {
         return new Vertex3D(
                 Matrix.times(new Vector(), transform, position),
-                normal != null ? Matrix.times(new Vector(), normalMatrix, position) : null,
-                normal != null ? new Vector2(texCoords) : null,
-                colour != null ? new Colour(colour) : null
+                normal != null ? Matrix3.times(new Vector(), normalMatrix, normal) : null,
+                texCoords != null ? new Vector2().setXY(texCoords) : null,
+                colour != null ? new Colour().setRGBA(colour) : null
         );
     }
     
     @Override
     public Vertex3D transformTextureCoords(Image img) {
         return new Vertex3D(
-                new Vector(position),
-                normal != null ? new Vector(normal) : null,
+                new Vector().setXYZ(position),
+                normal != null ? new Vector().setXYZ(normal) : null,
                 img.transformCoords(new Vector2(), getTexCoordsChecked()),
-                colour != null ? new Colour(colour) : null
+                colour != null ? new Colour().setRGBA(colour) : null
         );
     }
 
@@ -169,21 +167,18 @@ public class Vertex3D implements IVertex<Vertex3D> {
         return "Vertex3D{" + position + ", " + normal + " " + texCoords + ", " + colour + "}";
     }
     
+    public static Vertex3D createEmpty(Param[] params) {
+        return new Vertex3D(
+                new Vector(),
+                Param.containsNormal(params) ? new Vector() : null,
+                Param.containsTextureCoords(params) ? new Vector2() : null,
+                Param.containsColour(params) ? new Colour() : null
+        );
+    }
+    
     public static Vector[] getPositions(Vertex3D[] vertices) {
-        return Arrays.stream(vertices).map(new Function<Vertex3D, Vector>() {
-
-            @Override
-            public Vector apply(Vertex3D t) {
-                return t.getPosition();
-            }
-            
-        }).toArray(new IntFunction<Vector[]>() {
-
-            @Override
-            public Vector[] apply(int value) {
-                return new Vector[value];
-            }
-            
-        });
+        return Arrays.stream(vertices)
+                .map((Vertex3D t) -> t.getPosition())
+                .toArray((int value) -> new Vector[value]);
     }
 }

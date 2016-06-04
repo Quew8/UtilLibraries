@@ -1,7 +1,7 @@
 package com.quew8.geng.rendering.modes;
 
 import com.quew8.geng.geometry.Texture;
-import com.quew8.gutils.opengl.VertexData;
+import com.quew8.gutils.opengl.VertexBufferObject;
 import java.nio.FloatBuffer;
 
 /**
@@ -13,7 +13,7 @@ public class DynamicTextureRenderMode<T extends TextureFetchable> extends Dynami
     private final DynamicRenderMode<T> superRenderMode;
     
     public DynamicTextureRenderMode(DynamicRenderMode<T> superRenderMode) {
-        super(superRenderMode.getNAttribs());
+        super(superRenderMode.getNAttribs(), superRenderMode.getStride());
         this.superRenderMode = superRenderMode;
     }
     
@@ -34,7 +34,7 @@ public class DynamicTextureRenderMode<T extends TextureFetchable> extends Dynami
     }
     
     @Override
-    public void onPreRendering(VertexData vd) {
+    public void onPreRendering(VertexBufferObject vd) {
         superRenderMode.onPreRendering(vd);
     }
     

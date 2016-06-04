@@ -9,9 +9,9 @@ import org.dom4j.Element;
  *
  * @author Quew8
  */
-public abstract class XMLAttributeParser {
+public interface XMLAttributeParser {
     
-    public abstract void parse(Attribute attribute, Element parent);
+    public void parse(Attribute attribute, Element parent);
     
     public static void parseAttributes(List<Attribute> attributes, Element parent, 
             HashMap<String, XMLAttributeParser> parsers, boolean matchAll) {

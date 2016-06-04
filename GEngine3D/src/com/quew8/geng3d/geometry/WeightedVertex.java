@@ -4,6 +4,7 @@ import com.quew8.geng.geometry.IVertex;
 import com.quew8.geng.geometry.Image;
 import com.quew8.geng.geometry.Param;
 import com.quew8.gmath.Matrix;
+import com.quew8.gmath.Matrix3;
 import java.nio.ByteBuffer;
 import java.util.Arrays;
 import java.util.Objects;
@@ -34,7 +35,7 @@ public class WeightedVertex implements IVertex<WeightedVertex> {
     }
     
     @Override
-    public WeightedVertex transform(Matrix transform, Matrix normalMatrix) {
+    public WeightedVertex transform(Matrix transform, Matrix3 normalMatrix) {
         return new WeightedVertex(
                 vertex.transform(transform, normalMatrix),
                 Arrays.copyOf(weights, weights.length)

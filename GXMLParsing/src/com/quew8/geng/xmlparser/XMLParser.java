@@ -12,6 +12,7 @@ import org.dom4j.Element;
  */
 public abstract class XMLParser {
     private String id;
+    private Element element;
     private XMLMemory.XMLElementMemory memory;
     private final boolean matchAllElements;
     private final boolean matchAllAttributes;
@@ -25,12 +26,13 @@ public abstract class XMLParser {
         this(true, true);
     }
     
+    public Element getElement() {
+        return element;
+    }
+    
     public HashMap<String, XMLAttributeParser> addAttributeParsers(HashMap<String, XMLAttributeParser> to) {
-        to.put("id", new XMLAttributeParser() {
-            @Override
-            public void parse(Attribute attribute, Element parent) {
-                XMLParser.this.id = attribute.getValue();
-            }
+        to.put("id", (XMLAttributeParser) (Attribute attribute, Element parent) -> {
+            XMLParser.this.id = attribute.getValue();
         });
         return to;
     }
@@ -60,6 +62,7 @@ public abstract class XMLParser {
     }
     
     public void parse(Element element) {
+        this.element = element;
         XMLAttributeParser.parseAttributes(element.attributes(), element, getAttributeParsers(), matchAllAttributes);
         XMLElementParser.parseElements(element.elements(), getElementParsers(), matchAllElements);
         XMLParseException ex = onParsingDone();

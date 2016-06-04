@@ -9,6 +9,7 @@ import com.quew8.codegen.Element;
 public class Variable extends GLSLElement<Variable> {
     public static final Variable
             GL_POSITION = new Variable(Modifier.VARYING, Type.VEC4, "gl_Position"),
+            GL_POINT_SIZE = new Variable(Modifier.VARYING, Type.FLOAT, "gl_PointSize"),
             GL_FRAG_COLOR = new Variable(Modifier.NONE, Type.VEC4, "gl_FragColor");
     
     private Modifier mod;
@@ -61,18 +62,10 @@ public class Variable extends GLSLElement<Variable> {
         return name.startsWith("gl_");
     }
     
-    /*@Override
-    protected String getConstructedCode() {
-        return GLSLCodeGenUtils.getConstruction()
-                .add(mod, type)
-                .add(name)
-                .addNoGap(";")
-                .get();
-    }*/
-    
     public static Variable getBuiltInVariable(String name) {
         switch(name) {
         case "gl_Position": return GL_POSITION;
+        case "gl_PointSize": return GL_POINT_SIZE;
         case "gl_FragColor": return GL_FRAG_COLOR;
         default: throw new IllegalArgumentException("No Such Predefined Variable: " + name);
         }

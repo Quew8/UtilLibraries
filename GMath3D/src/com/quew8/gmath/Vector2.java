@@ -7,58 +7,52 @@ package com.quew8.gmath;
 public class Vector2 {
     private float x, y;
     
-    public static final byte 
-            NORMALIZE_BIT = 1,
-            ABSOLUTE_BIT = 2,
-            NEGATE_BIT = 4;
-    
-    public Vector2(float x, float y, byte... op) {
+    public Vector2(float x, float y) {
         this.x = x;
         this.y = y;
-        if(op.length > 0) {
-            if((op[0] & NORMALIZE_BIT) != 0) {
-                float length = GMath.length(x, y);
-                this.x /= length;
-                this.y /= length;
-            }
-            if((op[0] & ABSOLUTE_BIT) != 0) {
-                this.x = Math.abs(this.x);
-                this.y = Math.abs(this.y);
-            }
-            if((op[0] & NEGATE_BIT) != 0) {
-                this.x = -this.x;
-                this.y = -this.y;
-            }
-        }
     }
     
-    public Vector2(Vector2 a, Vector2 b, byte... op) {
-        this(b.x - a.x, b.y - a.y, op);
-    }
-    
-    public Vector2(Vector2 v, byte... op) {
-        this(v.x, v.y, op);
-    }
-    
-    public Vector2(Vector v, byte... op) {
-    	this(v.getX(), v.getY(), op);
+    public Vector2(Vector2 a, Vector2 b) {
+        this(b.x - a.x, b.y - a.y);
     }
     
     public Vector2() {
         this.x = 0;
         this.y = 0;
     }
+
+    public Vector2 setXY(Vector2 src) {
+        this.x = src.getX();
+        this.y = src.getY();
+        return this;
+    }
     
-    public float[] getXY() {
-        return new float[]{x, y};
-    }
-
-    public void setX(float x) {
+    public Vector2 setXY(float x, float y) {
         this.x = x;
+        this.y = y;
+        return this;
+    }
+    
+    public Vector2 setX(float x) {
+        this.x = x;
+        return this;
     }
 
-    public void setY(float y) {
+    public Vector2 setY(float y) {
         this.y = y;
+        return this;
+    }
+    
+    public Vector2 getXY(Vector2 out) {
+        out.x = this.x;
+        out.y = this.y;
+        return out;
+    }
+    
+    public float[] getXY(float[] out, int offset) {
+        out[offset] = x;
+        out[offset + 1] = y;
+        return out;
     }
     
     public float getX() {
@@ -96,40 +90,24 @@ public class Vector2 {
         return (this.x == v.getX() && this.y == v.getY());
     }
     
-    public Vector2 add(Vector2 b) {
-        return Vector2.add(this, this, b);
+    public Vector2 add(Vector2 out, Vector2 b) {
+        return Vector2.add(out, this, b);
     }
 	
-    public Vector2 subtract(Vector2 b) {
-        return Vector2.subtract(this, this, b);
+    public Vector2 subtract(Vector2 out, Vector2 b) {
+        return Vector2.subtract(out, this, b);
     }
 	
-    public Vector2 times(Vector2 b) {
-        return Vector2.times(this, this, b);
+    public Vector2 times(Vector2 out, Vector2 b) {
+        return Vector2.times(out, this, b);
     }
 	
-    public Vector2 times(float f) {
-        return Vector2.times(this, this, f);
+    public Vector2 scale(Vector2 out, float f) {
+        return Vector2.scale(out, this, f);
     }
 	
-    public Vector2 divide(float f) {
-        return Vector2.divide(this, this, f);
-    }
-	
-    public Vector2 add(float f) {
-        return Vector2.add(this, this, f); 
-    }
-	
-    public Vector2 subtract(float f) {
-        return Vector2.subtract(this, this, f);
-    }
-	
-    public Vector2 times(Matrix m) {
-        return Vector2.times(new Vector2(), this, m);
-    }
-	
-    public Vector2 times(Vector2 result, Matrix m) {
-        return Vector2.times(result, this, m);
+    public Vector2 addBias(Vector2 out, float f) {
+        return Vector2.addBias(out, this, f); 
     }
     
     public boolean isNegative() {
@@ -149,36 +127,32 @@ public class Vector2 {
     }
     
     public float manhattenMagnitude() {
-        return x + y;
+        return GMath.abs(x) + GMath.abs(y);
     }
     
     public float distance(Vector2 other) {
-        return Vector2.subtract(new Vector2(), this, other).magnitude();
+        return GMath.length(this.x - other.x, this.y - other.y);
     }
     
     public float distanceSquared(Vector2 other) {
-        return Vector2.subtract(new Vector2(), this, other).magnitudeSquared();
+        return GMath.lengthSquared(this.x - other.x, this.y - other.y);
     }
     
     public float manhattenDistance(Vector2 other) {
-        return Vector2.subtract(new Vector2(), this, other).manhattenMagnitude();
+        return GMath.abs(this.x - other.x) + GMath.abs(this.y - other.y);
     }
     
-    public float normalize() {
+    public Vector2 normalize(Vector2 out) {
         float magnitude = magnitude();
-        this.x /= magnitude;
-        this.y /= magnitude;
-        return magnitude;
+        out.x = this.x / magnitude;
+        out.y = this.y / magnitude;
+        return out;
     }
     
-    public void absolute() {
-        this.x = Math.abs(this.x);
-        this.y = Math.abs(this.y);
-    }
-    
-    public void negate() {
-        this.x = -this.x;
-        this.y = -this.y;
+    public Vector2 negate(Vector2 out) {
+        out.x = -this.x;
+        out.y = -this.y;
+        return out;
     }
     
     @Override
@@ -210,33 +184,15 @@ public class Vector2 {
         return result;
     }
 	
-    public static Vector2 times(Vector2 result, Vector2 a, float f) {
+    public static Vector2 scale(Vector2 result, Vector2 a, float f) {
         result.x = a.x * f;
         result.y = a.y * f;
         return result;
     }
 	
-    public static Vector2 divide(Vector2 result, Vector2 a, float f) {
-        result.x = a.x / f;
-        result.y = a.y / f;
-        return result;
-    }
-	
-    public static Vector2 add(Vector2 result, Vector2 a, float f) {
+    public static Vector2 addBias(Vector2 result, Vector2 a, float f) {
         result.x = a.x + f;
         result.y = a.y + f;
-        return result;
-    }
-	
-    public static Vector2 subtract(Vector2 result, Vector2 a, float f) {
-        result.x = a.x - f;
-        result.y = a.y - f;
-        return result;
-    }
-	
-    public static Vector2 times(Vector2 result, Vector2 a, Matrix m) {
-        result.x = ( a.x * m.get(0) ) + ( a.y * m.get(4) ) + m.get(12);
-        result.y = ( a.x * m.get(1) ) + ( a.y * m.get(5) ) + m.get(13);
         return result;
     }
 }

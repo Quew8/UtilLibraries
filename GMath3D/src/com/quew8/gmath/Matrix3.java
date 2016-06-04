@@ -1,21 +1,49 @@
 package com.quew8.gmath;
 
-import java.nio.FloatBuffer;
-
 /**
  *
  * @author Quew8
  */
 public class Matrix3 {
     /**
-     * Stores data in row major format.
+     * Stores in Column-Major format, like OpenGL.
      */
     private final float[] data;
-    
-    public Matrix3(float[] data) {
+
+    /**
+     * Initialise the data from a column-major array.
+     * 
+     * @param data The matrix data in column-major format.
+     */
+    private Matrix3(float[] data) {
         this.data = data;
     }
+    /**
+     * Initialise the data from a row-major source.
+     * @param f00 row 0, column 0.
+     * @param f10 row 0, column 1.
+     * @param f20 row 0, column 2.
+     * @param f01 row 1, column 0.
+     * @param f11 row 1, column 1.
+     * @param f21 row 1, column 2.
+     * @param f02 row 2, column 0.
+     * @param f12 row 2, column 1.
+     * @param f22 row 2, column 2.
+     */
+    public Matrix3(float f00, float f10, float f20, 
+            float f01, float f11, float f21, 
+            float f02, float f12, float f22) {
+        
+        this(new float[] {
+            f00, f01, f02,
+            f10, f11, f12,
+            f20, f21, f22
+        });
+    }
     
+    /**
+     * Initialise to the identity matrix.
+     */
     public Matrix3() {
         this(new float[]{
             1, 0, 0,
@@ -24,109 +52,129 @@ public class Matrix3 {
         });
     }
     
-    public Matrix3(Matrix3 m) {
-        this();
-        setData(m.data);
+    /**
+     * Set the data from a row-major source.
+     * @param f00 row 0, column 0.
+     * @param f10 row 0, column 1.
+     * @param f20 row 0, column 2.
+     * @param f01 row 1, column 0.
+     * @param f11 row 1, column 1.
+     * @param f21 row 1, column 2.
+     * @param f02 row 2, column 0.
+     * @param f12 row 2, column 1.
+     * @param f22 row 2, column 2.
+     */
+    public void setData(float f00, float f10, float f20, 
+            float f01, float f11, float f21, 
+            float f02, float f12, float f22) {
+        
+        data[0] = f00;
+        data[1] = f01;
+        data[2] = f02;
+        data[3] = f10;
+        data[4] = f11;
+        data[5] = f12;
+        data[6] = f20;
+        data[7] = f21;
+        data[8] = f22;
+    }
+    
+    /**
+     * Set the data from a row-major source.
+     * @param src the row-major source array.
+     * @param offset the offset into the source array.
+     */
+    public void setData(float[] src, int offset) {
+        data[0] = src[offset];
+        data[1] = src[offset + 3];
+        data[2] = src[offset + 6];
+        data[3] = src[offset + 1];
+        data[4] = src[offset + 4];
+        data[5] = src[offset + 7];
+        data[6] = src[offset + 2];
+        data[7] = src[offset + 5];
+        data[8] = src[offset + 8];
+    }
+    
+    /**
+     * Set the data from a column-major source.
+     * @param src the column-major source.
+     * @param offset the offset into the source array
+     */
+    public void setDataFromCM(float[] src, int offset) {
+        System.arraycopy(src, offset, data, 0, 9);
+    }
+    
+    /**
+     * 
+     * @return the matrix data in column-major format.
+     */
+    public float[] getData() {
+        return data;
     }
     
     public void setIdentity() {
-        setData(
-                1, 0, 0,
-                0, 1, 0,
-                0, 0, 1
-                );
+        data[0] = 1;
+        data[1] = 0;
+        data[2] = 0;
+        data[3] = 0;
+        data[4] = 1;
+        data[5] = 0;
+        data[6] = 0;
+        data[7] = 0;
+        data[8] = 1;
     }
     
-    public void setData(float[] data) {
-        System.arraycopy(data, 0, this.data, 0, 9);
+    public Vector getForwardDirection(Vector out) {
+        out.setXYZ(data[2], data[5], data[8]);
+        return out;
     }
     
-    public void setData(
-            float f1, float f2, float f3,
-            float f4, float f5, float f6,
-            float f7, float f8, float f9
-            ) {
-        
-        data[0] = f1;
-        data[1] = f4;
-        data[2] = f7;
-        data[3] = f2;
-        data[4] = f5;
-        data[5] = f8;
-        data[6] = f3;
-        data[7] = f6;
-        data[8] = f9;
+    public Vector getForwardDirectionXZ(Vector out) {
+        out.setXYZ(data[2], 0, data[8]);
+        out.normalize(out);
+        return out;
     }
     
-    public void setDataTranspose(
-            float f1, float f2, float f3, 
-            float f4, float f5, float f6,
-            float f7, float f8, float f9
-            ) {
-        
-        data[0] = f1;
-        data[1] = f2;
-        data[2] = f3;
-        data[3] = f4;
-        data[4] = f5;
-        data[5] = f6;
-        data[6] = f7;
-        data[7] = f8;
-        data[8] = f9;
+    public Vector getUpDirection(Vector out) {
+        out.setXYZ(data[1], data[4], data[7]);
+        return out;
     }
     
-    public Vector2 times(Vector2 v) {
-        return Matrix3.times(new Vector2(), this, v);
+    public Vector getRightDirection(Vector out) {
+        out.setXYZ(data[0], data[3], data[6]);
+        return out;
     }
     
-    public Matrix3 times(Matrix3 m) {
-    	return Matrix3.times(new Matrix3(), this, m);
-    }
-    
-    public void putIn(FloatBuffer fb) {
-        fb.put(data);
-        fb.rewind();
-    }
-    
-    public void set(int i, float f) {
-        data[i] = f;
-    }
-    
-    public void set(int column, int row, float f) {
-        data[indexOf(column, row)] = f;
-    }
-    
-    public float get(int i) {
-        return data[i];
-    }
-    
-    public float get(int column, int row) {
-        return data[indexOf(column, row)];
+    public Vector getRightDirectionXZ(Vector out) {
+        out.setXYZ(data[0], 0, data[6]);
+        out.normalize(out);
+        return out;
     }
     
     @Override
     public String toString() {
+        //l<row><column>
         int l00 = String.valueOf(data[0]).length();
         int l10 = String.valueOf(data[1]).length();
         int l20 = String.valueOf(data[2]).length();
         int l01 = String.valueOf(data[3]).length();
         int l11 = String.valueOf(data[4]).length();
         int l21 = String.valueOf(data[5]).length();
-        int l02 = String.valueOf(data[6]).length();
-        int l12 = String.valueOf(data[7]).length();
-        int l22 = String.valueOf(data[8]).length();
-        int clnLnt = Math.max(l00, Math.max(l10, Math.max(l20, Math.max(l01, 
-                Math.max(l11, Math.max(l21, Math.max(l02, Math.max(l12, l22))))))));
+        int clnLnt = Math.max(
+                Math.max(l00, Math.max(l10, l20)),
+                Math.max(l01, Math.max(l11, l21))
+        );
         return "Matrix:\n"
                 + data[0] + nBlanc(clnLnt - l00 + 2) + 
-                    data[3] + nBlanc(clnLnt - l01 + 2) +
-                    data[6] + nBlanc(clnLnt - l02 + 2) + "\n"
+                    data[3] + nBlanc(clnLnt - l01 + 2) + 
+                    data[6] + "\n"
                 + data[1] + nBlanc(clnLnt - l10 + 2) + 
-                    data[4] + nBlanc(clnLnt - l11 + 2) +
-                    data[7] + nBlanc(clnLnt - l12 + 2) + "\n"
+                    data[4] + nBlanc(clnLnt - l11 + 2) + 
+                    data[7] + "\n"
                 + data[2] + nBlanc(clnLnt - l20 + 2) + 
-                    data[5] + nBlanc(clnLnt - l21 + 2) +
-                    data[8] + nBlanc(clnLnt - l22 + 2);
+                    data[5] + nBlanc(clnLnt - l21 + 2) + 
+                    data[8];
     }
     
     private static String nBlanc(int n) {
@@ -137,144 +185,60 @@ public class Matrix3 {
         return s;
     }
     
-    public static int indexOf(int column, int row) {
-        return column + ( row * 3 );
+    public int getIndex(int column, int row) {
+        return (column * 3) + row;
     }
     
-    public static Matrix3 makeOrtho(Matrix3 result, float left, float right, float bottom, float top) {
-        result.setData(
-                2 / (right - left), 0,                  -((right+left)/(right-left)), 
-                0,                  2 / (top - bottom), -((top+bottom)/(top-bottom)), 
-                0,                  0,                  1
-        );
-        return result;
-    }
-    
-    public static Matrix3 translate(Matrix3 result, Matrix3 m, Vector2 v) {
-        result.setData(
-                m.get(0) + ( m.get(2) * v.getX() ),
-                m.get(3) + ( m.get(5) * v.getX() ),
-                m.get(6) + ( m.get(8) * v.getX() ),
-                m.get(1) + ( m.get(2) * v.getY() ),
-                m.get(4) + ( m.get(5) * v.getY() ),
-                m.get(7) + ( m.get(8) * v.getY() ),
-                m.get(2),
-                m.get(5),
-                m.get(8)
-                );
-        return result;
-    }
-    
-    public static Matrix3 makeTranslation(Matrix3 result, Vector2 v) {
-        result.setData(
-                1, 0, v.getX(),
-                0, 1, v.getY(),
-                0, 0, 1
-                );
-        return result;
-    }
-    
-    public static Matrix3 makeTranslation(Vector2 v) {
-        return makeTranslation(new Matrix3(), v);
-    }
-    
-    public static Matrix3 rotate(Matrix3 result, Matrix3 m, float theta) {
+    public static Matrix3 makeXRotation(Matrix3 result, float theta) {
         float costheta = GMath.cos(theta);
         float sintheta = GMath.sin(theta);
         result.setData(
-                ( m.get(0) * costheta ) + ( m.get(1) * sintheta ),
-                ( m.get(3) * costheta ) + ( m.get(4) * sintheta ),
-                ( m.get(6) * costheta ) + ( m.get(7) * sintheta ),
-                ( m.get(0) * -sintheta ) + ( m.get(1) * costheta ),
-                ( m.get(3) * -sintheta ) + ( m.get(4) * costheta ),
-                ( m.get(6) * -sintheta ) + ( m.get(7) * costheta ),
-                m.get(2),
-                m.get(5),
-                m.get(8)
+                1, 0,         0,
+                0, costheta,  sintheta,
+                0, -sintheta, costheta
                 );
         return result;
     }
     
-    public static Matrix3 makeRotation(Matrix3 result, float theta) {
+    public static Matrix3 makeYRotation(Matrix3 result, float theta) {
+        float costheta = GMath.cos(theta);
+        float sintheta = GMath.sin(theta);
+        result.setData(
+                costheta, 0, -sintheta,
+                0,        1, 0,
+                sintheta, 0, costheta
+                );
+        return result;
+    }
+    
+    public static Matrix3 makeZRotation(Matrix3 result, float theta) {
         float costheta = GMath.cos(theta);
         float sintheta = GMath.sin(theta);
         result.setData(
                 costheta,  sintheta, 0,
                 -sintheta, costheta, 0,
                 0,         0,        1
-        );
-        return result;
-    }
-    
-    public static Matrix3 makeRotation(float theta) {
-        return makeRotation(new Matrix3(), theta);
-    }
-    
-    public static Matrix3 scale(Matrix3 result, Matrix3 m, float xScale, float yScale) {
-        result.setData(
-                ( m.get(0) * xScale ), 
-                ( m.get(3) * xScale ),
-                ( m.get(6) * xScale ),
-                ( m.get(1) * yScale ), 
-                ( m.get(4) * yScale ),
-                ( m.get(7) * yScale ),
-                m.get(2),
-                m.get(5),
-                m.get(8)
                 );
         return result;
     }
     
-    public static Matrix3 scale(Matrix3 m, float xScale, float yScale) {
-        return scale(new Matrix3(), m, xScale, yScale);
-    }
-    
-    public static Matrix3 makeScaling(Matrix3 result, float xScale, float yScale) {
-        result.setData(
-                xScale, 0,      0,
-                0,      yScale, 0,
-                0,      0,      1
-                );
-        return result;
-    }
-    
-    public static Matrix3 makeScaling(float xScale, float yScale) {
-        return makeScaling(new Matrix3(), xScale, yScale);
-    }
-    
-    public static Matrix3 makeScaling(Matrix3 result, Vector2 scale) {
-        return makeScaling(result, scale.getX(), scale.getY());
-    }
-    
-    public static Matrix3 makeScaling(Vector2 scale) {
-        return makeScaling(new Matrix3(), scale);
-    }
-    
-    public static Vector2 times(Vector2 result, Matrix3 m, Vector2 v) {
-        return times(result, m.data, v);
-    }
-    
-    public static Vector2 times(Vector2 result, float[] m, Vector2 v) {
-        result.setX(( v.getX() * m[0] ) + ( v.getY() * m[3] ) + m[6] );
-        result.setY(( v.getX() * m[1] ) + ( v.getY() * m[4] ) + m[7] ) ;
+    public static Vector times(Vector result, Matrix3 m, Vector v) {
+        result.setX((v.getX() * m.data[0]) + (v.getY() * m.data[3]) + (v.getZ() * m.data[6]));
+        result.setY((v.getX() * m.data[1]) + (v.getY() * m.data[4]) + (v.getZ() * m.data[7]));
+        result.setZ((v.getX() * m.data[2]) + (v.getY() * m.data[5]) + (v.getZ() * m.data[8]));
         return result;
     }
     
     public static Matrix3 times(Matrix3 result, Matrix3 m1, Matrix3 m2) {
-    	times(result.data, m1.data, m2.data);
-    	return result;
-    }
-    
-    public static float[] times(float[] result, float[] m1, float[] m2) {
-    	result[0] = ( ( m1[0] * m2[0] ) + ( m1[1] * m2[3] )  + ( m1[2] * m2[6] ));
-    	result[1] = ( ( m1[0] * m2[1] ) + ( m1[1] * m2[4] )  + ( m1[2] * m2[7] ));
-    	result[2] = ( ( m1[0] * m2[2] ) + ( m1[1] * m2[5] )  + ( m1[2] * m2[8] ));
-    	result[3] = ( ( m1[3] * m2[0] ) + ( m1[4] * m2[3] )  + ( m1[5] * m2[6] ));
-    	result[4] = ( ( m1[3] * m2[1] ) + ( m1[4] * m2[4] )  + ( m1[5] * m2[7] ));
-    	result[5] = ( ( m1[3] * m2[2] ) + ( m1[4] * m2[5] )  + ( m1[5] * m2[8] ));
-    	result[6] = ( ( m1[6] * m2[0] ) + ( m1[7] * m2[3] )  + ( m1[8] * m2[6] ));
-    	result[7] = ( ( m1[6] * m2[1] ) + ( m1[7] * m2[4] )  + ( m1[8] * m2[7] ));
-    	result[8] = ( ( m1[6] * m2[2] ) + ( m1[7] * m2[5] )  + ( m1[8] * m2[8] ));
+    	result.data[0] = ((m1.data[0] * m2.data[0]) + (m1.data[3] * m2.data[1]) + (m1.data[6] * m2.data[2]));
+    	result.data[1] = ((m1.data[1] * m2.data[0]) + (m1.data[4] * m2.data[1]) + (m1.data[7] * m2.data[2]));
+    	result.data[2] = ((m1.data[2] * m2.data[0]) + (m1.data[5] * m2.data[1]) + (m1.data[8] * m2.data[2]));
+    	result.data[3] = ((m1.data[0] * m2.data[3]) + (m1.data[3] * m2.data[4]) + (m1.data[6] * m2.data[5]));
+    	result.data[4] = ((m1.data[1] * m2.data[3]) + (m1.data[4] * m2.data[4]) + (m1.data[7] * m2.data[5]));
+    	result.data[5] = ((m1.data[2] * m2.data[3]) + (m1.data[5] * m2.data[4]) + (m1.data[8] * m2.data[5]));
+    	result.data[6] = ((m1.data[0] * m2.data[6]) + (m1.data[3] * m2.data[7]) + (m1.data[6] * m2.data[8]));
+    	result.data[7] = ((m1.data[1] * m2.data[6]) + (m1.data[4] * m2.data[7]) + (m1.data[7] * m2.data[8]));
+    	result.data[8] = ((m1.data[2] * m2.data[6]) + (m1.data[5] * m2.data[7]) + (m1.data[8] * m2.data[8]));
         return result;
     }
 }

@@ -1,6 +1,7 @@
 package com.quew8.geng3d;
 
 import com.quew8.gmath.Matrix;
+import com.quew8.gmath.Matrix3;
 import com.quew8.gmath.Vector;
 import java.util.ArrayList;
 
@@ -90,7 +91,8 @@ public class TransformingPosition extends Position {
         
         @Override
         public void transform(Vector in, Vector dest) {
-            Matrix.timesRotation(dest, getRotationMatrix(), in);
+            Matrix3 normalMatrix = Matrix.getMatrix3(new Matrix3(), getRotationMatrix());
+            Matrix3.times(dest, normalMatrix, in);
         }
     }
 }

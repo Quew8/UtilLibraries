@@ -7,7 +7,7 @@ import java.util.Random;
  * @author Quew8
  */
 public class PsuedoRandomGenerator {
-    private static final Random r = new Random();
+    private static final Random R = new Random();
     private static float[] array = new float[10];
     private final long[] seeds;
     
@@ -23,6 +23,8 @@ public class PsuedoRandomGenerator {
      * 
      * @param x
      * @param width
+     * @param result
+     * @param resultOff
      * @return 
      */
     public float[] generate1DRange(int x, int width, float[] result, int resultOff) {
@@ -32,7 +34,7 @@ public class PsuedoRandomGenerator {
     
     /**
      * 
-     * @param in
+     * @param x
      * @return 
      */
     public float generate1D(int x) {
@@ -46,6 +48,7 @@ public class PsuedoRandomGenerator {
      * @param width
      * @param y
      * @param height
+     * @param result
      * @return 
      */
     public float[][] generate2DRange(int x, int width, int y, int height, float[][] result) {
@@ -65,6 +68,8 @@ public class PsuedoRandomGenerator {
      * 
      * @param x
      * @param y
+     * @param result
+     * @param arrayOff
      * @return 
      */
     public float[] generate2D(int x, int y, float[] result, int arrayOff) {
@@ -104,16 +109,16 @@ public class PsuedoRandomGenerator {
                 y > 0 ? 
                 y % 10 : 
                 10 + ( y % 10 );
-        r.setSeed(seed + ( ( x - xOff ) * 57 ) + ( ( y - yOff ) * 97 ));
+        R.setSeed(seed + ( ( x - xOff ) * 57 ) + ( ( y - yOff ) * 97 ));
         for(int i = 0; i < xOff; i++) {
-            r.nextFloat();
+            R.nextFloat();
         }
         for(int i = 0; i < n; i++) {
             if(i >= 10) {
                 putRange(seed, x + 10, y, n - i, array, arrayOff + i);
                 break;
             } else {
-                array[arrayOff + i] = ( r.nextFloat() * 2 ) - 1;
+                array[arrayOff + i] = ( R.nextFloat() * 2 ) - 1;
             }
         }
     }

@@ -20,11 +20,8 @@ abstract class ArrayParser extends XMLParser {
     @Override
     public HashMap<String, XMLAttributeParser> addAttributeParsers(HashMap<String, XMLAttributeParser> to) {
         to = super.addAttributeParsers(to);
-        to.put(COUNT, new XMLAttributeParser() {
-            @Override
-            public void parse(Attribute attribute, Element parent) {
-                count = Integer.parseInt(attribute.getValue());
-            }
+        to.put(COUNT, (XMLAttributeParser) (Attribute attribute, Element parent) -> {
+            count = Integer.parseInt(attribute.getValue());
         });
         return to;
     }

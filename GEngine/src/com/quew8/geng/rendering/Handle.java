@@ -25,12 +25,12 @@ abstract class Handle {
         return end;
     }
 
+    @Override
+    public String toString() {
+        return "Handle{" + "start=" + start + ", end=" + end + '}';
+    }
+
     public static Vector[] removeDuplicates(Vector[] vectors) {
-        return ArrayUtils.removeDuplicates(vectors, new Comparator<Vector>() {
-            @Override
-            public int compare(Vector o1, Vector o2) {
-                return o1.equals(o2) ? 0 : 1;
-            }
-        });
+        return ArrayUtils.removeDuplicates(vectors, (Vector o1, Vector o2) -> o1.equals(o2) ? 0 : 1);
     }
 }

@@ -129,6 +129,7 @@ public abstract class OpenGL {
     public static final int GL_INT = 0x1404;
     public static final int GL_UNSIGNED_INT = 0x1405;
     public static final int GL_FLOAT = 0x1406;
+    public static final int GL_DOUBLE = 0x140A;
     public static final int GL_DEPTH_COMPONENT = 0x1902;
     public static final int GL_RED = 0x1903;
     public static final int GL_GREEN = 0x1904;
@@ -525,6 +526,10 @@ public abstract class OpenGL {
         PlatformBackend.backend.glGenVertexArrays_P(arrays);
     }
 
+    public static void glGenerateMipmap(int target) {
+        PlatformBackend.backend.glGenerateMipmap_P(target);
+    }
+    
     public static String glGetActiveAttrib(int program, int index, IntBuffer length, IntBuffer type) {
         return PlatformBackend.backend.glGetActiveAttrib_P(program, index, length, type);
     }
@@ -545,6 +550,10 @@ public abstract class OpenGL {
         PlatformBackend.backend.glGetBufferParameteriv_P(target, value, data);
     }
 
+    public static void glGetBufferSubData(int target, long offset, ByteBuffer data) {
+        PlatformBackend.backend.glGetBufferSubData_P(target, offset, data);
+    }
+    
     public static int glGetError() {
         return PlatformBackend.backend.glGetError_P();
     }
@@ -847,18 +856,6 @@ public abstract class OpenGL {
 
     public static void glVertexAttribPointer(int index, int size, int type, boolean normalized, int stride, int bufferOffset) {
         PlatformBackend.backend.glVertexAttribPointer_P(index, size, type, normalized, stride, bufferOffset);
-    }
-
-    public static void glVertexAttribPointer(int index, int size, boolean normalized, int stride, FloatBuffer buffer) {
-        PlatformBackend.backend.glVertexAttribPointer_P(index, size, normalized, stride, buffer);
-    }
-
-    public static void glVertexAttribPointer(int index, int size, boolean unsigned, boolean normalized, int stride, IntBuffer buffer) {
-        PlatformBackend.backend.glVertexAttribPointer_P(index, size, unsigned, normalized, stride, buffer);
-    }
-
-    public static void glVertexAttribPointer(int index, int size, boolean unsigned, boolean normalized, int stride, ByteBuffer buffer) {
-        PlatformBackend.backend.glVertexAttribPointer_P(index, size, unsigned, normalized, stride, buffer);
     }
 
     public static void glViewport(int x, int y, int width, int height) {

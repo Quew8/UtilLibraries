@@ -1,7 +1,7 @@
 package com.quew8.gutils;
 
+import com.quew8.gutils.collections.Bag;
 import com.quew8.gutils.formatting.TextFormatter;
-import com.quew8.gutils.opengl.texture.TextureUtils;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -26,7 +26,7 @@ import java.util.zip.ZipInputStream;
 public abstract class GeneralUtils {
     private static int intEnumCount = Integer.MIN_VALUE;
     public static final ExceptionHandler<IOException> DEFAULT_IO_HANDLER = new ExceptionHandler<IOException>();    
-    private static final Random r = new Random();
+    private static final Random R = new Random();
 
     private GeneralUtils() {
         
@@ -61,7 +61,7 @@ public abstract class GeneralUtils {
     }
     
     public static InputStream readFrom(String path, ExceptionHandler<IOException> handler) {
-        InputStream stream = TextureUtils.class.getClassLoader().getResourceAsStream(path);
+        InputStream stream = GeneralUtils.class.getClassLoader().getResourceAsStream(path);
         if (stream == null) {
             handler.handle(new IOException("Could not load: " + path));
         }
@@ -73,7 +73,7 @@ public abstract class GeneralUtils {
     }
     
     public static InputStream throwableReadFrom(String path) throws IOException {
-        InputStream stream = TextureUtils.class.getClassLoader().getResourceAsStream(path);
+        InputStream stream = GeneralUtils.class.getClassLoader().getResourceAsStream(path);
         if (stream == null) {
             throw new IOException("Could not load: " + path);
         }
@@ -212,12 +212,7 @@ public abstract class GeneralUtils {
     }
     
     public static String[] getJarContents(FileInputStream fs) {
-        return getJarContents(fs, new FilenameFilter() {
-            @Override
-            public boolean accept(File dir, String name) {
-                return true;
-            }
-        });
+        return getJarContents(fs, (File dir, String name) -> true);
     }
     
     public static FilenameFilter getFilenameFilter(File directory, String prefix, String suffix) {
@@ -270,15 +265,15 @@ public abstract class GeneralUtils {
     }
     
     public static Random getRandom() {
-        return r;
+        return R;
     }
     
     public static boolean getRandomBool() {
-        return r.nextBoolean();
+        return R.nextBoolean();
     }
     
     public static long getRandomLong() {
-        return r.nextLong();
+        return R.nextLong();
     }
     
     public static int getRandomInt(int min, int max) {
@@ -286,18 +281,30 @@ public abstract class GeneralUtils {
         if (range <= 0) {
             throw new IllegalArgumentException("Range is less than or equal to zero");
         }
-        return r.nextInt(range) + min;
+        return R.nextInt(range) + min;
     }
     
     public static int getRandomInt() {
-        return r.nextInt();
+        return R.nextInt();
     }
     
     public static float getRandomFloat(float min, float max) {
         float range = max - min;
-        return (r.nextFloat() * range) + min;
+        return (R.nextFloat() * range) + min;
     }
 
+    public static int[] genPermTable(Random r, int length) {
+        int[] perm = new int[length];
+        Bag<Integer> bag = new Bag<Integer>(new Integer[length]);
+        for(int i = 0; i < length; i++) {
+            bag.add(i);
+        }
+        for(int i = 0; i < length; i++) {
+            perm[i] = bag.remove(r.nextInt(length - i));
+        }
+        return perm;
+    }
+    
     /**
      *
      * @param <T>
@@ -330,7 +337,6 @@ public abstract class GeneralUtils {
             }
             return (suffix == null || name.endsWith(suffix));
         }
-        
         
     }
 }

@@ -61,29 +61,14 @@ class NodeParser extends XMLParser {
     @Override
     public HashMap<String, XMLAttributeParser> addAttributeParsers(HashMap<String, XMLAttributeParser> to) {
         to = super.addAttributeParsers(to);
-        to.put(NAME, new XMLAttributeParser() {
-
-            @Override
-            public void parse(Attribute attribute, Element parent) {
-                name = attribute.getValue();
-            }
-            
+        to.put(NAME, (XMLAttributeParser) (Attribute attribute, Element parent1) -> {
+            name = attribute.getValue();
         });
-        to.put(SID, new XMLAttributeParser() {
-
-            @Override
-            public void parse(Attribute attribute, Element parent) {
-                sid = attribute.getValue();
-            }
-            
+        to.put(SID, (XMLAttributeParser) (Attribute attribute, Element parent1) -> {
+            sid = attribute.getValue();
         });
-        to.put(TYPE, new XMLAttributeParser() {
-
-            @Override
-            public void parse(Attribute attribute, Element parent) {
-                type = attribute.getValue();
-            }
-            
+        to.put(TYPE, (XMLAttributeParser) (Attribute attribute, Element parent1) -> {
+            type = attribute.getValue();
         });
         return to;
     }
@@ -91,65 +76,30 @@ class NodeParser extends XMLParser {
     @Override
     public HashMap<String, XMLElementParser> addElementParsers(HashMap<String, XMLElementParser> to) {
         to = super.addElementParsers(to);
-        to.put(MATRIX, new XMLElementParser() {
-            
-            @Override
-            public void parse(Element element) {
-                transform = Matrix.times(new Matrix(), transform, CollParseUtils.parseMatrix(element.getText()));
-            }
-            
+        to.put(MATRIX, (XMLElementParser) (Element element) -> {
+            transform = Matrix.times(new Matrix(), transform, CollParseUtils.parseMatrix(element.getText()));
         });
-        to.put(TRANSLATE, new XMLElementParser() {
-            
-            @Override
-            public void parse(Element element) {
-                Vector t = CollParseUtils.parseVec3(element.getText());
-                transform = Matrix.times(new Matrix(), transform, Matrix.makeTranslation(t));
-            }
-            
+        to.put(TRANSLATE, (XMLElementParser) (Element element) -> {
+            Vector t = CollParseUtils.parseVec3(element.getText());
+            transform = Matrix.times(new Matrix(), transform, Matrix.makeTranslation(new Matrix(), t));
         });
-        to.put(ROTATE, new XMLElementParser() {
-            
-            @Override
-            public void parse(Element element) {
-                float[] r = CollParseUtils.parseVec4(element.getText());
-                Vector v = new Vector(r[0], r[1], r[2]);
-                transform = Matrix.times(new Matrix(), transform, Matrix.makeRotation(v, GMath.toRadians(r[3])));
-            }
-            
+        to.put(ROTATE, (XMLElementParser) (Element element) -> {
+            float[] r = CollParseUtils.parseVec4(element.getText());
+            Vector v = new Vector(r[0], r[1], r[2]);
+            transform = Matrix.times(new Matrix(), transform, Matrix.makeAxisRotation(new Matrix(), v, GMath.toRadians(r[3])));
         });
-        to.put(SCALE, new XMLElementParser() {
-            
-            @Override
-            public void parse(Element element) {
-                Vector s = CollParseUtils.parseVec3(element.getText());
-                transform = Matrix.times(new Matrix(), transform, Matrix.makeScaling(s));
-            }
-            
+        to.put(SCALE, (XMLElementParser) (Element element) -> {
+            Vector s = CollParseUtils.parseVec3(element.getText());
+            transform = Matrix.times(new Matrix(), transform, Matrix.makeScaling(new Matrix(), s));
         });
-        to.put(NODE, new XMLElementParser() {
-            
-            @Override
-            public void parse(Element element) {
-                nodes.add(NodeParser.this.parseWith(element, new NodeParser(NodeParser.this)));
-            }
-            
+        to.put(NODE, (XMLElementParser) (Element element) -> {
+            nodes.add(NodeParser.this.parseWith(element, new NodeParser(NodeParser.this)));
         });
-        to.put(INSTANCE_GEOM, new XMLElementParser() {
-            
-            @Override
-            public void parse(Element element) {
-                geometry.add(NodeParser.this.parseWith(element, new InstanceGeometryParser()));
-            }
-            
+        to.put(INSTANCE_GEOM, (XMLElementParser) (Element element) -> {
+            geometry.add(NodeParser.this.parseWith(element, new InstanceGeometryParser()));
         });
-        to.put(INSTANCE_CONTROLLER, new XMLElementParser() {
-            
-            @Override
-            public void parse(Element element) {
-                controllers.add(NodeParser.this.parseWith(element, new InstanceControllerParser()));
-            }
-            
+        to.put(INSTANCE_CONTROLLER, (XMLElementParser) (Element element) -> {
+            controllers.add(NodeParser.this.parseWith(element, new InstanceControllerParser()));
         });
         return to;
     }

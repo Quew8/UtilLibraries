@@ -16,20 +16,15 @@ class SourceParser extends XMLParser implements DataSource {
     
     private AccessorParser accessor;
     
-    public SourceParser() {
+    SourceParser() {
         super(false, false);
     }
 
     @Override
     public HashMap<String, XMLElementParser> addElementParsers(HashMap<String, XMLElementParser> to) {
         to = super.addElementParsers(to);
-        to.put(TECHNIQUE_COMMON, new XMLElementParser() {
-
-            @Override
-            public void parse(Element element) {
-                accessor = SourceParser.this.parseWith(element.element(ACCESSOR), new AccessorParser());
-            }
-
+        to.put(TECHNIQUE_COMMON, (XMLElementParser) (Element element) -> {
+            accessor = SourceParser.this.parseWith(element.element(ACCESSOR), new AccessorParser());
         });
         return to;
     }

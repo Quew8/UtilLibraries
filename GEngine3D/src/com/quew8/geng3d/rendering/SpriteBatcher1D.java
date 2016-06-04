@@ -22,11 +22,11 @@ public class SpriteBatcher1D<T> extends SpriteBatcher<T> {
     }
     
     public void draw(Colour colour, float x, float y, float z, float width, float height, float depth) {
-        batch(dataFactory.construct(colour, x, y, z, width, height, depth));
+        batch(dataFactory.construct(dataFactory.getInstance(), colour, x, y, z, width, height, depth));
     }
     
     public void draw(float x, float y, float z, float width, float height, float depth) {
-        batch(dataFactory.construct(x, y, z, width, height, depth));
+        batch(dataFactory.construct(dataFactory.getInstance(), x, y, z, width, height, depth));
     }
     
 }

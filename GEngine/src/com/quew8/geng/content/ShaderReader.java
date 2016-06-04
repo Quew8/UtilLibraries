@@ -39,7 +39,12 @@ public class ShaderReader implements ContentReader<ShaderProgram> {
                 default: throw new IllegalArgumentException("Unrecognized shader program file extension: \"" + extension + "\"");
             }
         }
-        String[] attribs = in.getParams().get(ATRIBS).split("[\\s]+");
+        String[] attribs;
+        if(in.getParams().containsKey(ATRIBS)) {
+            attribs = in.getParams().get(ATRIBS).split("[\\s]+");
+        } else {
+            attribs = new String[0];
+        }
         HashMap<String, String> constants = new HashMap<String, String>();
         if(in.getParamLists().containsKey(REPLACEMENTS)) {
             Entry<String, String>[] entries = in.getParamLists().get(REPLACEMENTS);

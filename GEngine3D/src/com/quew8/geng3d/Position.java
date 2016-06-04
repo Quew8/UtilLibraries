@@ -1,26 +1,27 @@
 package com.quew8.geng3d;
 
-import com.quew8.geng.debug.VectorDebugInterface;
+import com.quew8.geng.debug.DebugVectorWrapper;
 import com.quew8.gmath.Matrix;
 import com.quew8.gmath.Vector;
 import com.quew8.gutils.collections.Bag;
-import com.quew8.gutils.debug.DebugInterface;
-import com.quew8.gutils.debug.DebugObjectNotFoundException;
-import com.quew8.gutils.debug.DebugParamNotFoundException;
+import com.quew8.gutils.debug.DebugObject;
+import com.quew8.gutils.debug.DebugObjectParam;
 
 /**
  * 
  * @author Quew8
  *
  */
-public class Position implements Bindable, DebugInterface {
+@DebugObject(name = "position")
+public class Position implements Bindable {
     private Position superPosition = null;
     private final Bag<Position> subPositions = new Bag<Position>(Position.class, 0);
     private final Bag<Bindable> bound = new Bag<Bindable>(Bindable.class, 0);
+    @DebugObjectParam(wrapper = DebugVectorWrapper.class)
     private final Vector translation;
     private final Matrix translationMatrix = new Matrix();
     private boolean needsNewTranslationMatrix = true;
-    
+    @DebugObjectParam(wrapper = DebugVectorWrapper.class)
     private final Vector orientation;
     private final Matrix rotationMatrix = new Matrix();
     private boolean needsNewRotationMatrix = true;
@@ -62,7 +63,7 @@ public class Position implements Bindable, DebugInterface {
         for(int i = 0; i < bound.size(); i++) {
             bound.get(i).translate(dv);
         }
-        translation.add(dv);
+        translation.add(translation, dv);
         setNeedsNewTranslationMatrix();
     }
     
@@ -89,7 +90,7 @@ public class Position implements Bindable, DebugInterface {
         for(int i = 0; i < bound.size(); i++) {
             bound.get(i).rotateAbout(da, getTranslation());
         }
-        orientation.add(da);
+        orientation.add(orientation, da);
         setNeedsNewRotationMatrix();
     }
 
@@ -130,10 +131,13 @@ public class Position implements Bindable, DebugInterface {
 
     public void createRotationMatrix() {
         if(needsNewRotationMatrix) {
-            Matrix m = new Matrix();
+            Matrix m1 = new Matrix();
+            Matrix m2 = new Matrix();
             Matrix.makeYRotation(rotationMatrix, orientation.getY());
-            Matrix.rotateX(m, rotationMatrix, orientation.getX());
-            Matrix.rotateZ(rotationMatrix, m, orientation.getZ());
+            Matrix.makeXRotation(m1, orientation.getX());
+            Matrix.times(m2, rotationMatrix, m1);
+            Matrix.makeYRotation(m1, orientation.getZ());
+            Matrix.times(rotationMatrix, m2, m1);
             needsNewRotationMatrix = false;
         }
     }
@@ -173,49 +177,5 @@ public class Position implements Bindable, DebugInterface {
     
     public Vector getOrientation() {
         return orientation;
-    }
-
-    @Override
-    public String debugGetName() {
-        return "position";
-    }
-
-    @Override
-    public String debugGetValue(String param) throws DebugParamNotFoundException {
-        throw new DebugParamNotFoundException(this, param);
-    }
-
-    @Override
-    public DebugInterface debugGetObj(String obj) throws DebugObjectNotFoundException {
-        switch(obj) {
-            case "translation": return new VectorDebugInterface(translation);
-            case "orientation": return new VectorDebugInterface(orientation);
-        }
-        throw new DebugObjectNotFoundException(this, obj);
-    }
-
-    @Override
-    public void debugSetValue(String param, String... values) throws DebugParamNotFoundException {
-        throw new DebugParamNotFoundException(this, param);
-    }
-
-    @Override
-    public void debugOnChangeObj(String in) {
-        switch(in) {
-            case "translation": setNeedsNewTranslationMatrix(); break;
-            case "orientation": setNeedsNewRotationMatrix(); break;
-        }
-    }
-
-    @Override
-    public String[] debugGetParams() {
-        return new String[]{};
-    }
-
-    @Override
-    public String[] debugGetObjects() {
-        return new String[]{
-            "translation", "orientation"
-        };
     }
 }

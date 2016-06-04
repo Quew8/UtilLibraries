@@ -34,7 +34,7 @@ public class CharSpriteBatcher<T> extends SpriteBatcher<T> {
     }
     
     public void drawNoColour(char c, float x, float y, float z, float width, float height, Plane plane) {
-        batch(dataFactory.construct(mapping.get(c), x, y, z, width, height, plane));
+        batch(dataFactory.construct(dataFactory.getInstance(), mapping.get(c), x, y, z, width, height, plane));
     }
     
     public void drawNoColour(char c, float x, float y, float z, float width, Plane plane) {
@@ -66,7 +66,7 @@ public class CharSpriteBatcher<T> extends SpriteBatcher<T> {
             if(s.charAt(i) != ' ') {
                 drawNoColour(s.charAt(i), pos.getX(), pos.getY(), pos.getZ(), charWidth, charHeight, plane);
             }
-            pos.add(step);
+            pos.add(pos, step);
         }
     }
     

@@ -8,9 +8,9 @@ import org.dom4j.Element;
  *
  * @author Quew8
  */
-public abstract class XMLElementParser {
+public interface XMLElementParser {
     
-    public abstract void parse(Element element);
+    public void parse(Element element);
     
     public static void parseElements(List<Element> elements, HashMap<String, XMLElementParser> parsers, 
             boolean matchAll) {

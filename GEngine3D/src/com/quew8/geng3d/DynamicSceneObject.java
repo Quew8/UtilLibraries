@@ -63,6 +63,6 @@ public class DynamicSceneObject extends SceneObject<DynamicHandleInstance<?>> im
     }
 
     public Vector getTranslation() {
-        return position.getTranslationMatrix().getTranslation();
+        return position.getTranslationMatrix().getTranslation(new Vector());
     }
 }

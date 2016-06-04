@@ -26,10 +26,10 @@ public class GLException extends RuntimeException {
     }
     
     public GLException(String from, int code) {
-        this("GL Error from " + from + ": " + OpenGLUtils.toOpenGLString(code));
+        this("GL Error from " + from + ": " + OpenGLUtils.toOpenGLEnum(code));
     }
     
     public GLException(int code) {
-        this("GL Error: " + OpenGLUtils.toOpenGLString(code));
+        this("GL Error: " + OpenGLUtils.toOpenGLEnum(code));
     }
 }

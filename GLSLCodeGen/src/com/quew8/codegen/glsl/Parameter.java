@@ -37,14 +37,4 @@ public class Parameter extends GLSLElement<Parameter> {
         this.name = name;
         return this;
     }
-
-    /*@Override
-    protected String getConstructedCode() {
-        return GLSLCodeGenUtils.getConstruction()
-                .add(type)
-                .add(name)
-                .get();
-    }*/
-    
-    
 }

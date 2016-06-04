@@ -25,6 +25,7 @@ import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.util.HashMap;
+import java.util.function.BiFunction;
 
 /**
  * 
@@ -225,6 +226,68 @@ public class TextureUtils {
     /**
      * 
      * @param texture
+     * @param function
+     * @param usedWidth
+     * @param usedHeight
+     * @param actualWidth
+     * @param actualHeight 
+     * @param params 
+     */
+    protected static void fillFunctionTexture(TextureObj texture, 
+            BiFunction<Integer, Integer, Colour> function, int usedWidth, 
+            int usedHeight, int actualWidth, int actualHeight, 
+            TextureParams params) {
+        
+    	ByteBuffer bb = BufferUtils.createByteBuffer(actualWidth * actualHeight * 4);
+        for(int h = 0; h < actualWidth; h++) {
+            for(int w = 0; w < actualHeight; w++) {
+                if(h < usedHeight && w < usedWidth) {
+                    Colour.ByteColour bcolour = function.apply(w, h).new ByteColour();
+                    bb.put(bcolour.getRed()).put(bcolour.getGreen())
+                            .put(bcolour.getBlue()).put(bcolour.getAlpha());
+                } else {
+                    bb.put((byte)0).put((byte)0)
+                            .put((byte)0).put((byte)0);
+                }
+            }
+        }
+        bb.flip();
+        
+        texture.bind();
+        params.setAllParams(GL_TEXTURE_2D);
+//        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+//        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, COLOUR_TEXTURE_LENGTH, COLOUR_TEXTURE_LENGTH, 0, GL_RGBA, GL_UNSIGNED_BYTE, bb);
+    }
+    
+    /**
+     * 
+     * @param function
+     * @param textureWidth
+     * @param textureHeight
+     * @param params
+     * @return 
+     */
+    public static TextureDetails createFunctionTexture(
+            BiFunction<Integer, Integer, Colour> function, int textureWidth, 
+            int textureHeight, TextureParams params) {
+        
+        TextureObj tex = new TextureObj(GL_TEXTURE_2D);
+        
+        int actualWidth = get2Fold(textureWidth);
+        int actualHeight = get2Fold(textureHeight);
+        fillFunctionTexture(tex, function, textureWidth, textureHeight, 
+                actualWidth, actualHeight, params);
+        
+        return new TextureDetails(tex, 
+                textureWidth, textureHeight, 
+                actualWidth, actualHeight
+                );
+    }
+    
+    /**
+     * 
+     * @param texture
      * @param c
      */
     protected static void fillColourTexture(TextureObj texture, Colour c) {
@@ -308,9 +371,8 @@ public class TextureUtils {
         ByteBuffer data = convertImageData(img, texWidth, texHeight, true, 4, glAlphaColourModel);
         TextureObj tex = new TextureObj(GL_TEXTURE_2D);
         tex.bind();
-        params.setAll(GL_TEXTURE_2D);
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, texWidth, texHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
-        params.run();
+        params.setAllParams(GL_TEXTURE_2D);
         
         return new TextureDetails(tex, imgWidth, imgHeight, texWidth, texHeight);
     }
@@ -339,7 +401,10 @@ public class TextureUtils {
         g.drawImage(img, 0, 0, null);
         
         byte[] data = ((DataBufferByte) texImage.getRaster().getDataBuffer()).getData();
-        return BufferUtils.createByteBuffer(data);
+        ByteBuffer bb = BufferUtils.createByteBuffer(data.length);
+        bb.put(data);
+        bb.flip();
+        return bb;
     }
     
     /**
@@ -352,9 +417,7 @@ public class TextureUtils {
      */
     protected static void fillEmptyTexture(TextureObj texture, int width, int height, int destFormat, TextureParams texParams) {
         texture.bind();
-        for(int i = 0; i < texParams.getNParams(); i++) {
-            glTexParameteri(GL_TEXTURE_2D, texParams.getPName(i), texParams.getParam(i));
-        }
+        texParams.setAllParams(GL_TEXTURE_2D);
         
         ByteBuffer bb = BufferUtils.createByteBuffer(width * height * 16);
 
@@ -368,7 +431,7 @@ public class TextureUtils {
                 GL_RGBA,
                 GL_UNSIGNED_BYTE,
                 bb);
-        DebugLogger.log(TEXTURE_UTILS_LOG, "DestFormat: " + destFormat + " : " + com.quew8.gutils.opengl.OpenGLUtils.toOpenGLString(destFormat));
+        DebugLogger.log(TEXTURE_UTILS_LOG, "DestFormat: " + destFormat + " : " + com.quew8.gutils.opengl.OpenGLUtils.toOpenGLEnum(destFormat));
     }
     
     /**

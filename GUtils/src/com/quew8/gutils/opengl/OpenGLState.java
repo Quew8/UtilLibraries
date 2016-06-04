@@ -268,7 +268,7 @@ public class OpenGLState {
 					glEnum != GL_SCISSOR_TEST && 
 					glEnum != GL_STENCIL_TEST
 					) {
-				throw new IllegalArgumentException("glEnum is not an acceptable OpenGL enum: " + glEnum + " " + OpenGLUtils.toOpenGLString(glEnum));
+				throw new IllegalArgumentException("glEnum is not an acceptable OpenGL enum: " + glEnum + " " + OpenGLUtils.toOpenGLEnum(glEnum));
 			}
 			this.glEnum = glEnum;
 		}

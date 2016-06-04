@@ -3,6 +3,7 @@ package com.quew8.geng.xmlparser;
 import com.quew8.gutils.GeneralUtils;
 import com.quew8.gutils.ResourceLoader;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.regex.Pattern;
@@ -58,7 +59,7 @@ class XMLMemory {
         }
         
         XMLElementMemory(Element element) {
-            this(element, null);
+            this(element, "");
         }
         
         @SuppressWarnings("unchecked")
@@ -134,9 +135,9 @@ class XMLMemory {
         try {
             return new SAXReader().read(resourceLoader.throwableLoad(resourcePath)).getRootElement();
         } catch(DocumentException ex) {
-            throw new XMLParseException("Could not parse file", ex);
+            throw new XMLParseException("Could not parse file \"" + resourcePath + "\"", ex);
         } catch(IOException ex) {
-            throw new XMLParseException("Could not load file", ex);
+            throw new XMLParseException("Could not load file \"" + resourcePath + "\"", ex);
         }
     }
     

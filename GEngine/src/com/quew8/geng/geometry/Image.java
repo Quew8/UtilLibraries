@@ -40,14 +40,16 @@ public class Image {
     }
     
     public static Image getRotation(float theta) {
-        Matrix3 m = Matrix3.makeTranslation(new Vector2(-0.5f, -0.5f));
+        throw new UnsupportedOperationException("Need to add 2D transforms to Matrix3");
+        /*Matrix3 m = Matrix3.makeTranslation(new Vector2(-0.5f, -0.5f));
         Matrix3 temp = Matrix3.rotate(new Matrix3(), m, theta);
         m = Matrix3.translate(m, temp, new Vector2(0.5f, 0.5f));
-        return new TransformImage(m);
+        return new TransformImage(m);*/
     }
     
     public static Image subImage(Image img, Image subimg) {
-        return new TransformImage(subimg.getTransform().times(img.getTransform()));
+        throw new UnsupportedOperationException("Need to add 2D transforms to Matrix3");
+        //return new TransformImage(subimg.getTransform().times(img.getTransform()));
     }
     
     public static Image rotateImage(Image img, float theta) {
@@ -72,9 +74,10 @@ public class Image {
         
         @Override
         protected Matrix3 getTransform() {
-            Matrix3 m = Matrix3.makeScaling(new Matrix3(), sizeX, sizeY);
+            throw new UnsupportedOperationException("Need to add 2D transforms to Matrix3");
+            /*Matrix3 m = Matrix3.makeScaling(new Matrix3(), sizeX, sizeY);
             Matrix3 m2 = Matrix3.translate(new Matrix3(), m, new Vector2(minX, minY));
-            return m2;
+            return m2;*/
         }
 
         @Override
@@ -92,9 +95,10 @@ public class Image {
 
         @Override
         public void transformCoords(float[] coords, int offset) {
-            Vector2 v = Matrix3.times(new Vector2(), m, new Vector2(coords[offset], coords[offset + 1]));
+            throw new UnsupportedOperationException("Need to add 2D transforms to Matrix3");
+            /*Vector2 v = Matrix3.times(new Vector2(), m, new Vector2(coords[offset], coords[offset + 1]));
             coords[offset] = v.getX();
-            coords[offset + 1] = v.getY();
+            coords[offset + 1] = v.getY();*/
         }
         
         @Override

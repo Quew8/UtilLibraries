@@ -30,19 +30,14 @@ public class SkinParser extends XMLParser {
     private VertexWeightsParser vertexWeights;
     
     SkinParser() {
-        super(false, true);
+        
     }
     
     @Override
     public HashMap<String, XMLAttributeParser> addAttributeParsers(HashMap<String, XMLAttributeParser> to) {
         to = super.addAttributeParsers(to);
-        to.put(SOURCE, new XMLAttributeParser() {
-
-            @Override
-            public void parse(Attribute attribute, Element parent) {
-                geometry = SkinParser.this.parseWith(attribute.getValue(), new GeometryParser());
-            }
-            
+        to.put(SOURCE, (XMLAttributeParser) (Attribute attribute, Element parent) -> {
+            geometry = SkinParser.this.parseWith(attribute.getValue(), new GeometryParser());
         });
         return to;
     }
@@ -50,29 +45,14 @@ public class SkinParser extends XMLParser {
     @Override
     public HashMap<String, XMLElementParser> addElementParsers(HashMap<String, XMLElementParser> to) {
         to = super.addElementParsers(to);
-        to.put(BSM, new XMLElementParser() {
-            
-            @Override
-            public void parse(Element element) {
-                bsm = CollParseUtils.parseMatrix(element.getText());
-            }
-            
+        to.put(BSM, (XMLElementParser) (Element element) -> {
+            bsm = CollParseUtils.parseMatrix(element.getText());
         });
-        to.put(JOINTS, new XMLElementParser() {
-            
-            @Override
-            public void parse(Element element) {
-                joints = SkinParser.this.parseWith(element, new JointsParser());
-            }
-            
+        to.put(JOINTS, (XMLElementParser) (Element element) -> {
+            joints = SkinParser.this.parseWith(element, new JointsParser());
         });
-        to.put(VERTEX_WEIGHTS, new XMLElementParser() {
-            
-            @Override
-            public void parse(Element element) {
-                vertexWeights = SkinParser.this.parseWith(element, new VertexWeightsParser());
-            }
-            
+        to.put(VERTEX_WEIGHTS, (XMLElementParser) (Element element) -> {
+            vertexWeights = SkinParser.this.parseWith(element, new VertexWeightsParser());
         });
         return to;
     }

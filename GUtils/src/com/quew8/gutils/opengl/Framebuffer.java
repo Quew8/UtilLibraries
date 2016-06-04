@@ -1,6 +1,7 @@
 package com.quew8.gutils.opengl;
 
 import static com.quew8.gutils.opengl.OpenGL.*;
+import java.util.ArrayList;
 
 /**
  * 
@@ -84,7 +85,7 @@ public class Framebuffer extends GObject {
     public static class FramebufferException extends GLException {
         
         public FramebufferException(int code) {
-            super(OpenGLUtils.toOpenGLString(code));
+            super(OpenGLUtils.toOpenGLEnum(code));
         }
         
         public static void checkFramebufferError() {

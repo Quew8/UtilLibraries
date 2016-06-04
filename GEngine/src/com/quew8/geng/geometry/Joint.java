@@ -26,9 +26,11 @@ public class Joint {
     
     public void uploadJoint(int programId, String ibmVar, String jmVar, Matrix parentWJM, FloatBuffer matrixBuffer) {
         Matrix.times(tempMatrix, parentWJM, jointMatrix);
-        tempMatrix.putIn(matrixBuffer);
+        matrixBuffer.put(tempMatrix.getData());
+        matrixBuffer.flip();
         ShaderUtils.setUniformMatrix(programId, jmVar + indexString, matrixBuffer);
-        invBindMatrix.putIn(matrixBuffer);
+        matrixBuffer.put(invBindMatrix.getData());
+        matrixBuffer.flip();
         ShaderUtils.setUniformMatrix(programId, ibmVar + indexString, matrixBuffer);
         for(int i = 0; i < children.length; i++) {
             children[i].uploadJoint(programId, ibmVar, jmVar, tempMatrix, matrixBuffer);

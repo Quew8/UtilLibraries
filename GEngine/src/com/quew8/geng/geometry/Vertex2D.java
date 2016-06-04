@@ -1,6 +1,7 @@
 package com.quew8.geng.geometry;
 
 import com.quew8.gmath.Matrix;
+import com.quew8.gmath.Matrix3;
 import com.quew8.gmath.Vector2;
 import com.quew8.gutils.Colour;
 import java.nio.ByteBuffer;
@@ -52,20 +53,21 @@ public class Vertex2D implements IVertex<Vertex2D> {
     }
     
     @Override
-    public Vertex2D transform(Matrix transform, Matrix normalMatrix) {
-        return new Vertex2D(
+    public Vertex2D transform(Matrix transform, Matrix3 normalMatrix) {
+        throw new UnsupportedOperationException("Need lower dimension vector times in Matrix");
+        /*return new Vertex2D(
                 Matrix.times(new Vector2(), transform, position),
                 texCoords != null ? new Vector2(texCoords) : null,
                 colour != null ? new Colour(colour) : null
-        );
+        );*/
     }
     
     @Override
     public Vertex2D transformTextureCoords(Image img) {
         return new Vertex2D(
-                new Vector2(position),
+                new Vector2().setXY(position),
                 img.transformCoords(new Vector2(), getTexCoordsChecked()),
-                colour != null ? new Colour(colour) : null
+                colour != null ? new Colour().setRGBA(colour) : null
         );
     }
 

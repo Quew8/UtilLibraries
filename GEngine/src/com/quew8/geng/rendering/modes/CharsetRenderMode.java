@@ -8,8 +8,8 @@ import com.quew8.gutils.Colour;
  */
 public abstract class CharsetRenderMode extends StaticRenderMode {
 
-    public CharsetRenderMode(int nAttribs) {
-        super(nAttribs);
+    public CharsetRenderMode(int nAttribs, int stride) {
+        super(nAttribs, stride);
     }
     
     public abstract void setCharColour(Colour colour);

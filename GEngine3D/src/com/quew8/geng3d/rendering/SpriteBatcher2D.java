@@ -31,14 +31,14 @@ public class SpriteBatcher2D<T> extends SpriteBatcher<T> {
     }
     
     public void draw(Image image, float x, float y, float z, float width, float height, Plane m) {
-        batch(dataFactory.construct(image, x, y, z, width, height, m));
+        batch(dataFactory.construct(dataFactory.getInstance(), image, x, y, z, width, height, m));
     }
 
     public void draw(Colour colour, float x, float y, float z, float width, float height, Plane m) {
-        batch(dataFactory.construct(colour, x, y, z, width, height, m));
+        batch(dataFactory.construct(dataFactory.getInstance(), colour, x, y, z, width, height, m));
     }
     
     public void draw(float x, float y, float z, float width, float height, Plane m) {    
-        batch(dataFactory.construct(x, y, z, width, height, m));
+        batch(dataFactory.construct(dataFactory.getInstance(), x, y, z, width, height, m));
     }
 }

@@ -7,11 +7,11 @@ package com.quew8.gutils.opengl.texture;
 class PreLoadedImageLoader implements ImageLoader {
     private final LoadedImage img;
 
-    public PreLoadedImageLoader(LoadedImage img) {
+    PreLoadedImageLoader(LoadedImage img) {
     	this.img = img;
     }
     
-    public PreLoadedImageLoader(ImageLoader imgLoader) {
+    PreLoadedImageLoader(ImageLoader imgLoader) {
         this(imgLoader.getLoadedImage());
     }
     

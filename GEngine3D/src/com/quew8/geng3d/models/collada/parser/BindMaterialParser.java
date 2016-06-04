@@ -19,13 +19,8 @@ class BindMaterialParser extends XMLParser {
     @Override
     public HashMap<String, XMLElementParser> addElementParsers(HashMap<String, XMLElementParser> to) {
         to = super.addElementParsers(to);
-        to.put(TECH_COMMON, new XMLElementParser() {
-            
-            @Override
-            public void parse(Element element) {
-                material = BindMaterialParser.this.parseWith(element.element(INSTANCE_MATERIAL), new InstanceMaterialParser());
-            }
-            
+        to.put(TECH_COMMON, (XMLElementParser) (Element element) -> {
+            material = BindMaterialParser.this.parseWith(element.element(INSTANCE_MATERIAL), new InstanceMaterialParser());
         });
         return to;
     }

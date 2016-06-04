@@ -22,13 +22,8 @@ class SceneParser extends XMLParser {
     @Override
     public HashMap<String, XMLElementParser> addElementParsers(HashMap<String, XMLElementParser> to) {
         to = super.addElementParsers(to);
-        to.put(INSTANCE_VIS_SCENE, new XMLElementParser() {
-            
-            @Override
-            public void parse(Element element) {
-                visualScene = SceneParser.this.parseWith(element.attributeValue("url"), new VisualSceneParser());
-            }
-            
+        to.put(INSTANCE_VIS_SCENE, (XMLElementParser) (Element element) -> {
+            visualScene = SceneParser.this.parseWith(element.attributeValue("url"), new VisualSceneParser());
         });
         return to;
     }

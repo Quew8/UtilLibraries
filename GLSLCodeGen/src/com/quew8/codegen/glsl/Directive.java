@@ -42,13 +42,6 @@ public class Directive extends GLSLElement<Directive> {
         return this;
     }
     
-    /*@Override
-    protected String getConstructedCode() {
-        return GLSLCodeGenUtils.getConstruction()
-                .add("#" + name, body)
-                .get();
-    }*/
-    
     public static Directive getVersion(String version) {
         return new Directive("version", version);
     }

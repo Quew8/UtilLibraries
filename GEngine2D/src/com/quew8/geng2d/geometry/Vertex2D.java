@@ -141,6 +141,14 @@ public class Vertex2D implements IVertex<Vertex2D> {
         return "Vertex2D{" + "position=" + position + ", texCoords=" + texCoords + ", colour=" + colour + '}';
     }
     
+    public static Vertex2D createEmpty(Param[] params) {
+        return new Vertex2D(
+                new Vector2(),
+                Param.containsTextureCoords(params) ? new Vector2() : null,
+                Param.containsColour(params) ? new Colour() : null
+        );
+    }
+    
     public static Vector[] getPositions(Vertex2D[] vertices) {
         return Arrays.stream(vertices).map(new Function<Vertex2D, Vector2>() {
 

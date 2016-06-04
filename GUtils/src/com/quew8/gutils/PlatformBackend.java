@@ -168,6 +168,8 @@ public abstract class PlatformBackend<T extends LoadedImage> {
     
     public abstract void glGenVertexArrays_P(IntBuffer arrays);
     
+    public abstract void glGenerateMipmap_P(int target);
+    
     public abstract String glGetActiveAttrib_P(int program, int index, IntBuffer length, IntBuffer type);
     
     public abstract void glGetAttachedShaders_P(int program, IntBuffer count, IntBuffer shaders);
@@ -175,6 +177,8 @@ public abstract class PlatformBackend<T extends LoadedImage> {
     public abstract int glGetAttribLocation_P(int program, String name);
     
     public abstract void glGetBufferParameteriv_P(int target, int value, IntBuffer data);
+    
+    public abstract void glGetBufferSubData_P(int target, long offset, ByteBuffer data);
     
     public abstract void glGetBooleanv_P(int pname, ByteBuffer params);
     
@@ -329,12 +333,6 @@ public abstract class PlatformBackend<T extends LoadedImage> {
     public abstract void glVertexAttrib4f_P(int index, float v1, float v2, float v3, float v4);
     
     public abstract void glVertexAttribPointer_P(int index, int size, int type, boolean normalized, int stride, int bufferOffset);
-    
-    public abstract void glVertexAttribPointer_P(int index, int size, boolean normalized, int stride, FloatBuffer buffer);
-    
-    public abstract void glVertexAttribPointer_P(int index, int size, boolean unsigned, boolean normalized, int stride, IntBuffer buffer);
-    
-    public abstract void glVertexAttribPointer_P(int index, int size, boolean unsigned, boolean normalized, int stride, ByteBuffer buffer);
     
     public abstract void glViewport_P(int x, int y, int width, int height);
     

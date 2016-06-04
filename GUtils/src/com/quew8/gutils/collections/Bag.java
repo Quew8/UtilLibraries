@@ -19,6 +19,9 @@ public class Bag<T> extends AbstractCollection {
      */
     public Bag(T[] data) {
         this.data = data;
+        while(size < data.length && data[size] != null) {
+            size++;
+        }
     }
     
     /**

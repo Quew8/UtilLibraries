@@ -18,12 +18,12 @@ public class ShaderProgram extends GObject {
         glAttachShader(getId(), this.vertexShader.getId());
         glAttachShader(getId(), this.fragmentShader.getId());
         for(int i = 0; i < attribs.length; i++) {
-        	glBindAttribLocation(getId(), attribIndices[i], attribs[i]);
+            glBindAttribLocation(getId(), attribIndices[i], attribs[i]);
         }
         glLinkProgram(getId());
         glGetProgramiv(getId(), GL_LINK_STATUS, idBuff);
-        if (idBuff.get(0) != GL_TRUE) {
-            throw new ProgramLinkException(glGetShaderInfoLog(getId()));
+        if(idBuff.get(0) != GL_TRUE) {
+            throw new ProgramLinkException(glGetProgramInfoLog(getId()));
         }
     }
     

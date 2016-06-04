@@ -57,6 +57,10 @@ public abstract class DesktopOpenGL extends OpenGL {
         GL15.glMapBuffer(target, access, length, oldBuffer);
     }
     
+    public static void glPointSize(float size) {
+        GL11.glPointSize(size);
+    }
+    
     public static void glPolygonMode(int face, int mode) {
         GL11.glPolygonMode(face, mode);
     }

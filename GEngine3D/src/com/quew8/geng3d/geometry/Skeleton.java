@@ -27,7 +27,8 @@ public class Skeleton {
     }
     
     public void uploadSkeleton(int programId, String bsmVar, String ibmVar, String jmVar) {
-        bindShapeMatrix.putIn(matrixBuffer);
+        matrixBuffer.put(bindShapeMatrix.getData());
+        matrixBuffer.flip();
         ShaderUtils.setUniformMatrix(programId, bsmVar, matrixBuffer);
         for(int i = 0; i < joints.length; i++) {
             joints[i].uploadJoint(programId, ibmVar, jmVar, matrixBuffer);

@@ -63,16 +63,4 @@ public class Method extends GLSLElement<Method> {
         this.block = block;
         return this;
     }
-
-    /*@Override
-    protected String getConstructedCode() {
-        return GLSLCodeGenUtils.getConstruction()
-                .add(returnType != null, returnType)
-                .add(returnType == null, "void")
-                .add(name)
-                .addNoGap(parameters.length > 0, "(", GLSLCodeGenUtils.getCommaSeperatedList(parameters), ")")
-                .addNoGap(parameters.length == 0, "(void)")
-                .add(block)
-                .get();
-    }*/
 }

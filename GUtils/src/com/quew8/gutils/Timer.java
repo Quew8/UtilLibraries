@@ -7,7 +7,7 @@ import com.quew8.gutils.collections.Bag;
  * @author Quew8
  */
 public class Timer {
-    private static final Bag<Timer> timers = new Bag<Timer>(Timer.class, 20);
+    private static final Bag<Timer> TIMERS = new Bag<Timer>(Timer.class, 20);
     
     private final Runnable run;
     private long remaining;
@@ -36,16 +36,16 @@ public class Timer {
     }
     
     public static void updateTimers() {
-        for(int i = 0; i < timers.size(); i++) {
-            if(timers.get(i).update()) {
-                timers.remove(i);
+        for(int i = 0; i < TIMERS.size(); i++) {
+            if(TIMERS.get(i).update()) {
+                TIMERS.remove(i);
                 i--;
             }
         }
     }
     
     public static void registerTimer(Timer timer) {
-        timers.add(timer);
+        TIMERS.add(timer);
     }
     
     public static void registerTimer(Runnable r, long time) {

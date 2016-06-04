@@ -1,5 +1,6 @@
 package com.quew8.gutils.pathfinding;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -46,13 +47,15 @@ public class AStarMap<T> {
                 }
             }
             if(current == end) {
-                ArrayList<T> path = new ArrayList<T>();
+                ArrayDeque<T> path = new ArrayDeque<T>();
                 path.add(current.data);
                 while(current.cameFrom != null) {
-                    path.add(current.cameFrom.data);
+                    path.addFirst(current.cameFrom.data);
                     current = current.cameFrom;
                 }
-                return path;
+                ArrayList<T> forwardPath = new ArrayList<T>();
+                path.stream().forEach((t) -> forwardPath.add(t));
+                return forwardPath;
             }
             openSet.remove(current);
             closedSet.add(current);

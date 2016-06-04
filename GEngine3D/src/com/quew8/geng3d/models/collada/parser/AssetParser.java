@@ -35,57 +35,32 @@ public class AssetParser extends XMLParser {
     @Override
     public HashMap<String, XMLElementParser> addElementParsers(HashMap<String, XMLElementParser> to) {
         to = super.addElementParsers(to);
-        to.put(CONTRIBUTOR, new XMLElementParser() {
-
-            @Override
-            public void parse(Element element) {
-                contributors.add(AssetParser.this.parseWith(element, new ContributorParser()));
-            }
-            
+        to.put(CONTRIBUTOR, (XMLElementParser) (Element element) -> {
+            contributors.add(AssetParser.this.parseWith(element, new ContributorParser()));
         });
-        to.put(CREATED, new XMLElementParser() {
-
-            @Override
-            public void parse(Element element) {
-                if(created != null) {
-                    throw new XMLParseException("Cannot have multiple created elements");
-                }
-                created = AssetParser.this.parseWith(element, new XMLTextParser());
+        to.put(CREATED, (XMLElementParser) (Element element) -> {
+            if(created != null) {
+                throw new XMLParseException("Cannot have multiple created elements");
             }
-            
+            created = AssetParser.this.parseWith(element, new XMLTextParser());            
         });
-        to.put(MODIFIED, new XMLElementParser() {
-
-            @Override
-            public void parse(Element element) {
-                if(modified != null) {
-                    throw new XMLParseException("Cannot have multiple modified elements");
-                }
-                modified = AssetParser.this.parseWith(element, new XMLTextParser());
+        to.put(MODIFIED, (XMLElementParser) (Element element) -> {
+            if(modified != null) {
+                throw new XMLParseException("Cannot have multiple modified elements");
             }
-            
+            modified = AssetParser.this.parseWith(element, new XMLTextParser());            
         });
-        to.put(UNIT, new XMLElementParser() {
-
-            @Override
-            public void parse(Element element) {
-                if(unit != null) {
-                    throw new XMLParseException("Cannot have multiple unit elements");
-                }
-                unit = AssetParser.this.parseWith(element, new UnitParser());
+        to.put(UNIT, (XMLElementParser) (Element element) -> {
+            if(unit != null) {
+                throw new XMLParseException("Cannot have multiple unit elements");
             }
-            
+            unit = AssetParser.this.parseWith(element, new UnitParser());            
         });
-        to.put(UP_AXIS, new XMLElementParser() {
-
-            @Override
-            public void parse(Element element) {
-                if(upAxis != null) {
-                    throw new XMLParseException("Cannot have multiple up_axis elements");
-                }
-                upAxis = AssetParser.this.parseWith(element, new UpAxisParser());
+        to.put(UP_AXIS, (XMLElementParser) (Element element) -> {
+            if(upAxis != null) {
+                throw new XMLParseException("Cannot have multiple up_axis elements");
             }
-            
+            upAxis = AssetParser.this.parseWith(element, new UpAxisParser());            
         });
         return to;
     }
@@ -126,27 +101,17 @@ public class AssetParser extends XMLParser {
         @Override
         public HashMap<String, XMLElementParser> addElementParsers(HashMap<String, XMLElementParser> to) {
             to = super.addElementParsers(to);
-            to.put(AUTHOR, new XMLElementParser() {
-
-                @Override
-                public void parse(Element element) {
-                    if(author != null) {
-                        throw new XMLParseException("Cannot have more than one author element per contributor");
-                    }
-                    author = ContributorParser.this.parseWith(element, new XMLTextParser());
+            to.put(AUTHOR, (XMLElementParser) (Element element) -> {
+                if(author != null) {
+                    throw new XMLParseException("Cannot have more than one author element per contributor");
                 }
-                
+                author = ContributorParser.this.parseWith(element, new XMLTextParser());                
             });
-            to.put(AUTHORING_TOOL, new XMLElementParser() {
-
-                @Override
-                public void parse(Element element) {
-                    if(authoringTool != null) {
-                        throw new XMLParseException("Cannot have more than one authoring_tool element per contributor");
-                    }
-                    authoringTool = ContributorParser.this.parseWith(element, new XMLTextParser());
+            to.put(AUTHORING_TOOL, (XMLElementParser) (Element element) -> {
+                if(authoringTool != null) {
+                    throw new XMLParseException("Cannot have more than one authoring_tool element per contributor");
                 }
-                
+                authoringTool = ContributorParser.this.parseWith(element, new XMLTextParser());                
             });
             return to;
         }
@@ -168,21 +133,11 @@ public class AssetParser extends XMLParser {
         @Override
         public HashMap<String, XMLAttributeParser> addAttributeParsers(HashMap<String, XMLAttributeParser> to) {
             to = super.addAttributeParsers(to);
-            to.put(NAME, new XMLAttributeParser() {
-
-                @Override
-                public void parse(Attribute attribute, Element parent) {
-                    name = attribute.getValue();
-                }
-                
+            to.put(NAME, (XMLAttributeParser) (Attribute attribute, Element parent) -> {
+                name = attribute.getValue();
             });
-            to.put(METER, new XMLFloatAttributeParser() {
-
-                @Override
-                public void parse(float value, Element parent) {
-                    meter = value;
-                }
-                
+            to.put(METER, (XMLFloatAttributeParser) (float value, Element parent) -> {
+                meter = value;
             });
             return to;
         }

@@ -21,21 +21,11 @@ class InputParser extends UnsharedInputParser implements DataSource {
     @Override
     public HashMap<String, XMLAttributeParser> addAttributeParsers(HashMap<String, XMLAttributeParser> to) {
         to = super.addAttributeParsers(to);
-        to.put(OFFSET, new XMLIntAttributeParser() {
-
-            @Override
-            public void parse(int value, Element parent) {
-                offset = value;
-            }
-            
+        to.put(OFFSET, (XMLIntAttributeParser) (int value, Element parent) -> {
+            offset = value;
         });
-        to.put(SET, new XMLIntAttributeParser() {
-
-            @Override
-            public void parse(int value, Element parent) {
-                set = value;
-            }
-            
+        to.put(SET, (XMLIntAttributeParser) (int value, Element parent) -> {
+            set = value;
         });
         return to;
     }

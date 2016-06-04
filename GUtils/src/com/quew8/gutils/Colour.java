@@ -56,84 +56,89 @@ public class Colour {
         this(colour.getRed(), colour.getGreen(), colour.getBlue(), alpha);
     }
     
-    public Colour(Colour colour) {
-        this(colour.getRed(), colour.getGreen(), colour.getBlue(), colour.getAlpha());
-    }
-    
     public Colour() {
         this(1, 1, 1, 1);
     }
     
-    public float[] getRGB() {
-        return new float[]{red, green, blue};
+    public float[] getRGB(float[] out, int offset) {
+        out[offset] = red;
+        out[offset + 1] = green;
+        out[offset + 2] = blue;
+        return out;
     }
     
-    public float[] getRGBA() {
-        return new float[]{red, green, blue, alpha};
+    public float[] getRGBA(float[] out, int offset) {
+        out[offset] = red;
+        out[offset + 1] = green;
+        out[offset + 2] = blue;
+        out[offset + 3] = alpha;
+        return out;
     }
     
-    /**
-     * 
-     * @return
-     */
     public float getBlue() {
         return blue;
     }
     
-    /**
-     * 
-     * @param blue
-     */
-    public void setBlue(float blue) {
+    public Colour setBlue(float blue) {
         this.blue = blue;
+        return this;
     }
     
-    /**
-     * 
-     * @return
-     */
     public float getGreen() {
         return green;
     }
     
-    /**
-     * 
-     * @param green
-     */
-    public void setGreen(float green) {
+    public Colour setGreen(float green) {
         this.green = green;
+        return this;
     }
     
-    /**
-     * 
-     * @return
-     */
     public float getRed() {
         return red;
     }
     
-    /**
-     * 
-     * @param red
-     */
-    public void setRed(float red) {
+    public Colour setRed(float red) {
         this.red = red;
+        return this;
     }
     
-    /**
-     * 
-     * @return
-     */
     public float getAlpha() {
         return alpha;
     }
     
-    /**
-     * 
-     * @param alpha
-     */
-    public void setAlpha(float alpha) {
+    public Colour setAlpha(float alpha) {
         this.alpha = alpha;
+        return this;
+    }
+    
+    public Colour setRGB(Colour src) {
+        this.red = src.red;
+        this.green = src.green;
+        this.blue = src.blue;
+        return this;
+    }
+    
+    public Colour setRGB(float red, float green, float blue) {
+        this.red = red;
+        this.green = green;
+        this.blue = blue;
+        return this;
+    }
+    
+    public Colour setRGBA(Colour src) {
+        this.red = src.red;
+        this.green = src.green;
+        this.blue = src.blue;
+        this.alpha = src.alpha;
+        return this;
+    }
+    
+    public Colour setRGBA(float red, float green, float blue, float alpha) {
+        this.red = red;
+        this.green = green;
+        this.blue = blue;
+        this.alpha = alpha;
+        return this;
     }
     
     public void clamp(float min, float max) {
@@ -167,65 +172,92 @@ public class Colour {
     public String toString() {
         return "Colour:" + red + ", " + green + ", " + blue + ", " + alpha;
     }
+
+    public boolean equals(Colour other) {
+        if(this == other) {
+            return true;
+        }
+        if(other == null) {
+            return false;
+        }
+        if(Float.floatToIntBits(this.red) != Float.floatToIntBits(other.red)) {
+            return false;
+        }
+        if(Float.floatToIntBits(this.green) != Float.floatToIntBits(other.green)) {
+            return false;
+        }
+        if(Float.floatToIntBits(this.blue) != Float.floatToIntBits(other.blue)) {
+            return false;
+        }
+        return Float.floatToIntBits(this.alpha) == Float.floatToIntBits(other.alpha);
+    }
     
     public static Colour addRGB(Colour result, Colour c1, Colour c2) {
-        result.setRed(c1.getRed() + c2.getRed());
-        result.setGreen(c1.getGreen() + c2.getGreen());
-        result.setBlue(c1.getBlue() + c2.getBlue());
+        result.red = c1.red + c2.red;
+        result.green = c1.green + c2.green;
+        result.blue = c1.blue + c2.blue;
         return result;
     }
     
     public static Colour addRGBA(Colour result, Colour c1, Colour c2) {
-        addRGB(result, c1, c2);
-        result.setAlpha(c1.getAlpha() + c2.getAlpha());
+        result.red = c1.red + c2.red;
+        result.green = c1.green + c2.green;
+        result.blue = c1.blue + c2.blue;
+        result.alpha = c1.alpha + c2.alpha;
         return result;
     }
     
     public static Colour scaleRGB(Colour result, Colour c1, float f) {
-        result.setRed(c1.getRed() * f);
-        result.setGreen(c1.getGreen() * f);
-        result.setBlue(c1.getBlue() * f);
+        result.red = c1.red * f;
+        result.green = c1.green * f;
+        result.blue = c1.blue * f;
         return result;
     }
     
     public static Colour scaleRGBA(Colour result, Colour c1, float f) {
-        scaleRGB(result, c1, f);
-        result.setAlpha(c1.getAlpha() * f);
+        result.red = c1.red * f;
+        result.green = c1.green * f;
+        result.blue = c1.blue * f;
+        result.alpha = c1.alpha * f;
         return result;
     }
     
     public static Colour blendRGB(Colour result, Colour c1, Colour c2) {
-        result.setRed( ( c1.getRed() + c2.getRed() ) / 2);
-        result.setGreen( ( c1.getGreen() + c2.getGreen() ) / 2);
-        result.setBlue( ( c1.getBlue() + c2.getBlue() ) / 2);
+        result.red =  (c1.red + c2.red) / 2;
+        result.green =  (c1.green + c2.green) / 2;
+        result.blue =  (c1.blue + c2.blue) / 2;
         return result;
     }
     
     public static Colour blendRGBA(Colour result, Colour c1, Colour c2) {
-        blendRGB(result, c1, c2);
-        result.setAlpha( ( c1.getAlpha() + c2.getAlpha() ) / 2);
+        result.red = (c1.red + c2.red) / 2;
+        result.green = (c1.green + c2.green) / 2;
+        result.blue = (c1.blue + c2.blue) / 2;
+        result.alpha = (c1.alpha + c2.alpha) / 2;
         return result;
     }
     
     public static Colour blendRGB(Colour result, Colour c1, float weight, Colour c2) {
         float w2 = 1 - weight;
-        result.setRed( ( c1.getRed() * weight ) + ( c2.getRed() * w2 ) );
-        result.setGreen( ( c1.getGreen() * weight ) + ( c2.getGreen() * w2 ) );
-        result.setBlue( ( c1.getBlue() * weight ) + ( c2.getBlue() * w2 ) );
+        result.red =  ( c1.red * weight ) + ( c2.red * w2 );
+        result.green =  ( c1.green * weight ) + ( c2.green * w2 );
+        result.blue =  ( c1.blue * weight ) + ( c2.blue * w2 );
         return result;
     }
     
     public static Colour blendRGBA(Colour result, Colour c1, float weight, Colour c2) {
         float w2 = 1 - weight;
-        blendRGB(result, c1, weight, c2);
-        result.setAlpha( ( c1.getAlpha() * weight ) + ( c2.getAlpha() * w2 ) );
+        result.red =  ( c1.red * weight ) + ( c2.red * w2 );
+        result.green =  ( c1.green * weight ) + ( c2.green * w2 );
+        result.blue =  ( c1.blue * weight ) + ( c2.blue * w2 );
+        result.alpha =  (c1.getAlpha() * weight) + (c2.getAlpha() * w2);
         return result;
     }
     
     public static Colour getComplimentRGB(Colour result, Colour c) {
-        result.setRed(1 - c.getRed());
-        result.setGreen(1 - c.getGreen());
-        result.setBlue(1 - c.getBlue());
+        result.red = 1 - c.red;
+        result.green = 1 - c.green;
+        result.blue = 1 - c.blue;
         return result;
     }
     

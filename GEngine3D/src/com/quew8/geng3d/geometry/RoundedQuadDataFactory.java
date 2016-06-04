@@ -20,7 +20,7 @@ public class RoundedQuadDataFactory implements DataFactory2D<Polygon> {
         this.bottomRightR = bottomRightR;
         this.bottomLeftR = bottomLeftR;
         this.lod = lod;
-        this.polyInstance = new Polygon(new Vertex3D[getNVertices(lod)]);
+        this.polyInstance = createInstance();
     }
 
     public RoundedQuadDataFactory(float r, int lod) {
@@ -28,39 +28,39 @@ public class RoundedQuadDataFactory implements DataFactory2D<Polygon> {
     }
     
     @Override
-    public Polygon construct(float x, float y, float z, float width, float height, Plane plane) {
+    public Polygon construct(Polygon out, float x, float y, float z, float width, float height, Plane plane) {
         Vector base = new Vector(x, y, z);
         float step = (GMath.PI / 2) / (lod+1);
         Vector v = plane.map(width * bottomLeftR, 0);
-        polyInstance.vertices[0] = new Vertex3D(Vector.add(new Vector(), base, v));
+        out.vertices[0] = new Vertex3D(Vector.add(new Vector(), base, v));
         v = plane.map(width * (1 - bottomRightR), 0);
-        polyInstance.vertices[1] = new Vertex3D(Vector.add(new Vector(), base, v));
+        out.vertices[1] = new Vertex3D(Vector.add(new Vector(), base, v));
         float theta = step;
         for(int i = 0; i < lod; i++) {
             v = plane.map(
                     width * (1 + (bottomRightR * (GMath.sin(theta) - 1))), 
                     height * bottomRightR * (1 - GMath.cos(theta))
             );
-            polyInstance.vertices[2 + i] = new Vertex3D(Vector.add(new Vector(), base, v));
+            out.vertices[2 + i] = new Vertex3D(Vector.add(new Vector(), base, v));
             theta += step;
         }
         v = plane.map(width, height * bottomRightR);
-        polyInstance.vertices[2 + lod] = new Vertex3D(Vector.add(new Vector(), base, v));
+        out.vertices[2 + lod] = new Vertex3D(Vector.add(new Vector(), base, v));
         v = plane.map(width, height * (1 - topRightR));
-        polyInstance.vertices[3 + lod] = new Vertex3D(Vector.add(new Vector(), base, v));
+        out.vertices[3 + lod] = new Vertex3D(Vector.add(new Vector(), base, v));
         theta = step;
         for(int i = 0; i < lod; i++) {
             v = plane.map(
                     width * (1 + (bottomRightR * (GMath.cos(theta) - 1))), 
                     height * (1 + (bottomRightR * (GMath.sin(theta) - 1)))
             );
-            polyInstance.vertices[4 + lod + i] = new Vertex3D(Vector.add(new Vector(), base, v));
+            out.vertices[4 + lod + i] = new Vertex3D(Vector.add(new Vector(), base, v));
             theta += step;
         }
         v = plane.map(width * (1 - topRightR), height);
-        polyInstance.vertices[4 + lod + lod] = new Vertex3D(Vector.add(new Vector(), base, v));
+        out.vertices[4 + lod + lod] = new Vertex3D(Vector.add(new Vector(), base, v));
         v = plane.map(width * topLeftR, height);
-        polyInstance.vertices[5 + lod + lod] = new Vertex3D(Vector.add(new Vector(), base, v));
+        out.vertices[5 + lod + lod] = new Vertex3D(Vector.add(new Vector(), base, v));
         theta = step;
         for(int i = 0; i < lod; i++) {
             v = plane.map(
@@ -68,59 +68,59 @@ public class RoundedQuadDataFactory implements DataFactory2D<Polygon> {
                     height * (1 + (topLeftR * (GMath.cos(theta) - 1)))
                     
             );
-            polyInstance.vertices[6 + lod + lod + i] = new Vertex3D(Vector.add(new Vector(), base, v));
+            out.vertices[6 + lod + lod + i] = new Vertex3D(Vector.add(new Vector(), base, v));
             theta += step;
         }
         v = plane.map(0, height * (1 - topLeftR));
-        polyInstance.vertices[6 + lod + lod + lod] = new Vertex3D(Vector.add(new Vector(), base, v));
+        out.vertices[6 + lod + lod + lod] = new Vertex3D(Vector.add(new Vector(), base, v));
         v = plane.map(0, height * bottomLeftR);
-        polyInstance.vertices[7 + lod + lod + lod] = new Vertex3D(Vector.add(new Vector(), base, v));
+        out.vertices[7 + lod + lod + lod] = new Vertex3D(Vector.add(new Vector(), base, v));
         theta = step;
         for(int i = 0; i < lod; i++) {
             v = plane.map(
                     width * bottomLeftR * (1 - GMath.cos(theta)), 
                     height * bottomLeftR * (1 - GMath.sin(theta))
             );
-            polyInstance.vertices[8 + lod + lod + lod + i] = new Vertex3D(Vector.add(new Vector(), base, v));
+            out.vertices[8 + lod + lod + lod + i] = new Vertex3D(Vector.add(new Vector(), base, v));
             theta += step;
         }
-        return polyInstance;
+        return out;
     }
 
     @Override
-    public Polygon construct(Colour colour, float x, float y, float z, float width, float height, Plane plane) {
+    public Polygon construct(Polygon out, Colour colour, float x, float y, float z, float width, float height, Plane plane) {
         Vector base = new Vector(x, y, z);
         float step = (GMath.PI / 2) / (lod+1);
         Vector v = plane.map(width * bottomLeftR, 0);
-        polyInstance.vertices[0] = new Vertex3D(Vector.add(new Vector(), base, v), colour);
+        out.vertices[0] = new Vertex3D(Vector.add(new Vector(), base, v), colour);
         v = plane.map(width * (1 - bottomRightR), 0);
-        polyInstance.vertices[1] = new Vertex3D(Vector.add(new Vector(), base, v), colour);
+        out.vertices[1] = new Vertex3D(Vector.add(new Vector(), base, v), colour);
         float theta = step;
         for(int i = 0; i < lod; i++) {
             v = plane.map(
                     width * (1 + (bottomRightR * (GMath.sin(theta) - 1))), 
                     height * bottomRightR * (1 - GMath.cos(theta))
             );
-            polyInstance.vertices[2 + i] = new Vertex3D(Vector.add(new Vector(), base, v), colour);
+            out.vertices[2 + i] = new Vertex3D(Vector.add(new Vector(), base, v), colour);
             theta += step;
         }
         v = plane.map(width, height * bottomRightR);
-        polyInstance.vertices[2 + lod] = new Vertex3D(Vector.add(new Vector(), base, v), colour);
+        out.vertices[2 + lod] = new Vertex3D(Vector.add(new Vector(), base, v), colour);
         v = plane.map(width, height * (1 - topRightR));
-        polyInstance.vertices[3 + lod] = new Vertex3D(Vector.add(new Vector(), base, v), colour);
+        out.vertices[3 + lod] = new Vertex3D(Vector.add(new Vector(), base, v), colour);
         theta = step;
         for(int i = 0; i < lod; i++) {
             v = plane.map(
                     width * (1 + (bottomRightR * (GMath.cos(theta) - 1))), 
                     height * (1 + (bottomRightR * (GMath.sin(theta) - 1)))
             );
-            polyInstance.vertices[4 + lod + i] = new Vertex3D(Vector.add(new Vector(), base, v), colour);
+            out.vertices[4 + lod + i] = new Vertex3D(Vector.add(new Vector(), base, v), colour);
             theta += step;
         }
         v = plane.map(width * (1 - topRightR), height);
-        polyInstance.vertices[4 + lod + lod] = new Vertex3D(Vector.add(new Vector(), base, v), colour);
+        out.vertices[4 + lod + lod] = new Vertex3D(Vector.add(new Vector(), base, v), colour);
         v = plane.map(width * topLeftR, height);
-        polyInstance.vertices[5 + lod + lod] = new Vertex3D(Vector.add(new Vector(), base, v), colour);
+        out.vertices[5 + lod + lod] = new Vertex3D(Vector.add(new Vector(), base, v), colour);
         theta = step;
         for(int i = 0; i < lod; i++) {
             v = plane.map(
@@ -128,28 +128,38 @@ public class RoundedQuadDataFactory implements DataFactory2D<Polygon> {
                     height * (1 + (topLeftR * (GMath.cos(theta) - 1)))
                     
             );
-            polyInstance.vertices[6 + lod + lod + i] = new Vertex3D(Vector.add(new Vector(), base, v), colour);
+            out.vertices[6 + lod + lod + i] = new Vertex3D(Vector.add(new Vector(), base, v), colour);
             theta += step;
         }
         v = plane.map(0, height * (1 - topLeftR));
-        polyInstance.vertices[6 + lod + lod + lod] = new Vertex3D(Vector.add(new Vector(), base, v), colour);
+        out.vertices[6 + lod + lod + lod] = new Vertex3D(Vector.add(new Vector(), base, v), colour);
         v = plane.map(0, height * bottomLeftR);
-        polyInstance.vertices[7 + lod + lod + lod] = new Vertex3D(Vector.add(new Vector(), base, v), colour);
+        out.vertices[7 + lod + lod + lod] = new Vertex3D(Vector.add(new Vector(), base, v), colour);
         theta = step;
         for(int i = 0; i < lod; i++) {
             v = plane.map(
                     width * bottomLeftR * (1 - GMath.cos(theta)), 
                     height * bottomLeftR * (1 - GMath.sin(theta))
             );
-            polyInstance.vertices[8 + lod + lod + lod + i] = new Vertex3D(Vector.add(new Vector(), base, v), colour);
+            out.vertices[8 + lod + lod + lod + i] = new Vertex3D(Vector.add(new Vector(), base, v), colour);
             theta += step;
         }
-        return polyInstance;
+        return out;
     }
 
     @Override
-    public Polygon construct(Image texture, float x, float y, float z, float width, float height, Plane plane) {
+    public Polygon construct(Polygon out, Image texture, float x, float y, float z, float width, float height, Plane plane) {
         throw new UnsupportedOperationException("Not yet supported");
+    }
+
+    @Override
+    public Polygon getInstance() {
+        return polyInstance;
+    }
+
+    @Override
+    public Polygon createInstance() {
+        return new Polygon(new Vertex3D[getNVertices(lod)]);
     }
     
     public static int getNVertices(int lod) {

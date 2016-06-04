@@ -30,29 +30,19 @@ class AccessorParser extends XMLParser {
     @Override
     public HashMap<String, XMLAttributeParser> addAttributeParsers(HashMap<String, XMLAttributeParser> to) {
         to = super.addAttributeParsers(to);
-        to.put(SOURCE, new XMLAttributeParser() {
-            @Override
-            public void parse(Attribute attribute, Element parent) {
-                Element e = AccessorParser.this.findTarget(attribute.getValue());
-                if(e.getName().matches("Name_array")) {
-                    sourceArray = AccessorParser.this.parseWith(attribute.getValue(), new ArrayParser.NameArrayParser());
-                } else if(e.getName().matches("float_array")) {
-                    sourceArray = AccessorParser.this.parseWith(attribute.getValue(), new ArrayParser.FloatArrayParser());
-                }
-                
+        to.put(SOURCE, (XMLAttributeParser) (Attribute attribute, Element parent) -> {
+            Element e = AccessorParser.this.findTarget(attribute.getValue());
+            if(e.getName().matches("Name_array")) {
+                sourceArray = AccessorParser.this.parseWith(attribute.getValue(), new ArrayParser.NameArrayParser());
+            } else if(e.getName().matches("float_array")) {
+                sourceArray = AccessorParser.this.parseWith(attribute.getValue(), new ArrayParser.FloatArrayParser());
             }
         });
-        to.put(COUNT, new XMLIntAttributeParser() {
-            @Override
-            public void parse(int value, Element parent) {
-                count = value;
-            }
+        to.put(COUNT, (XMLIntAttributeParser) (int value, Element parent) -> {
+            count = value;
         });
-        to.put(STRIDE, new XMLIntAttributeParser() {
-            @Override
-            public void parse(int value, Element parent) {
-                stride = value;
-            }
+        to.put(STRIDE, (XMLIntAttributeParser) (int value, Element parent) -> {
+            stride = value;
         });
         return to;
     }
@@ -60,11 +50,8 @@ class AccessorParser extends XMLParser {
     @Override
     public HashMap<String, XMLElementParser> addElementParsers(HashMap<String, XMLElementParser> to) {
         to = super.addElementParsers(to);
-        to.put(PARAM, new XMLElementParser() {
-            @Override
-            public void parse(Element element) {
-                params.add(new Param(element));
-            }
+        to.put(PARAM, (XMLElementParser) (Element element) -> {
+            params.add(new Param(element));
         });
         return to;
     }
@@ -101,12 +88,12 @@ class AccessorParser extends XMLParser {
         private final String name;
         private final ParamType type;
 
-        public Param(String name, String type) {
+        Param(String name, String type) {
             this.name = name;
             this.type = ParamType.getType(type);
         }
 
-        public Param(Element element) {
+        Param(Element element) {
             this(element.attributeValue(NAME), element.attributeValue(TYPE));
         }
         
@@ -140,7 +127,9 @@ class AccessorParser extends XMLParser {
                         for(int i = 0; i < 16; i++) {
                             data[i] = ((Float)src.get(srcPos+i));
                         }
-                        dest[destPos] = new Matrix(data);
+                        Matrix m = new Matrix();
+                        m.setDataFromCM(data, 0);
+                        dest[destPos] = m;
                     }
                 };
         

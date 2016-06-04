@@ -18,13 +18,8 @@ class VerticesParser extends XMLParser implements DataSource {
     @Override
     public HashMap<String, XMLElementParser> addElementParsers(HashMap<String, XMLElementParser> to) {
         to = super.addElementParsers(to);
-        to.put(INPUT, new XMLElementParser() {
-            
-            @Override
-            public void parse(Element element) {
-                input = VerticesParser.this.parseWith(element, new UnsharedInputParser());
-            }
-            
+        to.put(INPUT, (XMLElementParser) (Element element) -> {
+            input = VerticesParser.this.parseWith(element, new UnsharedInputParser());
         });
         return to;
     }

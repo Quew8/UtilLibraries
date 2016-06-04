@@ -26,13 +26,4 @@ public class Block extends GLSLElement<Block> {
         this.block = block;
         return this;
     }
-    
-    /*@Override
-    protected String getConstructedCode() {
-        return GLSLCodeGenUtils.getConstruction()
-                .add("{")
-                .addNewline(GLSLCodeGenUtils.shiftRight(block))
-                .addNewline("}")
-                .get();
-    }*/
 }

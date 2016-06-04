@@ -3,11 +3,7 @@ package com.quew8.geng.rendering;
 import com.quew8.geng.rendering.modes.DynamicRenderMode;
 import com.quew8.geng.rendering.modes.StaticRenderMode;
 import com.quew8.gmath.Matrix;
-import com.quew8.gutils.ArrayUtils;
 import com.quew8.gutils.BufferUtils;
-import static com.quew8.gutils.opengl.OpenGL.GL_ARRAY_BUFFER;
-import com.quew8.gutils.opengl.VertexBuffer;
-import com.quew8.gutils.opengl.shaders.ShaderUtils;
 import java.nio.FloatBuffer;
 
 /**
@@ -20,34 +16,40 @@ public class RenderState {
     private final FloatBuffer idMatrixFB;
     private final FloatBuffer modelMatrixFB;
     private final FloatBuffer projectionMatrixFB;
-    private boolean immediateMode = false;
     private StaticRenderMode currentRenderMode = new StaticDoNothingRenderMode();
     private DynamicRenderMode<?> currentDynamicRenderMode = new DynamicDoNothingRenderMode();
 
     public RenderState() {
         idMatrixFB = BufferUtils.createFloatBuffer(16);
-        new Matrix().putIn(idMatrixFB);
+        idMatrixFB.put(new float[] {
+            1, 0, 0, 0,
+            0, 1, 0, 0,
+            0, 0, 1, 0,
+            0, 0, 0, 1
+        });
+        idMatrixFB.flip();
         matrixFB = BufferUtils.createFloatBuffer(16);
         modelMatrixFB = BufferUtils.createFloatBuffer(16);
         projectionMatrixFB = BufferUtils.createFloatBuffer(16);
-        new Matrix().putIn(projectionMatrixFB);
+        projectionMatrixFB.put(new float[] {
+            1, 0, 0, 0,
+            0, 1, 0, 0,
+            0, 0, 1, 0,
+            0, 0, 0, 1
+        });
+        projectionMatrixFB.flip();
     }
     
     public void makeCurrent() {
         RenderState.CURRENT_RENDER_STATE = this;
     }
     
-    private void instanceSetRenderMode(boolean immediateMode, StaticRenderMode renderMode) {
-        if(immediateMode && !this.immediateMode) {
-            VertexBuffer.unbind(GL_ARRAY_BUFFER);
-        }
-        this.immediateMode = immediateMode;
+    private void instanceSetStaticRenderMode(StaticRenderMode renderMode) {
         setCurrentStaticRenderMode(renderMode);
         currentRenderMode.updateProjectionMatrix(projectionMatrixFB);
     }
 
-    private void instanceSetRenderMode(DynamicRenderMode<?> renderMode) {
-        this.immediateMode = false;
+    private void instanceSetDynamicRenderMode(DynamicRenderMode<?> renderMode) {
         setCurrentDynamicRenderMode(renderMode);
         currentRenderMode.updateProjectionMatrix(projectionMatrixFB);
     }
@@ -57,7 +59,8 @@ public class RenderState {
     }
     
     private void instanceSetModelMatrix(Matrix matrix) {
-        matrix.putIn(modelMatrixFB);
+        modelMatrixFB.put(matrix.getData());
+        modelMatrixFB.flip();
         currentDynamicRenderMode.updateModelMatrix(modelMatrixFB);
     }
     
@@ -70,7 +73,8 @@ public class RenderState {
     }
     
     private void instanceSetNextProjectionMatrix(Matrix matrix) {
-        matrix.putIn(projectionMatrixFB);
+        projectionMatrixFB.put(matrix.getData());
+        projectionMatrixFB.flip();
     }
     
     private void instanceSetProjectionMatrix(Matrix matrix) {
@@ -80,49 +84,24 @@ public class RenderState {
     
     private void setCurrentStaticRenderMode(StaticRenderMode renderMode) {
         this.currentRenderMode.onMadeNonCurrent();
-        setCurrentAttribs(renderMode);
         this.currentRenderMode = renderMode;
-        this.currentRenderMode.onMadeCurrent();
+        this.currentDynamicRenderMode = null;
+        this.currentRenderMode.onMadeCurrentStatic();
     }
     
     private void setCurrentDynamicRenderMode(DynamicRenderMode<?> renderMode) {
         this.currentRenderMode.onMadeNonCurrent();
-        setCurrentAttribs(renderMode);
         this.currentRenderMode = renderMode;
         this.currentDynamicRenderMode = renderMode;
-        this.currentRenderMode.onMadeCurrent();
+        this.currentDynamicRenderMode.onMadeCurrent();
     }
     
-    private void setCurrentAttribs(StaticRenderMode renderMode) {
-        if(renderMode.getNAttribs() != this.currentRenderMode.getNAttribs()) {
-            if(renderMode.getNAttribs() < this.currentRenderMode.getNAttribs()) {
-                ShaderUtils.setAttribIndicesEnabled(
-                        false, 
-                        ArrayUtils.list(
-                                renderMode.getNAttribs(),
-                                this.currentRenderMode.getNAttribs(),
-                                1
-                        )
-                );
-            } else {
-                ShaderUtils.setAttribIndicesEnabled(
-                        true, 
-                        ArrayUtils.list(
-                                this.currentRenderMode.getNAttribs(),
-                                renderMode.getNAttribs(),
-                                1
-                        )
-                );
-            }
-        } 
-    }
-    
-    public static void setRenderMode(boolean immediateMode, StaticRenderMode renderMode) {
-        CURRENT_RENDER_STATE.instanceSetRenderMode(immediateMode, renderMode);
+    public static void setStaticRenderMode(StaticRenderMode renderMode) {
+        CURRENT_RENDER_STATE.instanceSetStaticRenderMode(renderMode);
     }
 
-    public static void setRenderMode(DynamicRenderMode<?> renderMode) {
-        CURRENT_RENDER_STATE.instanceSetRenderMode(renderMode);
+    public static void setDynamicRenderMode(DynamicRenderMode<?> renderMode) {
+        CURRENT_RENDER_STATE.instanceSetDynamicRenderMode(renderMode);
     }
     
     public static void setModelMatrixIdentity() {
@@ -143,7 +122,7 @@ public class RenderState {
     
     private static class StaticDoNothingRenderMode extends StaticRenderMode {
         StaticDoNothingRenderMode() {
-            super(0);
+            super(0, 0);
         }
         
         @Override
@@ -152,7 +131,7 @@ public class RenderState {
     
     private static class DynamicDoNothingRenderMode extends DynamicRenderMode<Object> {
         DynamicDoNothingRenderMode() {
-            super(0);
+            super(0, 0);
         }
         
         @Override

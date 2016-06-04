@@ -38,24 +38,15 @@ class PolylistParser extends XMLParser implements DataInput {
     @Override
     public HashMap<String, XMLElementParser> addElementParsers(HashMap<String, XMLElementParser> to) {
         to = super.addElementParsers(to);
-        to.put(INPUT, new XMLElementParser() {
-            @Override
-            public void parse(Element element) {
-                inputs.add(PolylistParser.this.parseWith(element, new InputParser()));
-            }
+        to.put(INPUT, (XMLElementParser) (Element element) -> {
+            inputs.add(PolylistParser.this.parseWith(element, new InputParser()));
         });
-        to.put(PolylistParser.VCOUNT, new XMLElementParser() {
-            @Override
-            public void parse(Element element) {
-                CollParseUtils.parseUIntsInto(element.getText(), vCount, 0, vCount.length);
-                allIndices = new int[getNIndices()];
-            }
+        to.put(PolylistParser.VCOUNT, (XMLElementParser) (Element element) -> {
+            CollParseUtils.parseUIntsInto(element.getText(), vCount, 0, vCount.length);
+            allIndices = new int[getNIndices()];
         });
-        to.put(PolylistParser.P, new XMLElementParser() {
-            @Override
-            public void parse(Element element) {
-                CollParseUtils.parseUIntsInto(element.getText(), allIndices, 0, allIndices.length);
-            }
+        to.put(PolylistParser.P, (XMLElementParser) (Element element) -> {
+            CollParseUtils.parseUIntsInto(element.getText(), allIndices, 0, allIndices.length);
         });
         return to;
     }
@@ -63,21 +54,11 @@ class PolylistParser extends XMLParser implements DataInput {
     @Override
     public HashMap<String, XMLAttributeParser> addAttributeParsers(HashMap<String, XMLAttributeParser> to) {
         to = super.addAttributeParsers(to);
-        to.put(COUNT, new XMLIntAttributeParser() {
-            
-            @Override
-            public void parse(int value, Element parent) {
-                vCount = new int[value];
-            }
-            
+        to.put(COUNT, (XMLIntAttributeParser) (int value, Element parent) -> {
+            vCount = new int[value];
         });
-        to.put(MATERIAL, new XMLAttributeParser() {
-            
-            @Override
-            public void parse(Attribute attribute, Element parent) {
-                material = attribute.getValue();
-            }
-            
+        to.put(MATERIAL, (XMLAttributeParser) (Attribute attribute, Element parent) -> {
+            material = attribute.getValue();
         });
         return to;
     }

@@ -27,21 +27,11 @@ class InstanceMaterialParser extends XMLParser {
     @Override
     public HashMap<String, XMLAttributeParser> addAttributeParsers(HashMap<String, XMLAttributeParser> to) {
         to = super.addAttributeParsers(to);
-        to.put(SYMBOL, new XMLAttributeParser() {
-
-            @Override
-            public void parse(Attribute attribute, Element parent) {
-                symbol = attribute.getValue();
-            }
-            
+        to.put(SYMBOL, (XMLAttributeParser) (Attribute attribute, Element parent) -> {
+            symbol = attribute.getValue();
         });
-        to.put(TARGET, new XMLAttributeParser() {
-
-            @Override
-            public void parse(Attribute attribute, Element parent) {
-                material = InstanceMaterialParser.this.parseWith(attribute.getValue(), new MaterialParser());
-            }
-            
+        to.put(TARGET, (XMLAttributeParser) (Attribute attribute, Element parent) -> {
+            material = InstanceMaterialParser.this.parseWith(attribute.getValue(), new MaterialParser());
         });
         return to;
     }
@@ -49,13 +39,8 @@ class InstanceMaterialParser extends XMLParser {
     @Override
     public HashMap<String, XMLElementParser> addElementParsers(HashMap<String, XMLElementParser> to) {
         to = super.addElementParsers(to);
-        to.put(BIND_VERTEX_INPUT, new XMLElementParser() {
-            
-            @Override
-            public void parse(Element element) {
-                bindVertexInputs.add(InstanceMaterialParser.this.parseWith(element, new BindVertexInputParser()));
-            }
-            
+        to.put(BIND_VERTEX_INPUT, (XMLElementParser) (Element element) -> {
+            bindVertexInputs.add(InstanceMaterialParser.this.parseWith(element, new BindVertexInputParser()));
         });
         return to;
     }
@@ -73,29 +58,14 @@ class InstanceMaterialParser extends XMLParser {
         @Override
         public HashMap<String, XMLAttributeParser> addAttributeParsers(HashMap<String, XMLAttributeParser> to) {
             to = super.addAttributeParsers(to);
-            to.put(SEMANTIC, new XMLAttributeParser() {
-
-                @Override
-                public void parse(Attribute attribute, Element parent) {
-                    semantic = attribute.getValue();
-                }
-
+            to.put(SEMANTIC, (XMLAttributeParser) (Attribute attribute, Element parent) -> {
+                semantic = attribute.getValue();
             });
-            to.put(IN_SEMANTIC, new XMLAttributeParser() {
-
-                @Override
-                public void parse(Attribute attribute, Element parent) {
-                    inSemantic = attribute.getValue();
-                }
-
+            to.put(IN_SEMANTIC, (XMLAttributeParser) (Attribute attribute, Element parent) -> {
+                inSemantic = attribute.getValue();
             });
-            to.put(IN_SET, new XMLIntAttributeParser() {
-
-                @Override
-                public void parse(int value, Element parent) {
-                    inSet = value;
-                }
-
+            to.put(IN_SET, (XMLIntAttributeParser) (int value, Element parent) -> {
+                inSet = value;
             });
             return to;
         }

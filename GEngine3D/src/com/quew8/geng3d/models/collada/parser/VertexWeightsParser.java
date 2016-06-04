@@ -32,24 +32,15 @@ class VertexWeightsParser extends XMLParser implements DataInput {
     @Override
     public HashMap<String, XMLElementParser> addElementParsers(HashMap<String, XMLElementParser> to) {
         to = super.addElementParsers(to);
-        to.put(INPUT, new XMLElementParser() {
-            @Override
-            public void parse(Element element) {
-                inputs.add(VertexWeightsParser.this.parseWith(element, new InputParser()));
-            }
+        to.put(INPUT, (XMLElementParser) (Element element) -> {
+            inputs.add(VertexWeightsParser.this.parseWith(element, new InputParser()));
         });
-        to.put(VCOUNT, new XMLElementParser() {
-            @Override
-            public void parse(Element element) {
-                CollParseUtils.parseUIntsInto(element.getText(), vCount, 0, vCount.length);
-                allIndices = new int[getNIndices()];
-            }
+        to.put(VCOUNT, (XMLElementParser) (Element element) -> {
+            CollParseUtils.parseUIntsInto(element.getText(), vCount, 0, vCount.length);
+            allIndices = new int[getNIndices()];
         });
-        to.put(V, new XMLElementParser() {
-            @Override
-            public void parse(Element element) {
-                CollParseUtils.parseUIntsInto(element.getText(), allIndices, 0, allIndices.length);
-            }
+        to.put(V, (XMLElementParser) (Element element) -> {
+            CollParseUtils.parseUIntsInto(element.getText(), allIndices, 0, allIndices.length);
         });
         return to;
     }
@@ -57,13 +48,8 @@ class VertexWeightsParser extends XMLParser implements DataInput {
     @Override
     public HashMap<String, XMLAttributeParser> addAttributeParsers(HashMap<String, XMLAttributeParser> to) {
         to = super.addAttributeParsers(to);
-        to.put(COUNT, new XMLIntAttributeParser() {
-            
-            @Override
-            public void parse(int value, Element parent) {
-                vCount = new int[value];
-            }
-            
+        to.put(COUNT, (XMLIntAttributeParser) (int value, Element parent) -> {
+            vCount = new int[value];
         });
         return to;
     }

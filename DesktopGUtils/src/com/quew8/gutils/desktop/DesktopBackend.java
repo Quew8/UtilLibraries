@@ -3,17 +3,9 @@ package com.quew8.gutils.desktop;
 import com.quew8.gutils.PlatformBackend;
 import com.quew8.gutils.debug.LogLevel;
 import com.quew8.gutils.debug.LogStream;
-import com.quew8.gutils.desktop.opengl.services.DefaultFramebufferServiceImpl;
-import com.quew8.gutils.desktop.opengl.services.DefaultShaderServiceImpl;
-import com.quew8.gutils.desktop.opengl.services.FramebufferServiceImpl;
-import com.quew8.gutils.desktop.opengl.services.NoFramebufferServiceImpl;
-import com.quew8.gutils.desktop.opengl.services.NoShaderServiceImpl;
-import com.quew8.gutils.desktop.opengl.services.ShaderServiceImpl;
 import com.quew8.gutils.opengl.OpenGL;
-import com.quew8.gutils.services.ServiceImplLoader;
 import java.io.File;
 import java.io.InputStream;
-import java.net.URL;
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
@@ -23,6 +15,7 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL13;
 import org.lwjgl.opengl.GL14;
 import org.lwjgl.opengl.GL15;
+import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
 
 /**
@@ -30,33 +23,27 @@ import org.lwjgl.opengl.GL30;
  * @author Quew8
  */
 public class DesktopBackend extends PlatformBackend<DesktopLoadedImage> {
-    private static final HashMap<Integer, Integer> oglToGLSLVersions = new HashMap<Integer, Integer>();
+    private static final HashMap<Integer, Integer> OGL_TO_GLSL_MAPPINGS = new HashMap<Integer, Integer>();
     static {
-        oglToGLSLVersions.put(200, 110);
-        oglToGLSLVersions.put(210, 120);
-        oglToGLSLVersions.put(300, 130);
-        oglToGLSLVersions.put(310, 140);
-        oglToGLSLVersions.put(320, 150);
-        oglToGLSLVersions.put(330, 330);
-        oglToGLSLVersions.put(400, 400);
-        oglToGLSLVersions.put(410, 410);
-        oglToGLSLVersions.put(420, 420);
-        oglToGLSLVersions.put(430, 430);
-        oglToGLSLVersions.put(440, 440);
+        OGL_TO_GLSL_MAPPINGS.put(200, 110);
+        OGL_TO_GLSL_MAPPINGS.put(210, 120);
+        OGL_TO_GLSL_MAPPINGS.put(300, 130);
+        OGL_TO_GLSL_MAPPINGS.put(310, 140);
+        OGL_TO_GLSL_MAPPINGS.put(320, 150);
+        OGL_TO_GLSL_MAPPINGS.put(330, 330);
+        OGL_TO_GLSL_MAPPINGS.put(400, 400);
+        OGL_TO_GLSL_MAPPINGS.put(410, 410);
+        OGL_TO_GLSL_MAPPINGS.put(420, 420);
+        OGL_TO_GLSL_MAPPINGS.put(430, 430);
+        OGL_TO_GLSL_MAPPINGS.put(440, 440);
     }
     private static final LogStream 
-            DEFAULT_STREAM = new LogStream() {
-                @Override
-                public void log(String log, String msg) {
-                    System.out.println(log + " :: " + msg);
-                }
-            },
-            ERROR_STREAM = new LogStream() {
-                @Override
-                public void log(String log, String msg) {
-                    System.err.println(log + " :: " + msg);
-                }
-            };
+            DEFAULT_STREAM = (String log, String msg) -> {
+                System.out.println(log + " :: " + msg);
+    },
+            ERROR_STREAM = (String log, String msg) -> {
+                System.err.println(log + " :: " + msg);
+    };
     
     private DesktopContextBackend contextBackend;
     
@@ -71,12 +58,12 @@ public class DesktopBackend extends PlatformBackend<DesktopLoadedImage> {
 
     @Override
     public void glAttachShader_P(int program, int shader) {
-        contextBackend.shaderService.glAttachShader_P(program, shader);
+        GL20.glAttachShader(program, shader);
     }
 
     @Override
     public void glBindAttribLocation_P(int program, int index, String name) {
-        contextBackend.shaderService.glBindAttribLocation_P(program, index, name);
+        GL20.glBindAttribLocation(program, index, name);
     }
 
     @Override
@@ -86,12 +73,12 @@ public class DesktopBackend extends PlatformBackend<DesktopLoadedImage> {
 
     @Override
     public void glBindFramebuffer_P(int target, int framebuffer) {
-        contextBackend.framebufferService.glBindFramebuffer_P(target, framebuffer);
+        GL30.glBindFramebuffer(target, framebuffer);
     }
 
     @Override
     public void glBindRenderbuffer_P(int target, int renderbuffer) {
-        contextBackend.framebufferService.glBindRenderbuffer_P(target, renderbuffer);
+        GL30.glBindRenderbuffer(target, renderbuffer);
     }
 
     @Override
@@ -151,7 +138,7 @@ public class DesktopBackend extends PlatformBackend<DesktopLoadedImage> {
 
     @Override
     public int glCheckFramebufferStatus_P(int target) {
-        return contextBackend.framebufferService.glCheckFramebufferStatus_P(target);
+        return GL30.glCheckFramebufferStatus(target);
     }
 
     @Override
@@ -181,7 +168,7 @@ public class DesktopBackend extends PlatformBackend<DesktopLoadedImage> {
 
     @Override
     public void glCompileShader_P(int shader) {
-        contextBackend.shaderService.glCompileShader_P(shader);
+        GL20.glCompileShader(shader);
     }
     
     @Override
@@ -206,12 +193,12 @@ public class DesktopBackend extends PlatformBackend<DesktopLoadedImage> {
 
     @Override
     public int glCreateProgram_P() {
-        return contextBackend.shaderService.glCreateProgram_P(); 
+        return GL20.glCreateProgram(); 
     }
 
     @Override
     public int glCreateShader_P(int type) {
-        return contextBackend.shaderService.glCreateShader_P(type);
+        return GL20.glCreateShader(type);
     }
 
     @Override
@@ -226,22 +213,22 @@ public class DesktopBackend extends PlatformBackend<DesktopLoadedImage> {
 
     @Override
     public void glDeleteFramebuffers_P(IntBuffer buffers) {
-        contextBackend.framebufferService.glDeleteFramebuffers_P(buffers);
+        GL30.glDeleteFramebuffers(buffers);
     }
 
     @Override
     public void glDeleteProgram_P(int program) {
-        contextBackend.shaderService.glDeleteProgram_P(program);
+        GL20.glDeleteProgram(program);
     }
 
     @Override
     public void glDeleteRenderbuffers_P(IntBuffer buffers) {
-        contextBackend.framebufferService.glDeleteRenderbuffers_P(buffers);
+        GL30.glDeleteRenderbuffers(buffers);
     }
 
     @Override
     public void glDeleteShader_P(int shader) {
-        contextBackend.shaderService.glDeleteShader_P(shader);
+        GL20.glDeleteShader(shader);
     }
 
     @Override
@@ -271,7 +258,7 @@ public class DesktopBackend extends PlatformBackend<DesktopLoadedImage> {
 
     @Override
     public void glDetachShader_P(int program, int shader) {
-        contextBackend.shaderService.glDetachShader_P(program, shader);
+        GL20.glDetachShader(program, shader);
     }
 
     @Override
@@ -281,7 +268,7 @@ public class DesktopBackend extends PlatformBackend<DesktopLoadedImage> {
 
     @Override
     public void glDisableVertexAttribArray_P(int index) {
-        contextBackend.shaderService.glDisableVertexAttribArray_P(index);
+        GL20.glDisableVertexAttribArray(index);
     }
 
     @Override
@@ -311,7 +298,7 @@ public class DesktopBackend extends PlatformBackend<DesktopLoadedImage> {
 
     @Override
     public void glEnableVertexAttribArray_P(int index) {
-        contextBackend.shaderService.glEnableVertexAttribArray_P(index);
+        GL20.glEnableVertexAttribArray(index);
     }
 
     @Override
@@ -326,12 +313,12 @@ public class DesktopBackend extends PlatformBackend<DesktopLoadedImage> {
 
     @Override
     public void glFramebufferRenderbuffer_P(int target, int attachment, int renderbufferTarget, int renderbuffer) {
-        contextBackend.framebufferService.glFramebufferRenderbuffer_P(target, attachment, renderbufferTarget, renderbuffer);
+        GL30.glFramebufferRenderbuffer(target, attachment, renderbufferTarget, renderbuffer);
     }
 
     @Override
     public void glFramebufferTexture2D_P(int target, int attachment, int texTarget, int texture, int level) {
-        contextBackend.framebufferService.glFramebufferTexture2D_P(target, attachment, texTarget, texture, level);
+        GL30.glFramebufferTexture2D(target, attachment, texTarget, texture, level);
     }
 
     @Override
@@ -346,11 +333,11 @@ public class DesktopBackend extends PlatformBackend<DesktopLoadedImage> {
 
     @Override
     public void glGenFramebuffers_P(IntBuffer buffers) {
-        contextBackend.framebufferService.glGenFramebuffers_P(buffers);
+        GL30.glGenFramebuffers(buffers);
     }
     @Override
     public void glGenRenderbuffers_P(IntBuffer buffers) {
-        contextBackend.framebufferService.glGenRenderbuffers_P(buffers);
+        GL30.glGenRenderbuffers(buffers);
     }
 
     @Override
@@ -364,28 +351,38 @@ public class DesktopBackend extends PlatformBackend<DesktopLoadedImage> {
     }
 
     @Override
+    public void glGenerateMipmap_P(int target) {
+        GL30.glGenerateMipmap(target);
+    }
+    
+    @Override
     public String glGetActiveAttrib_P(int program, int index, IntBuffer length, IntBuffer type) {
-        return contextBackend.shaderService.glGetActiveAttrib_P(program, index, length, type);
+        return GL20.glGetActiveAttrib(program, index, length, type);
     }
 
     @Override
     public void glGetAttachedShaders_P(int program, IntBuffer count, IntBuffer shaders) {
-        contextBackend.shaderService.glGetAttachedShaders_P(program, count, shaders);
+        GL20.glGetAttachedShaders(program, count, shaders);
     }
 
     @Override
     public int glGetAttribLocation_P(int program, String name) {
-        return contextBackend.shaderService.glGetAttribLocation_P(program, name);
+        return GL20.glGetAttribLocation(program, name);
     }
 
     @Override
     public void glGetBooleanv_P(int pname, ByteBuffer params) {
-        GL11.glGetBoolean(pname, params);
+        GL11.glGetBooleanv(pname, params);
     }
 
     @Override
     public void glGetBufferParameteriv_P(int target, int value, IntBuffer data) {
-        GL15.glGetBufferParameter(target, value, data);
+        GL15.glGetBufferParameteriv(target, value, data);
+    }
+
+    @Override
+    public void glGetBufferSubData_P(int target, long offset, ByteBuffer data) {
+        GL15.glGetBufferSubData(target, offset, data);
     }
     
     @Override
@@ -395,47 +392,47 @@ public class DesktopBackend extends PlatformBackend<DesktopLoadedImage> {
 
     @Override
     public void glGetFloatv_P(int pname, FloatBuffer params) {
-        GL11.glGetFloat(pname, params);
+        GL11.glGetFloatv(pname, params);
     }
 
     @Override
     public void glGetFramebufferAttachmentParameteriv_P(int target, int attatchment, int pname, IntBuffer params) {
-        contextBackend.framebufferService.glGetFramebufferAttachmentParameteriv_P(target, attatchment, pname, params);
+        GL30.glGetFramebufferAttachmentParameteriv(target, attatchment, pname, params);
     }
 
     @Override
     public void glGetIntegerv_P(int pname, IntBuffer params) {
-        GL11.glGetInteger(pname, params);
+        GL11.glGetIntegerv(pname, params);
     }
 
     @Override
     public void glGetProgramiv_P(int program, int pname, IntBuffer params) {
-        contextBackend.shaderService.glGetProgramiv_P(program, pname, params);
+        GL20.glGetProgramiv(program, pname, params);
     }
 
     @Override
     public String glGetProgramInfoLog_P(int program) {
-        return contextBackend.shaderService.glGetProgramInfoLog_P(program);
+        return GL20.glGetProgramInfoLog(program);
     }
 
     @Override
     public void glGetRenderbufferParameteriv_P(int target, int pname, IntBuffer params) {
-        contextBackend.framebufferService.glGetRenderbufferParameteriv_P(target, pname, params);
+        GL30.glGetRenderbufferParameteriv(target, pname, params);
     }
 
     @Override
     public void glGetShaderiv_P(int shader, int pname, IntBuffer params) {
-        contextBackend.shaderService.glGetShaderiv_P(shader, pname, params);
+        GL20.glGetShaderiv(shader, pname, params);
     }
 
     @Override
     public String glGetShaderInfoLog_P(int shader) {
-        return contextBackend.shaderService.glGetShaderInfoLog_P(shader);
+        return GL20.glGetShaderInfoLog(shader);
     }
 
     @Override
     public String glGetShaderSource_P(int shader) {
-        return contextBackend.shaderService.glGetShaderSource_P(shader);
+        return GL20.glGetShaderSource(shader);
     }
 
     @Override
@@ -445,37 +442,37 @@ public class DesktopBackend extends PlatformBackend<DesktopLoadedImage> {
 
     @Override
     public void glGetTexParameterfv_P(int target, int pname, FloatBuffer params) {
-        GL11.glGetTexParameter(target, pname, params);
+        GL11.glGetTexParameterfv(target, pname, params);
     }
 
     @Override
     public void glGetTexParameteriv_P(int target, int pname, IntBuffer params) {
-        GL11.glGetTexParameter(target, pname, params);
+        GL11.glGetTexParameteriv(target, pname, params);
     }
 
     @Override
     public void glGetUniformfv_P(int program, int location, FloatBuffer params) {
-        contextBackend.shaderService.glGetUniformfv_P(program, location, params);
+        GL20.glGetUniformfv(program, location, params);
     }
 
     @Override
     public void glGetUniformiv_P(int program, int location, IntBuffer params) {
-        contextBackend.shaderService.glGetUniformiv_P(program, location, params);
+        GL20.glGetUniformiv(program, location, params);
     }
     
     @Override
     public int glGetUniformLocation_P(int program, String name) {
-        return contextBackend.shaderService.glGetUniformLocation_P(program, name);
+        return GL20.glGetUniformLocation(program, name);
     }
 
     @Override
     public void glGetVertexAttribfv_P(int index, int pname, FloatBuffer params) {
-        contextBackend.shaderService.glGetVertexAttribfv_P(index, pname, params);
+        GL20.glGetVertexAttribfv(index, pname, params);
     }
 
     @Override
     public void glGetVertexAttribiv_P(int index, int pname, IntBuffer params) {
-        contextBackend.shaderService.glGetVertexAttribiv_P(index, pname, params);
+        GL20.glGetVertexAttribiv(index, pname, params);
     }
 
     @Override
@@ -495,22 +492,22 @@ public class DesktopBackend extends PlatformBackend<DesktopLoadedImage> {
 
     @Override
     public boolean glIsFramebuffer_P(int framebuffer) {
-        return contextBackend.framebufferService.glIsFramebuffer_P(framebuffer);
+        return GL30.glIsFramebuffer(framebuffer);
     }
 
     @Override
     public boolean glIsProgram_P(int program) {
-        return contextBackend.shaderService.glIsProgram_P(program);
+        return GL20.glIsProgram(program);
     }
 
     @Override
     public boolean glIsRenderbuffer_P(int renderbuffer) {
-        return contextBackend.framebufferService.glIsRenderbuffer_P(renderbuffer);
+        return GL30.glIsRenderbuffer(renderbuffer);
     }
 
     @Override
     public boolean glIsShader_P(int shader) {
-        return contextBackend.shaderService.glIsShader_P(shader);
+        return GL20.glIsShader(shader);
     }
 
     @Override
@@ -525,7 +522,7 @@ public class DesktopBackend extends PlatformBackend<DesktopLoadedImage> {
 
     @Override
     public void glLinkProgram_P(int program) {
-        contextBackend.shaderService.glLinkProgram_P(program);
+        GL20.glLinkProgram(program);
     }
 
     @Override
@@ -555,7 +552,7 @@ public class DesktopBackend extends PlatformBackend<DesktopLoadedImage> {
 
     @Override
     public void glRenderbufferStorage_P(int target, int internalFormat, int width, int height) {
-        contextBackend.framebufferService.glRenderbufferStorage_P(target, internalFormat, width, height);
+        GL30.glRenderbufferStorage(target, internalFormat, width, height);
     }
 
     @Override
@@ -570,7 +567,7 @@ public class DesktopBackend extends PlatformBackend<DesktopLoadedImage> {
 
     @Override
     public void glShaderSource_P(int shader, String source) {
-        contextBackend.shaderService.glShaderSource_P(shader, source);
+        GL20.glShaderSource(shader, source);
     }
 
     @Override
@@ -610,7 +607,7 @@ public class DesktopBackend extends PlatformBackend<DesktopLoadedImage> {
 
     @Override
     public void glTexParameterfv_P(int target, int pname, FloatBuffer param) {
-        GL11.glTexParameter(target, pname, param);
+        GL11.glTexParameterfv(target, pname, param);
     }
 
     @Override
@@ -620,7 +617,7 @@ public class DesktopBackend extends PlatformBackend<DesktopLoadedImage> {
 
     @Override
     public void glTexParameteriv_P(int target, int pname, IntBuffer param) {
-        GL11.glTexParameter(target, pname, param);
+        GL11.glTexParameteriv(target, pname, param);
     }
 
     @Override
@@ -640,147 +637,132 @@ public class DesktopBackend extends PlatformBackend<DesktopLoadedImage> {
 
     @Override
     public void glUniform1f_P(int location, float v1) {
-        contextBackend.shaderService.glUniform1f_P(location, v1);
+        GL20.glUniform1f(location, v1);
     }
 
     @Override
     public void glUniform1fv_P(int location, FloatBuffer value) {
-        contextBackend.shaderService.glUniform1fv_P(location, value);
+        GL20.glUniform1fv(location, value);
     }
 
     @Override
     public void glUniform1i_P(int location, int v1) {
-        contextBackend.shaderService.glUniform1i_P(location, v1);
+        GL20.glUniform1i(location, v1);
     }
 
     @Override
     public void glUniform1iv_P(int location, IntBuffer value) {
-        contextBackend.shaderService.glUniform1iv_P(location, value);
+        GL20.glUniform1iv(location, value);
     }
 
     @Override
     public void glUniform2f_P(int location, float v1, float v2) {
-        contextBackend.shaderService.glUniform2f_P(location, v1, v2);
+        GL20.glUniform2f(location, v1, v2);
     }
 
     @Override
     public void glUniform2fv_P(int location, FloatBuffer value) {
-        contextBackend.shaderService.glUniform2fv_P(location, value);
+        GL20.glUniform2fv(location, value);
     }
 
     @Override
     public void glUniform2i_P(int location, int v1, int v2) {
-        contextBackend.shaderService.glUniform2i_P(location, v1, v2);
+        GL20.glUniform2i(location, v1, v2);
     }
 
     @Override
     public void glUniform2iv_P(int location, IntBuffer value) {
-        contextBackend.shaderService.glUniform2iv_P(location, value);
+        GL20.glUniform2iv(location, value);
     }
 
     @Override
     public void glUniform3f_P(int location, float v1, float v2, float v3) {
-        contextBackend.shaderService.glUniform3f_P(location, v1, v2, v3);
+        GL20.glUniform3f(location, v1, v2, v3);
     }
 
     @Override
     public void glUniform3fv_P(int location, FloatBuffer value) {
-        contextBackend.shaderService.glUniform3fv_P(location, value);
+        GL20.glUniform3fv(location, value);
     }
 
     @Override
     public void glUniform3i_P(int location, int v1, int v2, int v3) {
-        contextBackend.shaderService.glUniform3i_P(location, v1, v2, v3);
+        GL20.glUniform3i(location, v1, v2, v3);
     }
 
     @Override
     public void glUniform3iv_P(int location, IntBuffer value) {
-        contextBackend.shaderService.glUniform3iv_P(location, value);
+        GL20.glUniform3iv(location, value);
     }
 
     @Override
     public void glUniform4f_P(int location, float v1, float v2, float v3, float v4) {
-        contextBackend.shaderService.glUniform4f_P(location, v1, v2, v3, v4);
+        GL20.glUniform4f(location, v1, v2, v3, v4);
     } 
 
     @Override
     public void glUniform4fv_P(int location, FloatBuffer value) {
-        contextBackend.shaderService.glUniform4fv_P(location, value);
+        GL20.glUniform4fv(location, value);
     }
 
     @Override
     public void glUniform4i_P(int location, int v1, int v2, int v3, int v4) {
-        contextBackend.shaderService.glUniform4i_P(location, v1, v2, v3, v4);
+        GL20.glUniform4i(location, v1, v2, v3, v4);
     }
 
     @Override
     public void glUniform4iv_P(int location, IntBuffer value) {
-        contextBackend.shaderService.glUniform4iv_P(location, value);
+        GL20.glUniform4iv(location, value);
     }
 
     @Override
     public void glUniformMatrix2fv_P(int location, boolean transpose, FloatBuffer value) {
-        contextBackend.shaderService.glUniformMatrix2fv_P(location, transpose, value);
+        GL20.glUniformMatrix2fv(location, transpose, value);
     }
 
     @Override
     public void glUniformMatrix3fv_P(int location, boolean transpose, FloatBuffer value) {
-        contextBackend.shaderService.glUniformMatrix3fv_P(location, transpose, value);
+        GL20.glUniformMatrix3fv(location, transpose, value);
     }
 
     @Override
     public void glUniformMatrix4fv_P(int location, boolean transpose, FloatBuffer value) {
-        contextBackend.shaderService.glUniformMatrix4fv_P(location, transpose, value);
+        GL20.glUniformMatrix4fv(location, transpose, value);
     }
 
     @Override
     public void glUseProgram_P(int program) {
-        contextBackend.shaderService.glUseProgram_P(program);
+        GL20.glUseProgram(program);
     }
 
     @Override
     public void glValidateProgram_P(int program) {
-        contextBackend.shaderService.glValidateProgram_P(program);
+        GL20.glValidateProgram(program);
     }
 
     @Override
     public void glVertexAttrib1f_P(int index, float v1) {
-        contextBackend.shaderService.glVertexAttrib1f_P(index, v1);
+        GL20.glVertexAttrib1f(index, v1);
     }
 
     @Override
     public void glVertexAttrib2f_P(int index, float v1, float v2) {
-        contextBackend.shaderService.glVertexAttrib2f_P(index, v1, v2);
+        GL20.glVertexAttrib2f(index, v1, v2);
     }
     
     @Override
     public void glVertexAttrib3f_P(int index, float v1, float v2, float v3) {
-        contextBackend.shaderService.glVertexAttrib3f_P(index, v1, v2, v3);
+        GL20.glVertexAttrib3f(index, v1, v2, v3);
     }
 
     @Override
     public void glVertexAttrib4f_P(int index, float v1, float v2, float v3, float v4) {
-        contextBackend.shaderService.glVertexAttrib4f_P(index, v1, v2, v3, v4);
+        GL20.glVertexAttrib4f(index, v1, v2, v3, v4);
     }
 
     @Override
     public void glVertexAttribPointer_P(int index, int size, int type, boolean normalized, int stride, int bufferOffset) {
-        contextBackend.shaderService.glVertexAttribPointer_P(index, size, type, normalized, stride, bufferOffset);
-    }
-
-    @Override
-    public void glVertexAttribPointer_P(int index, int size, boolean normalized, int stride, FloatBuffer buffer) {
-        contextBackend.shaderService.glVertexAttribPointer_P(index, size, normalized, stride, buffer);
-    }
-
-    @Override
-    public void glVertexAttribPointer_P(int index, int size, boolean signed, boolean normalized, int stride, IntBuffer buffer) {
-        contextBackend.shaderService.glVertexAttribPointer_P(index, size, signed, normalized, stride, buffer);
-    }
-
-    @Override
-    public void glVertexAttribPointer_P(int index, int size, boolean signed, boolean normalized, int stride, ByteBuffer buffer) {
-        contextBackend.shaderService.glVertexAttribPointer_P(index, size, signed, normalized, stride, buffer);
+        GL20.glVertexAttribPointer(index, size, type, normalized, stride, bufferOffset);
     }
 
     @Override
@@ -827,7 +809,7 @@ public class DesktopBackend extends PlatformBackend<DesktopLoadedImage> {
                 0, 
                 img.getFormat(), 
                 OpenGL.GL_UNSIGNED_BYTE, 
-                img.getData(texWidth, texHeight)
+                img.getImageData(texWidth, texHeight)
         );
     }
     
@@ -840,7 +822,7 @@ public class DesktopBackend extends PlatformBackend<DesktopLoadedImage> {
                 img.getWidth(), img.getHeight(), 
                 img.getFormat(), 
                 OpenGL.GL_UNSIGNED_BYTE, 
-                img.getData()
+                img.getImageData()
         );
     }
     
@@ -858,25 +840,19 @@ public class DesktopBackend extends PlatformBackend<DesktopLoadedImage> {
         this.contextBackend = contextBackend;
     }
     
-    @Override
-    public String toString() {
-        return "Desktop Backend{ShaderService: " + contextBackend.shaderService + ", FramebufferService: " + contextBackend.framebufferService + "}";    
-    }
-    
     public static int getGLSLVersionForOGL(int oglVersion) {
-        if(!oglToGLSLVersions.containsKey(oglVersion)) {
+        if(!OGL_TO_GLSL_MAPPINGS.containsKey(oglVersion)) {
             throw new IllegalArgumentException("Unknown OpenGL Version: " + oglVersion);
         }
-        return oglToGLSLVersions.get(oglVersion);
+        return OGL_TO_GLSL_MAPPINGS.get(oglVersion);
     }
     
-    public static DesktopContextBackend getContextBackend(int openGLVersion, int glslVersion, 
-                ShaderServiceImpl shaderService, FramebufferServiceImpl framebufferService) {
+    public static DesktopContextBackend getContextBackend(int openGLVersion, int glslVersion) {
         
-        return new DesktopContextBackend(openGLVersion, glslVersion, shaderService, framebufferService);
+        return new DesktopContextBackend(openGLVersion, glslVersion);
     }
     
-    public static DesktopContextBackend getContextBackend(int openGLVersion, int glslVersion, URL[] urls) {
+    /*public static DesktopContextBackend getContextBackend(int openGLVersion, int glslVersion, URL[] urls) {
         return getContextBackend(
                 openGLVersion,
                 glslVersion,
@@ -893,20 +869,15 @@ public class DesktopBackend extends PlatformBackend<DesktopLoadedImage> {
                         NoFramebufferServiceImpl.INSTANCE
                 ).getImplementationNoThrow()
         );
-    }
+    }*/
     
     public static class DesktopContextBackend {
         private final int openGLVersion, glslVersion;
-        private final ShaderServiceImpl shaderService;
-        private final FramebufferServiceImpl framebufferService;
 
-        public DesktopContextBackend(int openGLVersion, int glslVersion, 
-                ShaderServiceImpl shaderService, FramebufferServiceImpl framebufferService) {
+        public DesktopContextBackend(int openGLVersion, int glslVersion) {
             
             this.openGLVersion = openGLVersion;
             this.glslVersion = glslVersion;
-            this.shaderService = shaderService;
-            this.framebufferService = framebufferService;
         }
     }
 }

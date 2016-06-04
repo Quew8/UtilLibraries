@@ -131,6 +131,7 @@ public class ControlSet {
                 if(events.get(i).isMouseMovement()) {
                     if(mouseMovementControl != null) {
                         mouseMovementControl.movement(
+                                events.getHandler(),
                                 events.getHandler().getMouseX(), 
                                 events.getHandler().getMouseY(), 
                                 events.getHandler().getMouseDX(), 
@@ -177,7 +178,7 @@ public class ControlSet {
             double xPos, double yPos, double dx, double dy) {
         
         if(mouseMovementControl != null) {
-            mouseMovementControl.movement(xPos, yPos, dx, dy);
+            mouseMovementControl.movement(handler, xPos, yPos, dx, dy);
             return true;
         }
         return false;

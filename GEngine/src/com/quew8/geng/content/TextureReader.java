@@ -13,7 +13,7 @@ public class TextureReader implements ContentReader<BasicTexture> {
     
     @Override
     public BasicTexture read(Source in) {
-        return new BasicTexture(in.getStream(), TextureParams.create());
+        return new BasicTexture(in.getStream(), new TextureParams());
     }
     
 }

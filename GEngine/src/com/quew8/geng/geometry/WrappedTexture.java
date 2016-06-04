@@ -2,6 +2,7 @@ package com.quew8.geng.geometry;
 
 import com.quew8.gutils.BufferUtils;
 import static com.quew8.gutils.opengl.OpenGL.*;
+import java.nio.IntBuffer;
 
 /**
  *
@@ -26,7 +27,10 @@ public class WrappedTexture implements Texture {
 
     @Override
     public void dispose() {
-        glDeleteTextures(BufferUtils.createIntBuffer(new int[textureId]));
+        IntBuffer ib = BufferUtils.createIntBuffer(1);
+        ib.put(textureId);
+        ib.flip();
+        glDeleteTextures(ib);
     }
 
     @Override

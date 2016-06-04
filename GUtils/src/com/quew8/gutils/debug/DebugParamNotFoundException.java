@@ -6,8 +6,8 @@ package com.quew8.gutils.debug;
  */
 public class DebugParamNotFoundException extends DebugLeafNotFoundException {
 
-    public DebugParamNotFoundException(DebugInterface in, String obj) {
-        super(in, obj);
+    public DebugParamNotFoundException(DebugInterfaceParser.DebugObjectStruct parent, String leaf) {
+        super(parent, leaf);
     }
     
 }

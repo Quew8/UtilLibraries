@@ -1,19 +1,7 @@
 package com.quew8.gmath;
 
 public class Vector {
-    public static final byte 
-            NORMALIZE_BIT = 1,
-            ABSOLUTE_BIT = 2,
-            NEGATE_BIT = 4;
-    
     private float x, y, z;
-			
-    public Vector(float x, float y, float z, byte op) {
-        this.x = x;
-        this.y = y;
-        this.z = z;
-        performOp(op);
-    }
 			
     public Vector(float x, float y, float z) {
         this.x = x;
@@ -21,24 +9,8 @@ public class Vector {
         this.z = z;
     }
 	
-    public Vector(Vector a, Vector b, byte op) {
-        this(b.x - a.x, b.y - a.y, b.z - a.z, op);
-    }
-	
     public Vector(Vector a, Vector b) {
         this(b.x - a.x, b.y - a.y, b.z - a.z);
-    }
-	
-    public Vector(Vector v, byte op) {
-        this(v.x, v.y, v.z, op);
-    }
-	
-    public Vector(Vector v) {
-        this(v.x, v.y, v.z);
-    }
-	
-    public Vector(Vector2 v, byte op) {
-        this(v.getX(), v.getY(), 0, op);
     }
 	
     public Vector(Vector2 v) {
@@ -46,9 +18,14 @@ public class Vector {
     }
 	
     public Vector() {
-        this.x = 0;
-        this.y = 0;
-        this.z = 0;
+        this(0, 0, 0);
+    }
+    
+    public Vector setXYZ(Vector src) {
+        this.x = src.getX();
+        this.y = src.getY();
+        this.z = src.getZ();
+        return this;
     }
     
     public Vector setXYZ(float x, float y, float z) {
@@ -73,12 +50,17 @@ public class Vector {
         return this;
     }
     
-    public Vector2 getVector2() {
-        return new Vector2(x, y);
+    public Vector2 getVector2(Vector2 out) {
+        out.setX(x);
+        out.setY(y);
+        return out;
     }
     
-    public float[] getXYZ() {
-        return new float[]{x, y, z};
+    public float[] getXYZ(float[] out, int offset) {
+        out[offset] = x;
+        out[offset + 1] = y;
+        out[offset + 2] = z;
+        return out;
     }
     
     public float getX() {
@@ -92,64 +74,107 @@ public class Vector {
     public float getZ() {
         return z;
     }
-	
-    public boolean equals(Vector v) {
-        return (this.x == v.getX() && this.y == v.getY() && this.z == v.getZ());
+    
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 13 * hash + Float.floatToIntBits(this.x);
+        hash = 13 * hash + Float.floatToIntBits(this.y);
+        hash = 13 * hash + Float.floatToIntBits(this.z);
+        return hash;
     }
-	
-    public final Vector performOp(byte op) {
-        if((op & NORMALIZE_BIT) != 0) {
-            float length = GMath.length(x, y, z);
-            this.x /= length;
-            this.y /= length;
-            this.z /= length;
+    
+    @Override
+    public boolean equals(Object obj) {
+        if(obj == null) {
+            return false;
         }
-        if((op & ABSOLUTE_BIT) != 0) {
-            this.x = Math.abs(this.x);
-            this.y = Math.abs(this.y);
-            this.z = Math.abs(this.z);
+        if(getClass() != obj.getClass()) {
+            return false;
         }
-        if((op & NEGATE_BIT) != 0) {
-            this.x = -this.x;
-            this.y = -this.y;
-            this.z = -this.z;
+        final Vector other = (Vector) obj;
+        if(Float.floatToIntBits(this.x) != Float.floatToIntBits(other.x)) {
+            return false;
         }
-        return this;
+        if(Float.floatToIntBits(this.y) != Float.floatToIntBits(other.y)) {
+            return false;
+        }
+        return Float.floatToIntBits(this.z) == Float.floatToIntBits(other.z);
     }
     
     public Vector add(Vector b) {
-        return Vector.add(this, this, b);
+        return add(this, b);
+    }
+    
+    public Vector add(Vector out, Vector b) {
+        return Vector.add(out, this, b);
     }
 	
     public Vector subtract(Vector b) {
-        return Vector.subtract(this, this, b);
+        return subtract(this, b);
+    }
+	
+    public Vector subtract(Vector out, Vector b) {
+        return Vector.subtract(out, this, b);
     }
 	
     public Vector times(Vector b) {
-        return Vector.times(this, this, b);
+        return times(this, b);
     }
 	
-    public Vector times(float f) {
-        return Vector.times(this, this, f);
+    public Vector times(Vector out, Vector b) {
+        return Vector.times(out, this, b);
     }
 	
-    public Vector divide(float f) {
-        return Vector.divide(this, this, f);
+    public Vector scale(float f) {
+        return scale(this, f);
     }
 	
-    public Vector add(float f) {
-        return Vector.add(this, this, f); 
+    public Vector scale(Vector out, float f) {
+        return Vector.scale(out, this, f);
     }
 	
-    public Vector subtract(float f) {
-        return Vector.subtract(this, this, f);
+    public Vector addBias(float f) {
+        return addBias(this, f); 
+    }
+	
+    public Vector addBias(Vector out, float f) {
+        return Vector.addBias(out, this, f); 
+    }
+	
+    public Vector normalize() {
+        return normalize(this);
+    }
+	
+    public Vector normalize(Vector out) {
+        return Vector.normalize(out, this);
+    }
+	
+    public Vector normalizeIfNot(Vector out) {
+        float magnitudeSq = magnitudeSquared();
+        if(magnitudeSq != 1) {
+            float magnitude = GMath.sqrt(magnitudeSq);
+            out.x = this.x / magnitude;
+            out.y = this.y / magnitude;
+            out.z = this.z / magnitude;
+            return out;
+        }
+        return out.setXYZ(this);
+    }
+	
+    public Vector negate() {
+        return negate(this);
+    }
+	
+    public Vector negate(Vector out) {
+        return Vector.negate(out, this);
     }
 	
     public boolean isNegative() {
         return (x < 0 && y < 0 && z < 0);
     }
 	
-    public boolean hasMagnitudeZero() {
+    public boolean isMagnitudeZero() {
         return (x == 0 && y == 0 && z == 0);
     }
 	
@@ -162,67 +187,26 @@ public class Vector {
     }
     
     public float manhattenMagnitude() {
-        return x + y + z;
-    }
-    
-    public float distance(Vector other) {
-        return Vector.subtract(new Vector(), this, other).magnitude();
+        return GMath.abs(x) + GMath.abs(y) + GMath.abs(z);
     }
     
     public float distanceSquared(Vector other) {
-        return Vector.subtract(new Vector(), this, other).magnitudeSquared();
+        return GMath.lengthSquared(x - other.getX(), y - other.getY(), z - other.getZ());
+    }
+    
+    public float distance(Vector other) {
+        return GMath.length(x - other.getX(), y - other.getY(), z - other.getZ());
     }
     
     public float manhattenDistance(Vector other) {
-        return Vector.subtract(new Vector(), this, other).manhattenMagnitude();
-    }
-	
-    public float normalize() {
-        float magnitude = magnitude();
-        this.x /= magnitude;
-        this.y /= magnitude;
-        this.z /= magnitude;
-        return magnitude;
-    }
-	
-    public float normalizeIfNot() {
-        float magnitudeSq = magnitudeSquared();
-        if(magnitudeSq != 1) {
-            float magnitude = GMath.sqrt(magnitudeSq);
-            this.x /= magnitude;
-            this.y /= magnitude;
-            this.z /= magnitude;
-            return magnitude;
-        }
-        return 1;
-    }
-	
-    public float setMagnitude(float mag) {
-    	float curMag = magnitude();
-    	float scale = mag / curMag;
-    	times(scale);
-    	return curMag;
-    }
-    
-    public Vector absolute() {
-        this.x = Math.abs(this.x);
-        this.y = Math.abs(this.y);
-        this.z = Math.abs(this.z);
-        return this;
-    }
-	
-    public Vector negate() {
-        this.x = -this.x;
-        this.y = -this.y;
-        this.z = -this.z;
-        return this;
+        return GMath.abs(x - other.getX()) + GMath.abs(y - other.getY()) + GMath.abs(z - other.getZ());
     }
 
     @Override
     public String toString() {
-        return "Vector{" + "x=" + x + ", y=" + y + ", z=" + z + '}';
+        return "Vector{" + x + ", " + y + ", " + z + '}';
     }
-	
+    
     public static Vector add(Vector result, Vector a, Vector b) {
         result.x = a.x + b.x;
         result.y = a.y + b.y;
@@ -244,52 +228,32 @@ public class Vector {
         return result;
     }
 	
-    public static Vector divide(Vector result, Vector a, Vector b) {
-        result.x = a.x / b.x;
-        result.y = a.y / b.y;
-        result.z = a.z / b.z;
-        return result;
-    }
-	
-    public static Vector times(Vector result, Vector a, float f) {
+    public static Vector scale(Vector result, Vector a, float f) {
         result.x = a.x * f;
         result.y = a.y * f;
         result.z = a.z * f;
         return result;
     }
 	
-    /**
-     * 
-     * @param result
-     * @param a
-     * @param f
-     * @return 
-     */
-    public static Vector divide(Vector result, Vector a, float f) {
-        result.x = a.x / f;
-        result.y = a.y / f;
-        result.z = a.z / f;
-        return result;
-    }
-	
-    public static Vector add(Vector result, Vector a, float f) {
+    public static Vector addBias(Vector result, Vector a, float f) {
         result.x = a.x + f;
         result.y = a.y + f;
         result.z = a.z + f;
         return result;
     }
-	
-    public static Vector subtract(Vector result, Vector a, float f) {
-        result.x = a.x - f;
-        result.y = a.y - f;
-        result.z = a.z - f;
+    
+    public static Vector normalize(Vector result, Vector a) {
+        float magnitude = a.magnitude();
+        result.x = a.x / magnitude;
+        result.y = a.y / magnitude;
+        result.z = a.z / magnitude;
         return result;
     }
-	
-    /*public static Vector times(Vector result, Vector a, Matrix m) {
-        result.x = ( a.x * m.get(0) ) + ( a.y * m.get(4) ) + ( a.z * m.get(8) ) + m.get(12);
-        result.y = ( a.x * m.get(1) ) + ( a.y * m.get(5) ) + ( a.z * m.get(9) ) + m.get(13);
-        result.z = ( a.x * m.get(2) ) + ( a.y * m.get(6) ) + ( a.z * m.get(10) ) + m.get(14);
+    
+    public static Vector negate(Vector result, Vector a) {
+        result.x = -a.x;
+        result.y = -a.y;
+        result.z = -a.z;
         return result;
-    }*/
+    }
 }

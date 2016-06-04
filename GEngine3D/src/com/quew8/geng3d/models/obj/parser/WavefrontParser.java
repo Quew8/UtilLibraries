@@ -119,7 +119,7 @@ public class WavefrontParser {
         if(indices.isEmpty()) {
             throw new NoSuchElementException();
         }
-        faces.add(ArrayUtils.toIntArray(indices.toArray(new Integer[indices.size()])));
+        faces.add(ArrayUtils.unbox(indices.toArray(new Integer[indices.size()])));
     }
 
     private void parseObject() {

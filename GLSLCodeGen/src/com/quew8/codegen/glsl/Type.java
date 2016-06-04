@@ -38,9 +38,4 @@ public class Type extends GLSLElement<Type> {
         this.name = name;
         return this;
     }
-
-    /*@Override
-    protected String getConstructedCode() {
-        return name == null ? "void" : name;
-    }*/
 }

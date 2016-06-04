@@ -65,6 +65,26 @@ public class WindowInputHandler {
         }
         return this;
     }
+
+    public boolean isDefaultCursor() {
+        return window.isDefaultCursor();
+    }
+    
+    public void setStandardCursor(int shape) {
+        window.setStandardCursor(shape);
+    }
+    
+    public void setDefaultCursor() {
+        window.setDefaultCursor();
+    }
+    
+    public void setMouseGrabbed(boolean grabbed) {
+        window.setMouseGrabbed(grabbed);
+    }
+
+    public boolean isMouseGrabbed() {
+        return window.isMouseGrabbed();
+    }
     
     public int getKey(int key) {
         return window.getKey(key);
@@ -74,10 +94,18 @@ public class WindowInputHandler {
         return window.getMouseButton(button);
     }
 
+    /**
+     * 
+     * @return the current cursor's x position in pixel coords. 
+     */
     public double getMouseX() {
         return mouseX;
     }
 
+    /**
+     * 
+     * @return the current cursor's y position in pixel coords. 
+     */
     public double getMouseY() {
         return mouseY;
     }
@@ -154,7 +182,7 @@ public class WindowInputHandler {
         public void invoke(long window, double xpos, double ypos) {
             ypos = WindowInputHandler.this.window.getViewport().getHeight() - ypos;
             mouseDX = xpos - mouseX;
-            mouseDX = ypos - mouseY;
+            mouseDY = ypos - mouseY;
             mouseX = xpos;
             mouseY = ypos;
             for(ControlSet cs: controls) {
@@ -175,7 +203,7 @@ public class WindowInputHandler {
             }
             ypos = WindowInputHandler.this.window.getViewport().getHeight() - ypos;
             mouseDX += xpos - mouseX;
-            mouseDX += ypos - mouseY;
+            mouseDY += ypos - mouseY;
             mouseX = xpos;
             mouseY = ypos;
             

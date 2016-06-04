@@ -473,6 +473,13 @@ public class DebugBackend<T extends LoadedImage> extends PlatformBackend<T> {
     }
 
     @Override
+    public void glGenerateMipmap_P(int target) {
+        impl.glGenerateMipmap_P(target);
+        DebugLogger.d("Backend Debug", "glGenerateMipmap_P() {target = " + toString(target) + "}");
+        GLException.checkGLError();
+    }
+
+    @Override
     public String glGetActiveAttrib_P(int program, int index, IntBuffer length,
             IntBuffer type) {
 
@@ -503,6 +510,13 @@ public class DebugBackend<T extends LoadedImage> extends PlatformBackend<T> {
     public void glGetBufferParameteriv_P(int target, int value, IntBuffer data) {
         impl.glGetBufferParameteriv_P(target, value, data);
         DebugLogger.d("Backend Debug", "glGetBufferParameteriv_P() {target = " + toString(target) + ", value = " + value + ", data = " + toString(data) + "}");
+        GLException.checkGLError();
+    }
+
+    @Override
+    public void glGetBufferSubData_P(int target, long offset, ByteBuffer data) {
+        impl.glGetBufferSubData_P(target, offset, data);
+        DebugLogger.d("Backend Debug", "glGetBufferParameteriv_P() {target = " + toString(target) + ", offset = " + offset + ", data = " + toString(data) + "}");
         GLException.checkGLError();
     }
 
@@ -1106,39 +1120,10 @@ public class DebugBackend<T extends LoadedImage> extends PlatformBackend<T> {
     }
 
     @Override
-    public void glVertexAttribPointer_P(int index, int size,
-            boolean normalized, int stride, FloatBuffer buffer) {
-
-        DebugLogger.d("Backend Debug", "glVertexAttribPointer_P() {index = " + index + ", size = " + size + ", normalized = " + normalized + ", stride = " + stride + ", buffer = " + toString(buffer) + "}");
-        impl.glVertexAttribPointer_P(index, size, normalized, stride, buffer);
-        GLException.checkGLError();
-    }
-
-    @Override
-    public void glVertexAttribPointer_P(int index, int size, boolean unsigned,
-            boolean normalized, int stride, IntBuffer buffer) {
-
-        DebugLogger.d("Backend Debug", "glVertexAttribPointer_P() {index = " + index + ", size = " + size + ", unsigned = " + unsigned + ", normalized = " + normalized + ", stride = " + stride + ", buffer = " + toString(buffer) + "}");
-        impl.glVertexAttribPointer_P(index, size, unsigned, normalized, stride,
-                buffer);
-        GLException.checkGLError();
-    }
-
-    @Override
-    public void glVertexAttribPointer_P(int index, int size, boolean unsigned,
-            boolean normalized, int stride, ByteBuffer buffer) {
-
-        DebugLogger.d("Backend Debug", "glVertexAttribPointer_P() {index = " + index + ", size = " + size + ", unsigned = " + unsigned + ", normalized = " + normalized + ", stride = " + stride + ", buffer = " + toString(buffer) + "}");
-        impl.glVertexAttribPointer_P(index, size, unsigned, normalized, stride,
-                buffer);
-        GLException.checkGLError();
-    }
-
-    @Override
     public void glViewport_P(int x, int y, int width, int height) {
         DebugLogger.d("Backend Debug", "glViewport_P() {x = " + x + ", y = " + y + ", width = " + width + ", height = " + height + "}");
         impl.glViewport_P(x, y, width, height);
-        GLException.checkGLError();
+        GLException.checkGLError("glViewport_P() {x = " + x + ", y = " + y + ", width = " + width + ", height = " + height + "}");
     }
 
     @Override
@@ -1210,7 +1195,7 @@ public class DebugBackend<T extends LoadedImage> extends PlatformBackend<T> {
     }
     
     private static String toString(int glEnum) {
-        return OpenGLUtils.toOpenGLString(glEnum);
+        return OpenGLUtils.toOpenGLEnum(glEnum);
     }
     
     private static String toMaskString(int mask) {
@@ -1220,13 +1205,9 @@ public class DebugBackend<T extends LoadedImage> extends PlatformBackend<T> {
     private static String toString(FloatBuffer fb) {
         return BufferUtils.toString(fb, maximumViewableBufferLength);
     }
-
-    private static String toString(IntBuffer ib) {
-        return toString(ib, false);
-    }
     
-    private static String toString(IntBuffer ib, boolean b) {
-        return BufferUtils.toString(ib, b, maximumViewableBufferLength);
+    private static String toString(IntBuffer ib) {
+        return BufferUtils.toString(ib, maximumViewableBufferLength);
     }
 
     private static String toString(ByteBuffer bb) {

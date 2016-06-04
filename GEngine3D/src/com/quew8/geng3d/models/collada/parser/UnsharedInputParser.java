@@ -22,26 +22,16 @@ class UnsharedInputParser extends XMLParser {
     @Override
     public HashMap<String, XMLAttributeParser> addAttributeParsers(HashMap<String, XMLAttributeParser> to) {
         to = super.addAttributeParsers(to);
-        to.put(SOURCE, new XMLAttributeParser() {
-            
-            @Override
-            public void parse(Attribute attribute, Element parent) {
-                Element element = UnsharedInputParser.this.findTarget(attribute.getValue());
-                if(element.getName().matches("vertices")) {
-                    source = UnsharedInputParser.this.parseWith(element, new VerticesParser());
-                } else {
-                    source = UnsharedInputParser.this.parseWith(element, new SourceParser());
-                }
+        to.put(SOURCE, (XMLAttributeParser) (Attribute attribute, Element parent) -> {
+            Element element = UnsharedInputParser.this.findTarget(attribute.getValue());
+            if(element.getName().matches("vertices")) {
+                source = UnsharedInputParser.this.parseWith(element, new VerticesParser());
+            } else {
+                source = UnsharedInputParser.this.parseWith(element, new SourceParser());
             }
-
         });
-        to.put(SEMANTIC, new XMLAttributeParser() {
-            
-            @Override
-            public void parse(Attribute attribute, Element parent) {
-                semantic = attribute.getValue();
-            }
-            
+        to.put(SEMANTIC, (XMLAttributeParser) (Attribute attribute, Element parent) -> {
+            semantic = attribute.getValue();
         });
         return to;
     }

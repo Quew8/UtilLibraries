@@ -1,25 +1,20 @@
 package com.quew8.gutils.debug;
 
+import com.quew8.gutils.debug.DebugInterfaceParser.DebugObjectParamStruct;
+import com.quew8.gutils.debug.DebugInterfaceParser.DebugParamStruct;
+
 /**
  *
  * @author Quew8
  */
 public class DebugNullObjectException extends DebugException {
-    private final DebugInterface in;
-    private final String object;
     
-    public DebugNullObjectException(DebugInterface in, String object) {
-        super("\"" + object + "\" is null in " + in.debugGetName());
-        this.in = in;
-        this.object = object;
+    public DebugNullObjectException(DebugObjectParamStruct param) {
+        super("\"" + param.name + "\" is null in " + param.parent.name);
     }
-
-    public DebugInterface getIn() {
-        return in;
-    }
-
-    public String getObject() {
-        return object;
+    
+    public DebugNullObjectException(DebugParamStruct param) {
+        super("\"" + param.name + "\" in \"" + param.parent.name + "\", is null and points to a non-static field, \"" + param.pointedField + "\"");
     }
     
 }

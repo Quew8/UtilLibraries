@@ -24,42 +24,52 @@ public class EllipseDataFactory implements DataFactory2D<Polygon> {
             trigs[lod + i] = GMath.cos(theta);
             theta += step;
         }
-        this.polyInstance = new Polygon(new Vertex3D[lod]);
+        this.polyInstance = createInstance();
     }
 
     @Override
-    public Polygon construct(Image texture, float x, float y, float z, float width, float height, Plane plane) {
+    public Polygon construct(Polygon out, Image texture, float x, float y, float z, float width, float height, Plane plane) {
         Vector pos = new Vector(x, y, z);
         for(int i = 0; i < lod; i++) {
             Vector v = plane.map(width * trigs[lod + i], height * trigs[i]);
             Vector2 texV = new Vector2(0.5f + ( trigs[lod + i] / 2 ), 0.5f + ( trigs[i] / 2 ));
             v = Vector.add(v, pos, v);
             texV = texture.transformCoords(texV, texV);
-            polyInstance.vertices[i] = new Vertex3D(v, texV);
+            out.vertices[i] = new Vertex3D(v, texV);
         }
-        return polyInstance;
+        return out;
     }
 
     @Override
-    public Polygon construct(Colour colour, float x, float y, float z, float width, float height, Plane plane) {
+    public Polygon construct(Polygon out, Colour colour, float x, float y, float z, float width, float height, Plane plane) {
         Vector pos = new Vector(x, y, z);
         for(int i = 0; i < lod; i++) {
             Vector v = plane.map(width * trigs[lod + i], height * trigs[i]);
             v = Vector.add(v, pos, v);
-            polyInstance.vertices[i] = new Vertex3D(v, colour);
+            out.vertices[i] = new Vertex3D(v, colour);
         }
-        return polyInstance;
+        return out;
     }
 
     @Override
-    public Polygon construct(float x, float y, float z, float width, float height, Plane plane) {
+    public Polygon construct(Polygon out, float x, float y, float z, float width, float height, Plane plane) {
         Vector pos = new Vector(x, y, z);
         for(int i = 0; i < lod; i++) {
             Vector v = plane.map(width * trigs[lod + i], height * trigs[i]);
             v = Vector.add(v, pos, v);
-            polyInstance.vertices[i] = new Vertex3D(v);
+            out.vertices[i] = new Vertex3D(v);
         }
+        return out;
+    }
+
+    @Override
+    public Polygon getInstance() {
         return polyInstance;
+    }
+
+    @Override
+    public Polygon createInstance() {
+        return new Polygon(new Vertex3D[lod]);
     }
     
     public int getLOD() {

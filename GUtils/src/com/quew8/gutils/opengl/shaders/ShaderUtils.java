@@ -48,6 +48,9 @@ public class ShaderUtils {
      */
     public static int getUniformVarPos(int programId, String var) {
         int i = glGetUniformLocation(programId, var);
+        if(i < 0) {
+            throw new IllegalStateException("Could not find uniform variable: \"" + var + " in " + programId);
+        }
         return i;
     }
     

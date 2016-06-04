@@ -14,24 +14,23 @@ import org.dom4j.Element;
  */
 class MeshParser extends XMLParser{
     public static final String
+            SOURCE = "source",
+            VERTICES = "vertices",
             POLYLIST = "polylist";
 
     private PolylistParser polylistParser;
     
     MeshParser() {
-        super(false, false);
+        
     }
     
     @Override
     public HashMap<String, XMLElementParser> addElementParsers(HashMap<String, XMLElementParser> to) {
         to = super.addElementParsers(to);
-        to.put(POLYLIST, new XMLElementParser() {
-            
-            @Override
-            public void parse(Element element) {
-                polylistParser = MeshParser.this.parseWith(element, new PolylistParser());
-            }
-            
+        to.put(SOURCE, (XMLElementParser) (Element element) -> {});
+        to.put(VERTICES, (XMLElementParser) (Element element) -> {});
+        to.put(POLYLIST, (XMLElementParser) (Element element) -> {
+            polylistParser = MeshParser.this.parseWith(element, new PolylistParser());
         });
         return to;
     }

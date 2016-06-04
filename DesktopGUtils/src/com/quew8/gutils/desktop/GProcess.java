@@ -6,7 +6,6 @@ import com.quew8.gutils.debug.LogLevel;
 import com.quew8.gutils.desktop.windowing.Window;
 import com.quew8.gutils.desktop.windowing.Window.WindowParams;
 import com.quew8.gutils.opengl.Viewport;
-import java.net.URL;
 
 /**
  *
@@ -16,17 +15,9 @@ public abstract class GProcess {
     private final boolean debug;
     private final Window window;
     
-    public GProcess(boolean debug, WindowParams params, URL[] services) {
-        this.debug = debug;
-        this.window = new Window(params, services);
-    }
-    
-    public GProcess(WindowParams params, URL[] services) {
-        this(false, params, services);
-    }
-    
     public GProcess(boolean debug, WindowParams params) {
-        this(debug, params, new URL[]{});
+        this.debug = debug;
+        this.window = new Window(params);
     }
     
     public GProcess(WindowParams params) {
@@ -48,6 +39,7 @@ public abstract class GProcess {
         }
         deinit();
         onUnmadeCurrent();
+        window.close();
     }
     
     private void loop() {

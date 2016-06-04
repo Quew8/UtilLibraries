@@ -9,7 +9,10 @@ import com.quew8.gmath.Vector2;
  * @author Quew8
  */
 public class Plane {
+    private static final Vector UP_DIR = new Vector(0, 1, 0);
     public static final Plane 
+            NEG_X = Plane.getPlane(new Vector(-1, 0, 0)),
+            POS_X = Plane.getPlane(new Vector(1, 0, 0)),
             POS_Y = new Plane(new Vector(-1, 0, 0), new Vector(0, 0, 1), new Vector(0, 1, 0)),
             NEG_Y = new Plane(new Vector(-1, 0, 0), new Vector(0, 0, -1), new Vector(0, -1, 0)),
             NEG_Z = Plane.getPlane(new Vector(0, 0, -1)),
@@ -19,9 +22,9 @@ public class Plane {
     private final Vector right, up, forward;
 
     public Plane(Vector right, Vector up, Vector forward) {
-        this.up = new Vector(up);
-        this.right = new Vector(right);
-        this.forward = new Vector(forward);
+        this.up = new Vector().setXYZ(up);
+        this.right = new Vector().setXYZ(right);
+        this.forward = new Vector().setXYZ(forward);
     }
 
     /*public Vector getUp() {
@@ -37,7 +40,9 @@ public class Plane {
     }*/
 
     public Vector map(float dx, float dy) {
-        return Vector.add(new Vector(), Vector.times(tempA, up, dy), Vector.times(tempB, right, dx));
+        Vector a = up.scale(new Vector(), dy);
+        right.scale(tempA, dx);
+        return a.add(a, tempA);
     }
 
     public Vector map(Vector2 v) {
@@ -61,7 +66,14 @@ public class Plane {
     }
     
     public static Plane getPlane(Vector forward) {
-        Vector right = GMath.cross(forward, new Vector(0, 1, 0)).negate();
+        float dotUp = GMath.dot(forward, new Vector(0, 1, 0));
+        if(dotUp == 1) {
+            return Plane.POS_Y;
+        } else if(dotUp == -1) {
+            return Plane.NEG_Y;
+        }
+        Vector right = GMath.cross(forward, UP_DIR);
+        right.negate(right);
         Vector up = GMath.cross(forward, right);
         return new Plane(right, up, forward);
     }

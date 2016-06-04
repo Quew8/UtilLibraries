@@ -54,9 +54,7 @@ public abstract class AbstractNode {
         return elements.toArray(new InstanceController[elements.size()]);
     }
     
-    public String getName() {
-        return null;
-    }
+    public abstract String getName();
     
     public void setParent(AbstractNode parent) {
         if(this.parent != null) {

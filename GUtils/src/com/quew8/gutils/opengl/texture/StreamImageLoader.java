@@ -10,12 +10,12 @@ class StreamImageLoader implements ImageLoader {
     private final InputStream is;
     private final boolean flip;
 
-    public StreamImageLoader(InputStream is, boolean flip) {
+    StreamImageLoader(InputStream is, boolean flip) {
 	this.is = is;
 	this.flip = flip;
     }
 	
-    public StreamImageLoader(InputStream is) {
+    StreamImageLoader(InputStream is) {
         this(is, false);
     }
 

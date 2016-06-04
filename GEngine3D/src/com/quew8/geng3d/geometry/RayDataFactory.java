@@ -9,19 +9,29 @@ import com.quew8.gutils.Colour;
  */
 public class RayDataFactory implements DataFactory1D<Ray> {
     public static final RayDataFactory INSTANCE = new RayDataFactory();
-    private final Ray rayInstance = new Ray();
+    private final Ray rayInstance = createInstance();
     
     @Override
-    public Ray construct(Colour colour, float x, float y, float z, float width, float height, float depth) {
-        rayInstance.a = new Vertex3D(new Vector(x, y, z), colour);
-        rayInstance.b = new Vertex3D(new Vector(x + width, y + height, z + depth), colour);
+    public Ray construct(Ray out, Colour colour, float x, float y, float z, float width, float height, float depth) {
+        out.a = new Vertex3D(new Vector(x, y, z), colour);
+        out.b = new Vertex3D(new Vector(x + width, y + height, z + depth), colour);
+        return out;
+    }
+    
+    @Override
+    public Ray construct(Ray out, float x, float y, float z, float width, float height, float depth) {
+        out.a = new Vertex3D(new Vector(x, y, z));
+        out.b = new Vertex3D(new Vector(x + width, y + height, z + depth));
+        return out;
+    }
+
+    @Override
+    public Ray getInstance() {
         return rayInstance;
     }
     
     @Override
-    public Ray construct(float x, float y, float z, float width, float height, float depth) {
-        rayInstance.a = new Vertex3D(new Vector(x, y, z));
-        rayInstance.b = new Vertex3D(new Vector(x + width, y + height, z + depth));
-        return rayInstance;
+    public Ray createInstance() {
+        return new Ray();
     }
 }

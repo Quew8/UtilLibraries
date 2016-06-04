@@ -1,6 +1,7 @@
 package com.quew8.geng.rendering.modes;
 
 import java.nio.ByteBuffer;
+import java.util.Arrays;
 
 /**
  *
@@ -55,12 +56,17 @@ public class FixedSizeDataInterpreterImpl<T, S> extends FixedSizeDataInterpreter
 
     @Override
     public int[] getIndices() {
-        return indices;
+        return Arrays.copyOf(indices, indices.length);
     }
 
     @Override
     public int getNIndices() {
         return indices.length;
+    }
+
+    @Override
+    public String toString() {
+        return "FixedSizeDataInterpreterImpl{" + "dataInterpreter=" + dataInterpreter + ", nVertices=" + nVertices + ", nBytes=" + nBytes + ", indices=" + Arrays.toString(indices) + ", mode=" + mode + '}';
     }
     
 }

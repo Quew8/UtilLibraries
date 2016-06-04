@@ -29,13 +29,8 @@ class InstanceControllerParser extends XMLParser {
     @Override
     public HashMap<String, XMLAttributeParser> addAttributeParsers(HashMap<String, XMLAttributeParser> to) {
         to = super.addAttributeParsers(to);
-        to.put(URL, new XMLAttributeParser() {
-
-            @Override
-            public void parse(Attribute attribute, Element parent) {
-                controller = InstanceControllerParser.this.parseWith(attribute.getValue(), new ControllerParser());
-            }
-            
+        to.put(URL, (XMLAttributeParser) (Attribute attribute, Element parent) -> {
+            controller = InstanceControllerParser.this.parseWith(attribute.getValue(), new ControllerParser());
         });
         return to;
     }
@@ -43,21 +38,11 @@ class InstanceControllerParser extends XMLParser {
     @Override
     public HashMap<String, XMLElementParser> addElementParsers(HashMap<String, XMLElementParser> to) {
         to = super.addElementParsers(to);
-        to.put(SKELETON, new XMLElementParser() {
-            
-            @Override
-            public void parse(Element element) {
-                skeletons.add(InstanceControllerParser.this.parseWith(element, new SkeletonParser()));
-            }
-            
+        to.put(SKELETON, (XMLElementParser) (Element element) -> {
+            skeletons.add(InstanceControllerParser.this.parseWith(element, new SkeletonParser()));
         });
-        to.put(BIND_MATERIAL, new XMLElementParser() {
-            
-            @Override
-            public void parse(Element element) {
-                bindMaterial = InstanceControllerParser.this.parseWith(element, new BindMaterialParser());
-            }
-            
+        to.put(BIND_MATERIAL, (XMLElementParser) (Element element) -> {
+            bindMaterial = InstanceControllerParser.this.parseWith(element, new BindMaterialParser());
         });
         return to;
     }

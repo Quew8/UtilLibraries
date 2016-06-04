@@ -24,19 +24,14 @@ public class GeometryParser extends XMLParser {
     private MeshParser mesh;
     
     public GeometryParser() {
-        super(false, false);
+        
     }
     
     @Override
     public HashMap<String, XMLElementParser> addElementParsers(HashMap<String, XMLElementParser> to) {
         to = super.addElementParsers(to);
-        to.put(MESH, new XMLElementParser() {
-
-            @Override
-            public void parse(Element element) {
-                mesh = GeometryParser.this.parseWith(element, new MeshParser());
-            }
-            
+        to.put(MESH, (XMLElementParser) (Element element) -> {
+            mesh = GeometryParser.this.parseWith(element, new MeshParser());
         });
         return to;
     }
@@ -44,13 +39,8 @@ public class GeometryParser extends XMLParser {
     @Override
     public HashMap<String, XMLAttributeParser> addAttributeParsers(HashMap<String, XMLAttributeParser> to) {
         to = super.addAttributeParsers(to);
-        to.put(NAME, new XMLAttributeParser() {
-            
-            @Override
-            public void parse(Attribute attribute, Element parent) {
-                name = attribute.getValue();
-            }
-            
+        to.put(NAME, (XMLAttributeParser) (Attribute attribute, Element parent) -> {
+            name = attribute.getValue();
         });
         return to;
     }

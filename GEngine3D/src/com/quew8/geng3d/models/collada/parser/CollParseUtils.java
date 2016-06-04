@@ -1,16 +1,19 @@
 package com.quew8.geng3d.models.collada.parser;
 
+import com.quew8.geng.xmlparser.XMLParseException;
 import com.quew8.gmath.Matrix;
 import com.quew8.gmath.Vector;
 import com.quew8.gutils.ArrayUtils;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.dom4j.Element;
 
 /**
  *
  * @author Quew8
  */
 abstract class CollParseUtils {
+    private static final String SID = "sid";
     
     protected CollParseUtils() {
         
@@ -19,7 +22,7 @@ abstract class CollParseUtils {
     protected static float[] parseVec4(String text) {
         Float[] data = new Float[4];
         parseFloatsInto(text, data, 0, 4);
-        return ArrayUtils.toFloatArray(data);
+        return ArrayUtils.unbox(data);
     }
     
     protected static Vector parseVec3(String text) {
@@ -31,7 +34,9 @@ abstract class CollParseUtils {
     protected static Matrix parseMatrix(String text) {
         Float[] data = new Float[16];
         parseFloatsInto(text, data, 0, 16);
-        return new Matrix(ArrayUtils.toFloatArray(data));
+        Matrix m = new Matrix();
+        m.setDataFromCM(ArrayUtils.unbox(data), 0);
+        return m;
     }
     
     protected static void parseFloatsInto(String text, Float[] into, int offset, int n) {
@@ -68,5 +73,52 @@ abstract class CollParseUtils {
         if(n > i) {
             throw new RuntimeException("Not Enough Strings Found: " + n + " required, " + i + " found");
         }
+    }
+    
+    public static Element findTargetWithSID(Element root, String targetSID) {
+        Element elem = findTargetUpWithSID(root, targetSID, null);
+        if(elem == null) {
+            throw new XMLParseException("No element found with sid \"" + targetSID + "\"");
+        }
+        return elem;
+    }
+
+    private static Element findTargetUpWithSID(Element root, String targetSID, Element excludeChild) {
+        for(Element child: root.elements()) {
+            String childSID = child.attributeValue(SID);
+            if(childSID != null && childSID.equals(targetSID)) {
+                return child;
+            }
+        }
+        for(Element child: root.elements()) {
+            if(child != excludeChild) {
+                Element result = findTargetDownWithSID(child, targetSID);
+                if(result != null) {
+                    return result;
+                }
+            }
+        }
+        Element parent = root.getParent();
+        if(parent != null) {
+            return findTargetUpWithSID(parent, targetSID, root);
+        } else {
+            return null;
+        }
+    }
+    
+    private static Element findTargetDownWithSID(Element root, String targetSID) {
+        for(Element child: root.elements()) {
+            String childSID = child.attributeValue(SID);
+            if(childSID != null && childSID.equals(targetSID)) {
+                return child;
+            }
+        }
+        for(Element child: root.elements()) {
+            Element result = findTargetDownWithSID(child, targetSID);
+            if(result != null) {
+                return result;
+            }
+        }
+        return null;
     }
 }

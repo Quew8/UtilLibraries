@@ -1,7 +1,5 @@
 package com.quew8.gutils;
 
-import com.quew8.gutils.func.Function;
-import com.quew8.gutils.func.Functions;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -17,164 +15,28 @@ public class ArrayUtils {
         
     }
     
-    /**
-     * 
-     * @param <T>
-     * @param <S>
-     * @param input
-     * @param inOffset
-     * @param f
-     * @param output
-     * @param outOffset
-     * @param length
-     * @return 
-     */
-    public static <T, S> T[] performFunction(S[] input, int inOffset, 
-            Function<T, S> f, T[] output, int outOffset, int length) {
-        
-        for(int i = 0; i < length; i++) {
-            output[outOffset + i] = f.f(input[inOffset + i]);
-        }
-        return output;
+    public static float add(float a, float b) {
+        return a + b;
     }
     
-    /**
-     * 
-     * @param input
-     * @param inOffset
-     * @param f
-     * @param output
-     * @param outOffset
-     * @param length
-     * @return 
-     */
-    public static float[] performFunction(float[] input, int inOffset, 
-            Function<Float, Float> f, float[] output, int outOffset, int length) {
-        
-        for(int i = 0; i < length; i++) {
-            output[outOffset + i] = f.f(input[inOffset + i]);
-        }
-        return output;
+    public static int add(int a, int b) {
+        return a + b;
     }
     
-    /**
-     * 
-     * @param input
-     * @param inOffset
-     * @param f
-     * @param output
-     * @param outOffset
-     * @param length
-     * @return 
-     */
-    public static int[] performFunction(int[] input, int inOffset, 
-            Function<Integer, Integer> f, int[] output, int outOffset, int length) {
-        
-        for(int i = 0; i < length; i++) {
-            output[outOffset + i] = f.f(input[inOffset + i]);
-        }
-        return output;
+    public static byte add(byte a, byte b) {
+        return (byte) (a + b);
     }
     
-    /**
-     * 
-     * @param input
-     * @param inOffset
-     * @param f
-     * @param output
-     * @param outOffset
-     * @param length
-     * @return 
-     */
-    public static byte[] performFunction(byte[] input, int inOffset, 
-            Function<Byte, Byte> f, byte[] output, int outOffset, int length) {
-        
-        for(int i = 0; i < length; i++) {
-            output[outOffset + i] = f.f(input[inOffset + i]);
-        }
-        return output;
+    public static float times(float a, float b) {
+        return a * b;
     }
     
-    /**
-     * 
-     * @param array
-     * @param offset
-     * @param length
-     * @param f
-     * @return 
-     */
-    public static float[] add(float[] array, int offset, int length, float f) {
-        return performFunction(array, offset, Functions.addF(f), array, offset, length);
+    public static int times(int a, int b) {
+        return a * b;
     }
     
-    /**
-     * 
-     * @param array
-     * @param offset
-     * @param length
-     * @param i
-     * @return 
-     */
-    public static int[] add(int[] array, int offset, int length, int i) {
-        return performFunction(array, offset, Functions.addI(i), array, offset, length);
-    }
-    
-    /**
-     * 
-     * @param array
-     * @param i
-     * @return 
-     */
-    public static int[] add(int[] array, int i) {
-        return add(array, 0, array.length, i); 
-    }
-            
-    /**
-     * 
-     * @param array
-     * @param offset
-     * @param length
-     * @param b
-     * @return 
-     */
-    public static byte[] add(byte[] array, int offset, int length, byte b) {
-        return performFunction(array, offset, Functions.addB(b), array, offset, length);
-    }
-    
-    /**
-     * 
-     * @param array
-     * @param offset
-     * @param length
-     * @param f
-     * @return 
-     */
-    public static float[] multiply(float[] array, int offset, int length, float f) {
-        return performFunction(array, offset, Functions.multiplyF(f), array, offset, length);
-    }
-    
-    /**
-     * 
-     * @param array
-     * @param offset
-     * @param length
-     * @param i
-     * @return 
-     */
-    public static int[] multiply(int[] array, int offset, int length, int i) {
-        return performFunction(array, offset, Functions.multiplyI(i), array, offset, length);
-    }
-    
-    /**
-     * 
-     * @param array
-     * @param offset
-     * @param length
-     * @param b
-     * @return 
-     */
-    public static byte[] multiply(byte[] array, int offset, int length, byte b) {
-        return performFunction(array, offset, Functions.multiplyB(b), array, offset, length);
+    public static byte times(byte a, byte b) {
+        return (byte) (a * b);
     }
     
     /**
@@ -220,7 +82,7 @@ public class ArrayUtils {
      * @param array
      * @return 
      */
-    public static Integer[] toIntegerArray(int[] array) {
+    public static Integer[] box(int[] array) {
         Integer[] result = new Integer[array.length];
         for(int i = 0; i < array.length; i++) {
             result[i] = array[i];
@@ -233,7 +95,7 @@ public class ArrayUtils {
      * @param array
      * @return 
      */
-    public static Float[] toFloatArray(float[] array) {
+    public static Float[] box(float[] array) {
         Float[] result = new Float[array.length];
         for(int i = 0; i < array.length; i++) {
             result[i] = array[i];
@@ -246,7 +108,7 @@ public class ArrayUtils {
      * @param array
      * @return 
      */
-    public static int[] toIntArray(Integer[] array) {
+    public static int[] unbox(Integer[] array) {
         int[] result = new int[array.length];
         for(int i = 0; i < array.length; i++) {
             result[i] = array[i];
@@ -259,7 +121,7 @@ public class ArrayUtils {
      * @param array
      * @return 
      */
-    public static float[] toFloatArray(Float[] array) {
+    public static float[] unbox(Float[] array) {
         float[] result = new float[array.length];
         for(int i = 0; i < array.length; i++) {
             result[i] = array[i];

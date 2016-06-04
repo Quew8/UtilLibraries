@@ -1,6 +1,7 @@
 package com.quew8.geng.geometry;
 
 import com.quew8.gmath.Matrix;
+import com.quew8.gmath.Matrix3;
 import java.util.Arrays;
 
 /**
@@ -45,7 +46,7 @@ public abstract class GeometricObject<T extends GeometricObject<T, S>, S extends
     }
 
     public T transform(Matrix transform, boolean flip) {
-        Matrix normalTransform = transform.getRotation();
+        Matrix3 normalTransform = Matrix.getMatrix3(new Matrix3(), transform);
         int[] cpyIndices = Arrays.copyOf(indices, indices.length);
         S[] newVertices = Arrays.copyOf(vertices, vertices.length);
         for(int i = 0; i < newVertices.length; i++) {

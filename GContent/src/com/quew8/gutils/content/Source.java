@@ -3,7 +3,6 @@ package com.quew8.gutils.content;
 import com.quew8.gutils.ResourceLoader;
 import java.io.InputStream;
 import java.net.URL;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -32,6 +31,10 @@ public class Source {
     
     protected void setLoader(ResourceLoader loader) {
         this.loader = loader;
+    }
+    
+    public int getNSources() {
+        return sources.size();
     }
     
     public String getSource() {
@@ -88,7 +91,4 @@ public class Source {
     public String getIdString() {
         return idString;
     }
-    
-    /**/
-    
 }

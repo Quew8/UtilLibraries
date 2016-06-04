@@ -43,7 +43,7 @@ public class ModelReader implements ContentReader<Model> {
                 ColladaParser parser = new ColladaParser();
                 parser.read(in.getSource(0), in.getLoader());
                 Scene scene = parser.getScene();
-                //System.out.println(scene.toString());
+                System.out.println(scene.toString());
                 if(in.hasParam(NAME)) {
                     String modelName = in.getParam(NAME);
                     //System.out.println("Looking for: \"" + modelName + "\"");

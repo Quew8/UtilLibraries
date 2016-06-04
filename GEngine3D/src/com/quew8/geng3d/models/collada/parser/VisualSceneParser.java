@@ -26,13 +26,8 @@ class VisualSceneParser extends XMLParser {
     @Override
     public HashMap<String, XMLAttributeParser> addAttributeParsers(HashMap<String, XMLAttributeParser> to) {
         to = super.addAttributeParsers(to);
-        to.put(NAME, new XMLAttributeParser() {
-
-            @Override
-            public void parse(Attribute attribute, Element parent) {
-                name = attribute.getValue();
-            }
-            
+        to.put(NAME, (XMLAttributeParser) (Attribute attribute, Element parent) -> {
+            name = attribute.getValue();
         });
         return to;
     }
@@ -40,13 +35,8 @@ class VisualSceneParser extends XMLParser {
     @Override
     public HashMap<String, XMLElementParser> addElementParsers(HashMap<String, XMLElementParser> to) {
         to = super.addElementParsers(to);
-        to.put(NODE, new XMLElementParser() {
-            
-            @Override
-            public void parse(Element element) {
-                nodes.add(VisualSceneParser.this.parseWith(element, new NodeParser(null)));
-            }
-            
+        to.put(NODE, (XMLElementParser) (Element element) -> {
+            nodes.add(VisualSceneParser.this.parseWith(element, new NodeParser(null)));
         });
         return to;
     }

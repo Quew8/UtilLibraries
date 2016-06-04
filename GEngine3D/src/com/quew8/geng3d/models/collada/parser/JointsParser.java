@@ -23,18 +23,13 @@ class JointsParser extends XMLParser {
     @Override
     public HashMap<String, XMLElementParser> addElementParsers(HashMap<String, XMLElementParser> to) {
         to = super.addElementParsers(to);
-        to.put(INPUT, new XMLElementParser() {
-
-            @Override
-            public void parse(Element element) {
-                UnsharedInputParser input = JointsParser.this.parseWith(element, new UnsharedInputParser());
-                if(input.getSemantic() == Semantic.JOINT) {
-                    jointInput = input;
-                } else {
-                    matrixInput = input;
-                }
+        to.put(INPUT, (XMLElementParser) (Element element) -> {
+            UnsharedInputParser input = JointsParser.this.parseWith(element, new UnsharedInputParser());
+            if(input.getSemantic() == Semantic.JOINT) {
+                jointInput = input;
+            } else {
+                matrixInput = input;
             }
-            
         });
         return to;
     }

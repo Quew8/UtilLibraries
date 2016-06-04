@@ -1,72 +1,34 @@
 package com.quew8.gutils.opengl.texture;
 
-import com.quew8.gutils.opengl.OpenGL;
 import static com.quew8.gutils.opengl.OpenGL.*;
-import com.quew8.gutils.opengl.OpenGLUtils;
-import java.nio.IntBuffer;
+import java.util.HashMap;
 
 public class TextureParams {
-    private final int[] pnames, params;
-    private final Runnable runnable;
+    private final HashMap<Integer, Integer> params = new HashMap<>();
+    private boolean generateMipmaps;
 
-    public TextureParams(int[] pnames, int[] params, Runnable runnable) {
-        if(pnames.length != params.length) {
-            throw new IllegalArgumentException("Number of pnames doesn't match number of params");
-        }
-        this.pnames = pnames;
-        this.params = params;
-        this.runnable = runnable;
-    }
-
-    public void setAll(int target) {
-        for(int i = 0; i < getNParams(); i++) {
-            glTexParameteri(target, getPName(i), getParam(i));
-        }
+    public TextureParams() {
+        params.put(GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+        params.put(GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+        this.generateMipmaps = false;
     }
     
-    public void run() {
-        if(runnable != null) {
-            runnable.run();
+    public TextureParams setParam(int pname, int param) {
+        this.params.put(pname, param);
+        return this;
+    }
+    
+    public TextureParams setGenerateMipmaps(boolean generateMipmaps) {
+        this.generateMipmaps = generateMipmaps;
+        return this;
+    }
+    
+    public void setAllParams(int target) {
+        params.keySet().stream().forEach((param) -> {
+            glTexParameteri(target, param, params.get(param));
+        });
+        if(generateMipmaps) {
+            glGenerateMipmap(target);
         }
-    }
-
-    public int getNParams() {
-        return pnames.length;
-    }
-
-    public int getPName(int i) {
-        return pnames[i];
-    }
-
-    public int getParam(int i) {
-        return params[i];
-    }
-
-    public static TextureParams create(int minFilter, int magFilter, Runnable runnable) {
-        return new TextureParams(
-                new int[]{GL_TEXTURE_MIN_FILTER, GL_TEXTURE_MAG_FILTER},
-                new int[]{minFilter, magFilter},
-                runnable
-        );
-    }
-
-    public static TextureParams create(int minFilter, int magFilter) {
-        return create(minFilter, magFilter, null);
-    }
-
-    public static TextureParams create(int minFilter, Runnable runnable) {
-        return create(minFilter, GL_LINEAR, runnable);
-    }
-
-    public static TextureParams create(int minFilter) {
-        return create(minFilter, null);
-    }
-
-    public static TextureParams create(Runnable runnable) {
-        return create(GL_LINEAR, runnable);
-    }
-
-    public static TextureParams create() {
-        return create(null);
     }
 }
